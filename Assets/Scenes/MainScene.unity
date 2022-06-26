@@ -586,7 +586,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &380374242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -599,6 +599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8411c5d41b4dbe42bc3d078012e9a0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnSmoothTime: 0.1
 --- !u!95 &380374243
 Animator:
   serializedVersion: 4
@@ -1331,7 +1332,7 @@ MonoBehaviour:
   renderingPathCustomFrameSettingsOverrideMask:
     mask:
       data1: 17206124545
-      data2: 3222274048
+      data2: 3490709504
   defaultFrameSettings: 0
   m_Version: 8
   m_ObsoleteRenderingPath: 0
