@@ -15,12 +15,14 @@ public class PlayerController : MonoBehaviour
     // Movement
     private Vector2 inputDir;
     private Vector3 velocity;
+    private bool crouching = false;
     private float turnSmoothVelocity;
     private float speedSmoothVelocity;
     private float speedSmoothTime = 0.10f;
     //private float turnSmoothTime = 0.1f;
     private float runSpeed = 6f;
     private float crouchSpeed = 2.3f;
+    private float mySpeed = 0;
     private float currentSpeed;
     private float targetSpeed;
     private float animationSpeedPercent;
@@ -50,10 +52,25 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            crouching = true;
+            animator.SetBool("crouching", true);
+            mySpeed = crouchSpeed;
+        }
+        
+        if(Input.GetKeyUp(KeyCode.LeftControl))
+        {
+            crouching = false;
+            animator.SetBool("crouching", false);
+            mySpeed = runSpeed;
+        }
+
+        debugText.text = "Crouching: " + crouching;
+        
         // Rotate camera
         cameraPitch += Input.GetAxis("Mouse Y") * -2; // mouse Y input amount per frame (-1 to 1 in 0.05 steps)
         cameraYaw = Input.GetAxis("Mouse X") * 2;
-
         
         // Movement
         inputDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
@@ -65,7 +82,7 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("jump");
         }
 
-        targetSpeed = crouchSpeed * inputDir.magnitude;
+        targetSpeed = mySpeed * inputDir.magnitude;
         currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedSmoothVelocity, speedSmoothTime);
         
         if (currentSpeed < 0.05f)
@@ -87,7 +104,6 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
-        debugText.text = cameraPitch.ToString();
         cameraArm.localRotation = Quaternion.Euler(cameraPitch, 0, 0);
     }
 
