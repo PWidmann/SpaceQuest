@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Members
+
     [SerializeField] private Text debugText;
 
 
@@ -18,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private bool crouching = false;
     private float turnSmoothVelocity;
     private float speedSmoothVelocity;
-    private float speedSmoothTime = 0.10f;
+    private float speedSmoothTime = 0.05f;
     //private float turnSmoothTime = 0.1f;
     private float runSpeed = 6f;
     private float crouchSpeed = 2.3f;
@@ -26,6 +28,7 @@ public class PlayerController : MonoBehaviour
     private float currentSpeed;
     private float targetSpeed;
     private float animationSpeedPercent;
+    private bool grounded = true;
 
     // Animation
     private float speedPercent;
@@ -39,48 +42,19 @@ public class PlayerController : MonoBehaviour
 
     private Transform cameraArm;
 
+    #endregion
+
+    #region UnityMethods
+
     private void Start()
     {
-        animator = GetComponent<Animator>();
-        rigidBody = GetComponent<Rigidbody>();
-        cameraArm = transform.GetChild(3);
-        cameraPitchClamp = new Vector2(-50f, 70f); // cameraArm X rotation clamp
-        cameraPitch = 0;
-
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        InitializePlayerController();
     }
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            crouching = true;
-            animator.SetBool("crouching", true);
-            mySpeed = crouchSpeed;
-        }
-        
-        if(Input.GetKeyUp(KeyCode.LeftControl))
-        {
-            crouching = false;
-            animator.SetBool("crouching", false);
-            mySpeed = runSpeed;
-        }
-
-        debugText.text = "Crouching: " + crouching;
-        
-        // Rotate camera
-        cameraPitch += Input.GetAxis("Mouse Y") * -2; // mouse Y input amount per frame (-1 to 1 in 0.05 steps)
-        cameraYaw = Input.GetAxis("Mouse X") * 2;
-        
-        // Movement
-        inputDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        // Jumping
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            rigidBody.AddForce(transform.up * 400f);
-            animator.SetTrigger("jump");
-        }
+        CheckForGrounded();
+        GetInput();
 
         targetSpeed = mySpeed * inputDir.magnitude;
         currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedSmoothVelocity, speedSmoothTime);
@@ -88,9 +62,8 @@ public class PlayerController : MonoBehaviour
         if (currentSpeed < 0.05f)
             currentSpeed = 0;
 
-        animationSpeedPercent = currentSpeed / crouchSpeed;
-
         // Animation handling
+        animationSpeedPercent = currentSpeed / mySpeed;       
         animator.SetFloat("xAxis", inputDir.x);
         animator.SetFloat("zAxis", inputDir.y);
         animator.SetFloat("speedPercent", animationSpeedPercent);
@@ -101,16 +74,82 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    private void LateUpdate()
-    {
-        cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
-        cameraArm.localRotation = Quaternion.Euler(cameraPitch, 0, 0);
-    }
-
     private void FixedUpdate()
     {
         Vector3 moveDirection = transform.forward * inputDir.y + transform.right * inputDir.x;
         moveDirection.Normalize();
         rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
     }
+
+    private void LateUpdate()
+    {
+        cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
+        cameraArm.localRotation = Quaternion.Euler(cameraPitch, 0, 0);
+    }
+
+    #endregion
+
+    #region Methods
+
+    private void InitializePlayerController()
+    {
+        animator = GetComponent<Animator>();
+        rigidBody = GetComponent<Rigidbody>();
+        cameraArm = transform.GetChild(3);
+        cameraPitchClamp = new Vector2(-50f, 70f); // cameraArm X rotation clamp
+        cameraPitch = 20f;
+        mySpeed = runSpeed;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+    private void GetInput()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetButtonDown("J_Fire1"))
+        {
+            crouching = !crouching;
+
+            if (crouching)
+            {
+                animator.SetBool("crouching", true);
+                mySpeed = crouchSpeed;
+            }
+            else
+            {
+                animator.SetBool("crouching", false);
+                mySpeed = runSpeed;
+            }
+        }
+
+        debugText.text = "Crouching: " + crouching + "\n" + "Grounded: " + grounded;
+
+        // Rotate camera
+        cameraPitch += Input.GetAxis("Mouse Y") * -2; // mouse Y input amount per frame (-1 to 1 in 0.05 steps)
+        cameraYaw = Input.GetAxis("Mouse X") * 2;
+        // Movement
+        inputDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        // Jumping
+        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+        {
+            rigidBody.AddForce(transform.up * 400f);
+            animator.SetTrigger("jump");
+        }
+    }
+    void CheckForGrounded()
+    {
+        RaycastHit hit;
+        Physics.Raycast(transform.position, Vector3.down, out hit);
+        if (hit.distance > 0.1f)
+        {
+            grounded = false;
+            animator.SetBool("grounded", false);
+        }
+        else
+        {
+            grounded = true;
+            animator.SetBool("grounded", true);
+        }
+    }
+
+    #endregion
 }
