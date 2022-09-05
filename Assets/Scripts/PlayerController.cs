@@ -138,8 +138,8 @@ public class PlayerController : MonoBehaviour
     void CheckForGrounded()
     {
         RaycastHit hit;
-        Physics.Raycast(transform.position, Vector3.down, out hit);
-        if (hit.distance > 0.1f)
+        Physics.Raycast(transform.position, -transform.up, out hit);
+        if (hit.distance > 0.2f)
         {
             grounded = false;
             animator.SetBool("grounded", false);
