@@ -28,19 +28,19 @@ public class Terrainface
 
     public void ConstructMesh()
     {
-        vertices = new Vector3[resolution * resolution];
-        triangles = new int[(resolution - 1) * (resolution - 1) * 6];
-        uv = new Vector2[resolution * resolution];
+        vertices = new Vector3[(resolution + 1) * (resolution + 1)];
+        triangles = new int[(resolution) * (resolution) * 6];
+        uv = new Vector2[(resolution + 1) * (resolution + 1)];
         int triIndex = 0;
 
         for (int y = 0; y < resolution; y++)
+
         {
             for (int x = 0; x < resolution; x++)
             {
                 int i = x + y * resolution;
                 Vector2 percent = new Vector2(x, y) / (resolution - 1);
                 Vector3 pointOnUnitCube = localUp + (percent.x - 0.5f) * 2 * axisA + (percent.y - 0.5f) * 2 * axisB;
-                //Vector3 pointOnUnitSphere = pointOnUnitCube.normalized;
                 Vector3 pointOnUnitSphere = PointOnCubeToPointOnSphere(pointOnUnitCube);
 
                 vertices[i] = shapeGenerator.CalculatePointOnPlanet(pointOnUnitSphere);
@@ -57,19 +57,19 @@ public class Terrainface
 
                     triIndex += 6;
 
-                    uv[i] = new Vector2(vertices[i].x, vertices[i].z);
+                    //uv[i] = new Vector2(vertices[i].x, vertices[i].z);
+
+                    uv[i] = new Vector2(x, y);
                 }
 
             }
         }
 
-        //FlatShading();
-
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uv;
-        
+
         mesh.RecalculateNormals();
     }
 
@@ -84,23 +84,5 @@ public class Terrainface
         float z = p.z * Mathf.Sqrt(1 - (x2 + y2) / 2 + (x2 * y2) / 3);
 
         return new Vector3(x, y, z);
-    }
-
-    void FlatShading()
-    {
-        // Duplicate vertices for each triangle to prevent smooth edges
-        Vector3[] flatShadedVertices = new Vector3[triangles.Length];
-        Vector2[] flatShadedUvs = new Vector2[triangles.Length];
-
-        for (int i = 0; i < triangles.Length; i++)
-        {
-            flatShadedVertices[i] = vertices[triangles[i]];
-            flatShadedUvs[i] = uv[triangles[i]];
-            triangles[i] = i;
-        }
-
-        vertices = flatShadedVertices;
-        uv = flatShadedUvs;
-
     }
 }
