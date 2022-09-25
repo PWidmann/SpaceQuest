@@ -21,7 +21,7 @@ public class RigidNoiseFilter : INoiseFilter
 
         for (int i = 0; i < settings.numLayers; i++)
         {
-            float v = 1-Mathf.Abs(noise.Evaluate(point * frequency + settings.centre)); // Rigid
+            float v = 1 - Mathf.Abs(noise.Evaluate(point * frequency + settings.centre)); // Rigid
             v *= v; // More rigid
             v *= weight;
             weight = Mathf.Clamp01(v * settings.weightMultiplier);

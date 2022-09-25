@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
+
 public class NoiseSettings
 {
     public enum FilterType { Simple, Rigid };
@@ -11,24 +11,30 @@ public class NoiseSettings
     public SimpleNoiseSettings simpleNoiseSettings;
     public RigidNoiseSettings rigidNoiseSettings;
 
-    [System.Serializable]
+
+    public NoiseSettings()
+    {
+        simpleNoiseSettings = new SimpleNoiseSettings();
+        rigidNoiseSettings = new RigidNoiseSettings();
+        filterType = FilterType.Simple;
+    }
     public class SimpleNoiseSettings
     {
-        public float strength = 1;
+        public float strength = 0.07f;
         [Range(1, 8)]
-        public int numLayers = 1;
-        public float baseRoughness = 1;
-        public float roughness = 2;
+        public int numLayers = 4;
+        public float baseRoughness = 1.21f;
+        public float roughness = 2.2f;
         public float persistence = 0.5f;
-        public Vector3 centre;
-        public float minValue;
+        public Vector3 centre = new Vector3(3.5f, 0, 0);
+        public float minValue = 0.74f;
     }
-    
+
     [System.Serializable]
     public class RigidNoiseSettings : SimpleNoiseSettings
     {
         public float weightMultiplier = 0.8f;
     }
 
-    
+
 }

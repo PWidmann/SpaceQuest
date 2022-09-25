@@ -5,12 +5,12 @@ using UnityEngine;
 public class Terrainface
 {
     ShapeGenerator shapeGenerator;
-    Mesh mesh;
+    public Mesh mesh;
     int resolution;
     Vector3 localUp;
     Vector3 axisA; // perpendicular to localUp
     Vector3 axisB; // perpendicular to localUp & perpendicular to axisA
-    
+
     private Vector3[] vertices;
     private int[] triangles;
     private Vector2[] uv;

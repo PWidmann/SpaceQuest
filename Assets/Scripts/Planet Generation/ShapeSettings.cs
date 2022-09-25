@@ -2,18 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
-public class ShapeSettings : ScriptableObject
+
+public class ShapeSettings
 {
     public float planetRadius = 1;
-    [NonReorderable]
-    public NoiseLayer[] noiseLayers;
+    public bool useFirstLayerAsMask = true;
+    public NoiseSettings noiseSettings;
 
-    [System.Serializable]
-    public class NoiseLayer
+    public ShapeSettings()
     {
-        public bool enabled = true;
-        public bool useFirstLayerAsMask;
-        public NoiseSettings noiseSettings;
+        noiseSettings = new NoiseSettings();
     }
 }

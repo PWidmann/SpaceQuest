@@ -100,8 +100,8 @@ public class PlayerController : MonoBehaviour
         cameraPitch = 20f;
         mySpeed = runSpeed;
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
     private void GetInput()
     {
@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        debugText.text = "Crouching: " + crouching + "\n" + "Grounded: " + grounded;
+        //debugText.text = "Crouching: " + crouching + "\n" + "Grounded: " + grounded;
 
         // Rotate camera
         cameraPitch += Input.GetAxis("Mouse Y") * -2; // mouse Y input amount per frame (-1 to 1 in 0.05 steps)
