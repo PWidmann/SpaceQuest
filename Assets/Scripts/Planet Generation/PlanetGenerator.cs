@@ -1,19 +1,30 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlanetGenerator : MonoBehaviour
 {
     #region member
 
-    [SerializeField] private bool autoGenerate;
-    [SerializeField] private Material desertMaterial;
-    [SerializeField] private Material greenMaterial;
-    [SerializeField] private Material iceMaterial;
+    [Header("General Settings")]
+    [SerializeField] private bool autoGenerateAndPlay;
+    [SerializeField] private bool combinePlanetFaces;
+
+    [Header("Planet Materials")]
+    [SerializeField] private Material[] surfaceMaterials;
 
     [Header("Player Prefab")]
     [SerializeField] private GameObject playerObject;
+
+    private GameObject planetObject;
+
+    float yaw;
+    float pitch;
+    float mouseSensitivity = 150f;
+
 
     #endregion
 
@@ -21,11 +32,25 @@ public class PlanetGenerator : MonoBehaviour
 
     private void Start()
     {
-        if (autoGenerate)
+        if (autoGenerateAndPlay)
         {
             GenerateNewPlanet();
             SpawnPlayer();
         }
+    }
+
+    private void Update()
+    {
+        GameObject player;
+        if (player = GameObject.FindGameObjectWithTag("Player"))
+        {
+
+        }
+        else
+        {
+            DebugPlanetRotation();
+        }
+        
     }
 
     #endregion
@@ -41,40 +66,105 @@ public class PlanetGenerator : MonoBehaviour
     }
     public void SpawnPlayer()
     {
+        if (IsFirstPlayerSpawn())
+            Destroy(Camera.main.gameObject);
+
         GameObject player = Instantiate(playerObject);
         player.name = "Player";
         player.tag = "Player";
         player.transform.position = new Vector3(0, 215f, 0);
-
-        Destroy(Camera.main.gameObject);
     }
 
     #endregion
 
     #region private Methods
+
+    private void DebugPlanetRotation()
+    {
+        if (planetObject != null && Input.GetMouseButton(1))
+        {
+            yaw += Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+            pitch += Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+            planetObject.transform.eulerAngles = new Vector3(-pitch, -yaw, 0);
+        }
+    }
+
+
     private void CreatePlanetObject()
     {
         Planet planet = new Planet();
 
         // Create planet GameObject
-        GameObject planetObject = new GameObject("Planet");
+        planetObject = new GameObject("Planet");
         planetObject.transform.position = Vector3.zero;
+        
+
         planetObject.AddComponent<GravityAttractor>();
         planetObject.tag = "Planet";
 
         // Add created planet face meshes to planet object, 6 sides
+
+        int rnd = UnityEngine.Random.Range(0, surfaceMaterials.Length);
+
         for (int i = 0; i < planet.faceMeshes.Length; i++)
         {
             GameObject planetFace = planet.faceMeshes[i];
             planetFace.transform.parent = planetObject.transform;
 
-            // Add material to planet face
-            planetFace.GetComponent<MeshRenderer>().sharedMaterial = desertMaterial;
+            // Add random material to planet face
+            planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterials[rnd];
+        }
+
+        if (combinePlanetFaces)
+        {
+            CombineFaceMeshes();
         }
     }
+
+    private void CombineFaceMeshes()
+    {
+        MeshFilter[] meshObjectsToCombine = planetObject.GetComponentsInChildren<MeshFilter>();
+        Material mat = planetObject.GetComponentInChildren<MeshRenderer>().material;
+        CombineInstance[] combine = new CombineInstance[meshObjectsToCombine.Length];
+
+        int i = 0;
+        while (i < meshObjectsToCombine.Length)
+        {
+            combine[i].mesh = meshObjectsToCombine[i].sharedMesh;
+            combine[i].transform = meshObjectsToCombine[i].transform.localToWorldMatrix;
+            meshObjectsToCombine[i].gameObject.SetActive(false);
+
+            i++;
+        }
+
+        planetObject.transform.AddComponent<MeshRenderer>().material = mat;
+        planetObject.transform.AddComponent<MeshFilter>().mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        planetObject.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
+        planetObject.transform.GetComponent<MeshFilter>().mesh.RecalculateNormals();
+        planetObject.transform.AddComponent<MeshCollider>().sharedMesh = planetObject.transform.GetComponent<MeshFilter>().mesh;
+    }
+
+
+
+    private bool IsFirstPlayerSpawn()
+    {
+        // If there is an old player, destroy it
+        GameObject player;
+        if (player = GameObject.FindGameObjectWithTag("Player"))
+        {
+            Destroy(player);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     private void DeleteOldPlanet()
     {
-        // If there is an old planet, destroy it and create a new one
+        // If there is an old planet, destroy it
         GameObject planet;
         if (planet = GameObject.Find("Planet"))
         {

@@ -18,9 +18,9 @@ public class GravityBody : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
-            
-
-        planet.Attract(transform);
+        if (planet != null)
+        {
+            planet.Attract(transform);
+        }
     }
 }

@@ -57,11 +57,12 @@ public class Terrainface
 
                     triIndex += 6;
 
-                    //uv[i] = new Vector2(vertices[i].x, vertices[i].z);
-
                     uv[i] = new Vector2(x, y);
                 }
-
+                else
+                {
+                    uv[i] = new Vector2(x, y);
+                }
             }
         }
 

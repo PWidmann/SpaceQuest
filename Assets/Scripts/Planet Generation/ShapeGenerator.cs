@@ -11,12 +11,10 @@ public class ShapeGenerator
     {
         this.settings = _shapeSettings;
         noiseFilters = new INoiseFilter[2];
-        
-        for (int i = 0; i < 2; i++)
-        {
-            noiseFilters[i] = NoiseFilterFactory.CreateNoiseFilter(settings.noiseSettings);
-        }
-    
+
+        noiseFilters[0] = NoiseFilterFactory.CreateNoiseFilter(settings.noiseSettingsL1);
+        noiseFilters[1] = NoiseFilterFactory.CreateNoiseFilter(settings.noiseSettingsL2);
+
     }
 
     public Vector3 CalculatePointOnPlanet(Vector3 _pointOnUnitSphere)
@@ -28,14 +26,17 @@ public class ShapeGenerator
         {
             firstLayerValue = noiseFilters[0].Evaluate(_pointOnUnitSphere);
             elevation = firstLayerValue;
+
+            float mask = (settings.useFirstLayerAsMask) ? firstLayerValue : 1;
+            elevation += noiseFilters[1].Evaluate(_pointOnUnitSphere) * mask;
         }
     
-        for (int i = 1; i < noiseFilters.Length; i++)
-        {
-            float mask = (settings.useFirstLayerAsMask) ? firstLayerValue : 1;
-            elevation += noiseFilters[i].Evaluate(_pointOnUnitSphere) * mask;
-
-        }
+        //for (int i = 1; i < noiseFilters.Length; i++)
+        //{
+        //    float mask = (settings.useFirstLayerAsMask) ? firstLayerValue : 1;
+        //    elevation += noiseFilters[i].Evaluate(_pointOnUnitSphere) * mask;
+        //
+        //}
     
         return _pointOnUnitSphere * settings.planetRadius * (1 + elevation);
     }

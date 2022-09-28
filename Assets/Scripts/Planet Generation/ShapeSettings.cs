@@ -7,10 +7,12 @@ public class ShapeSettings
 {
     public float planetRadius = 1;
     public bool useFirstLayerAsMask = true;
-    public NoiseSettings noiseSettings;
+    public NoiseSettings noiseSettingsL1;
+    public NoiseSettings noiseSettingsL2;
 
     public ShapeSettings()
     {
-        noiseSettings = new NoiseSettings();
+        noiseSettingsL1 = new NoiseSettings();
+        noiseSettingsL2 = new NoiseSettings();
     }
 }

@@ -10,7 +10,7 @@ public class NoiseSettings
 
     public SimpleNoiseSettings simpleNoiseSettings;
     public RigidNoiseSettings rigidNoiseSettings;
-
+    public bool useFirstLayerAsMask = false;
 
     public NoiseSettings()
     {
@@ -26,7 +26,7 @@ public class NoiseSettings
         public float baseRoughness = 1.21f;
         public float roughness = 2.2f;
         public float persistence = 0.5f;
-        public Vector3 centre = new Vector3(3.5f, 0, 0);
+        public Vector3 centre = new Vector3(0, 0, 0);
         public float minValue = 0.74f;
     }
 
