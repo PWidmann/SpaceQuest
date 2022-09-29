@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PlanetGeneratorScene.unity
     guid: 3b910a5cdc7b2c040b8348adda9f43e5
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 14447741c1af70148817dc4d91f82406
   m_configObjects: {}

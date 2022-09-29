@@ -64,7 +64,7 @@ public class SplashScreen : MonoBehaviour
 
                 if (opacity <= 0)
                 {
-                    SceneManager.LoadScene("PlanetScene");
+                    SceneManager.LoadScene("MainMenu");
                 }
             }
         }
