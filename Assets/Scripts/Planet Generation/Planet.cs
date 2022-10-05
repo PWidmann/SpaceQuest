@@ -20,7 +20,6 @@ public class Planet
     private Material planetMaterial;
     private int planetFaceResolution = 256;
     private MeshFilter[] meshFilters;
-    private Mesh planetMesh;
     private Terrainface[] terrainFaces;
     private ShapeGenerator shapeGenerator;
     private ShapeSettings shapeSettings;
@@ -46,12 +45,9 @@ public class Planet
         //SetShapeSettings();
         SetRandomShapeSettings();
 
+        
         shapeGenerator = new ShapeGenerator(shapeSettings);
-
-        // Make planet mesh support 4 billion vertices
-        planetMesh = new Mesh();
-        planetMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-
+        
         meshFilters = new MeshFilter[6];
         terrainFaces = new Terrainface[6];
         faceMeshes = new GameObject[6];
@@ -82,17 +78,18 @@ public class Planet
     {
         // Layer 1 | Mask Layer
         shapeSettings.planetRadius = 200;
-        shapeSettings.noiseSettingsL1.useFirstLayerAsMask = true;
+        shapeSettings.noiseSettingsL1.filterType = NoiseSettings.FilterType.Simple;
+        shapeSettings.noiseSettingsL1.useFirstLayerAsMask = false;
 
-        shapeSettings.noiseSettingsL1.rigidNoiseSettings.strength = UnityEngine.Random.Range(0.05f, 0.12f);
-        shapeSettings.noiseSettingsL1.rigidNoiseSettings.numLayers = UnityEngine.Random.Range(4, 6);
-        shapeSettings.noiseSettingsL1.rigidNoiseSettings.baseRoughness = UnityEngine.Random.Range(0.7f, 1.63f);
-        shapeSettings.noiseSettingsL1.rigidNoiseSettings.roughness = UnityEngine.Random.Range(0.5f, 2.0f);
-        shapeSettings.noiseSettingsL1.rigidNoiseSettings.persistence = 0.5f;
-        shapeSettings.noiseSettingsL1.rigidNoiseSettings.minValue = 0.6f;
+        //shapeSettings.noiseSettingsL1.simpleNoiseSettings.strength = UnityEngine.Random.Range(0.08f, 0.12f);
+        //shapeSettings.noiseSettingsL1.simpleNoiseSettings.numLayers = UnityEngine.Random.Range(4, 6);
+        //shapeSettings.noiseSettingsL1.simpleNoiseSettings.baseRoughness = UnityEngine.Random.Range(1f, 1.63f);
+        //shapeSettings.noiseSettingsL1.simpleNoiseSettings.roughness = UnityEngine.Random.Range(0.8f, 2.0f);
+        //shapeSettings.noiseSettingsL1.simpleNoiseSettings.persistence = 0.5f;
+        //shapeSettings.noiseSettingsL1.simpleNoiseSettings.minValue = 0.6f;
         float rnd = UnityEngine.Random.Range(0f, 2f);
-        shapeSettings.noiseSettingsL1.rigidNoiseSettings.centre = new Vector3(rnd, rnd, rnd);
-        Debug.Log("RND for layer 1: " + rnd);
+        shapeSettings.noiseSettingsL1.simpleNoiseSettings.centre = new Vector3(rnd, rnd, rnd);
+        
 
 
 
@@ -100,16 +97,16 @@ public class Planet
         shapeSettings.noiseSettingsL2.filterType = NoiseSettings.FilterType.Rigid;
         shapeSettings.noiseSettingsL2.useFirstLayerAsMask = true;
 
-        shapeSettings.noiseSettingsL2.rigidNoiseSettings.strength = UnityEngine.Random.Range(0.5f, 2.0f);
+        shapeSettings.noiseSettingsL2.rigidNoiseSettings.strength = UnityEngine.Random.Range(0.5f, 1.5f);
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.numLayers = UnityEngine.Random.Range(4, 6);
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.baseRoughness = UnityEngine.Random.Range(1f, 1.7f);
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.roughness = UnityEngine.Random.Range(-3f, 3f);
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.persistence = 0.5f;
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.minValue = 0.6f;
-        shapeSettings.noiseSettingsL2.rigidNoiseSettings.weightMultiplier = 0.6f;
+        shapeSettings.noiseSettingsL2.rigidNoiseSettings.weightMultiplier = 0.8f;
         float rnd2 = UnityEngine.Random.Range(0f, 2f);
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.centre = new Vector3(rnd2, rnd2, rnd2);
-        Debug.Log("RND for layer 2: " + rnd2);
+        
     }
 
     private void CreateMeshObjects()
@@ -138,10 +135,12 @@ public class Planet
 
     private void GenerateMesh()
     {
+        Debug.Log("Before GenerateMesh: " + DateTime.Now.Second + "," + DateTime.Now.Millisecond);
         foreach (Terrainface face in terrainFaces)
         {
             face.ConstructMesh();
-        }    
+        }
+        Debug.Log("After GenerateMesh: " + DateTime.Now.Second + "," + DateTime.Now.Millisecond);
     }
 }
 

@@ -34,7 +34,6 @@ public class Terrainface
         int triIndex = 0;
 
         for (int y = 0; y < resolution; y++)
-
         {
             for (int x = 0; x < resolution; x++)
             {
@@ -70,7 +69,6 @@ public class Terrainface
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uv;
-
         mesh.RecalculateNormals();
     }
 

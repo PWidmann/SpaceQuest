@@ -20,6 +20,7 @@ public class PlanetGenerator : MonoBehaviour
     [SerializeField] private GameObject playerObject;
 
     private GameObject planetObject;
+    private long timerMS = 0;
 
     float yaw;
     float pitch;
@@ -93,7 +94,11 @@ public class PlanetGenerator : MonoBehaviour
 
     private void CreatePlanetObject()
     {
+        
+        
         Planet planet = new Planet();
+        
+        
 
         // Create planet GameObject
         planetObject = new GameObject("Planet");
@@ -106,7 +111,7 @@ public class PlanetGenerator : MonoBehaviour
         // Add created planet face meshes to planet object, 6 sides
 
         int rnd = UnityEngine.Random.Range(0, surfaceMaterials.Length);
-
+        
         for (int i = 0; i < planet.faceMeshes.Length; i++)
         {
             GameObject planetFace = planet.faceMeshes[i];
@@ -115,10 +120,13 @@ public class PlanetGenerator : MonoBehaviour
             // Add random material to planet face
             planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterials[rnd];
         }
+        
 
         if (combinePlanetFaces)
         {
+            
             CombineFaceMeshes();
+            
         }
     }
 
@@ -141,7 +149,7 @@ public class PlanetGenerator : MonoBehaviour
         planetObject.transform.AddComponent<MeshRenderer>().material = mat;
         planetObject.transform.AddComponent<MeshFilter>().mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         planetObject.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
-        planetObject.transform.GetComponent<MeshFilter>().mesh.RecalculateNormals();
+        //planetObject.transform.GetComponent<MeshFilter>().mesh.RecalculateNormals();
         planetObject.transform.AddComponent<MeshCollider>().sharedMesh = planetObject.transform.GetComponent<MeshFilter>().mesh;
     }
 
