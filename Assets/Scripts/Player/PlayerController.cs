@@ -100,8 +100,8 @@ public class PlayerController : MonoBehaviour
         cameraPitch = 20f;
         mySpeed = runSpeed;
 
-        //Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
     private void GetInput()
     {

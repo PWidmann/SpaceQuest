@@ -65,10 +65,14 @@ public class Terrainface
             }
         }
 
+        
+
+
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uv;
+
         mesh.RecalculateNormals();
     }
 
@@ -84,4 +88,6 @@ public class Terrainface
 
         return new Vector3(x, y, z);
     }
+
+    
 }

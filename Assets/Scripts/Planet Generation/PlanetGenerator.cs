@@ -14,7 +14,7 @@ public class PlanetGenerator : MonoBehaviour
     [SerializeField] private bool combinePlanetFaces;
 
     [Header("Planet Materials")]
-    [SerializeField] private Material[] surfaceMaterials;
+    [SerializeField] private Material surfaceMaterial;
 
     [Header("Player Prefab")]
     [SerializeField] private GameObject playerObject;
@@ -110,15 +110,14 @@ public class PlanetGenerator : MonoBehaviour
 
         // Add created planet face meshes to planet object, 6 sides
 
-        int rnd = UnityEngine.Random.Range(0, surfaceMaterials.Length);
-        
+
         for (int i = 0; i < planet.faceMeshes.Length; i++)
         {
             GameObject planetFace = planet.faceMeshes[i];
             planetFace.transform.parent = planetObject.transform;
 
             // Add random material to planet face
-            planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterials[rnd];
+            planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;
         }
         
 
