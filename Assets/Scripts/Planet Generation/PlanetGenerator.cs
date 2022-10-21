@@ -19,8 +19,10 @@ public class PlanetGenerator : MonoBehaviour
     [Header("Player Prefab")]
     [SerializeField] private GameObject playerObject;
 
+    [SerializeField] private GameObject generatorPanel;
+
     private GameObject planetObject;
-    private long timerMS = 0;
+    
 
     float yaw;
     float pitch;
@@ -73,7 +75,9 @@ public class PlanetGenerator : MonoBehaviour
         GameObject player = Instantiate(playerObject);
         player.name = "Player";
         player.tag = "Player";
-        player.transform.position = new Vector3(0, 215f, 0);
+        player.transform.position = new Vector3(0, 225f, 0);
+
+        generatorPanel.SetActive(false);
     }
 
     #endregion
@@ -123,9 +127,7 @@ public class PlanetGenerator : MonoBehaviour
 
         if (combinePlanetFaces)
         {
-            
-            CombineFaceMeshes();
-            
+            CombineFaceMeshes();   
         }
     }
 

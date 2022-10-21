@@ -23,11 +23,12 @@ public class NoiseSettings
         public float strength = 0.07f;
         [Range(1, 8)]
         public int numLayers = 4;
-        public float baseRoughness = 1.21f;
+        public float baseRoughness = 0.8f;
         public float roughness = 2.2f;
         public float persistence = 0.5f;
-        public Vector3 centre = new Vector3(0, 0, 0);
-        public float minValue = 0.74f;
+        public Vector3 centre = new Vector3(0.8f, 0.2f, 0);
+        public float minValue = 0.7f;
+        // minvalue 0.3 = no water, 0,7 water
     }
 
     [System.Serializable]

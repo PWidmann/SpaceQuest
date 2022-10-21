@@ -1271,6 +1271,7 @@ MonoBehaviour:
   surfaceMaterial: {fileID: 2100000, guid: 75b0adc5435e4b749b639c1a1c316bde, type: 2}
   playerObject: {fileID: 6390500506720178337, guid: e2f7582675c83344fad1dfec7e9b137f,
     type: 3}
+  generatorPanel: {fileID: 742495987}
 --- !u!4 &822008781
 Transform:
   m_ObjectHideFlags: 0
