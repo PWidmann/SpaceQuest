@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -106,6 +107,7 @@ public class PlanetGenerator : MonoBehaviour
 
         // Create planet GameObject
         planetObject = new GameObject("Planet");
+        planetObject.tag = "Planet";
         planetObject.transform.position = Vector3.zero;
         
 
@@ -118,6 +120,9 @@ public class PlanetGenerator : MonoBehaviour
         for (int i = 0; i < planet.faceMeshes.Length; i++)
         {
             GameObject planetFace = planet.faceMeshes[i];
+            int layer = LayerMask.NameToLayer("PlanetGround");
+            planetFace.layer = layer;
+
             planetFace.transform.parent = planetObject.transform;
 
             // Add random material to planet face

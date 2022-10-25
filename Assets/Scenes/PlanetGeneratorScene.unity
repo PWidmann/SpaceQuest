@@ -1266,7 +1266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68c2954cf27bc34c8447e221ab066f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoGenerateAndPlay: 0
+  autoGenerateAndPlay: 1
   combinePlanetFaces: 0
   surfaceMaterial: {fileID: 2100000, guid: 75b0adc5435e4b749b639c1a1c316bde, type: 2}
   playerObject: {fileID: 6390500506720178337, guid: e2f7582675c83344fad1dfec7e9b137f,

@@ -91,19 +91,19 @@ public class Planet
         shapeSettings.noiseSettingsL2.useFirstLayerAsMask = true;
 
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.strength = UnityEngine.Random.Range(1.0f, 2f);
-        Debug.Log("strength: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.strength);
+        //Debug.Log("strength: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.strength);
 
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.baseRoughness = UnityEngine.Random.Range(1f, 2f);
-        Debug.Log("base roughness: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.baseRoughness);
+        //Debug.Log("base roughness: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.baseRoughness);
 
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.roughness = UnityEngine.Random.Range(1.2f, 1.8f);
-        Debug.Log("roughness: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.roughness);
+        //Debug.Log("roughness: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.roughness);
 
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.minValue = UnityEngine.Random.Range(0.1f, 1.1f);
-        Debug.Log("minvalue: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.minValue);
+        //Debug.Log("minvalue: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.minValue);
 
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.weightMultiplier = UnityEngine.Random.Range(0.9f, 1.5f);
-        Debug.Log("weightMultiplier: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.weightMultiplier);
+        //Debug.Log("weightMultiplier: " + shapeSettings.noiseSettingsL2.rigidNoiseSettings.weightMultiplier);
 
         float rnd2 = UnityEngine.Random.Range(0f, 50f);
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.centre = new Vector3(rnd2, rnd2, rnd2);

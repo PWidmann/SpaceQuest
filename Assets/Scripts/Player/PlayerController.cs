@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,9 +10,19 @@ public class PlayerController : MonoBehaviour
     #region Members
 
     [SerializeField] private Text debugText;
+    [SerializeField] private new Camera camera;
+    [SerializeField] private GameObject cameraArm;
+    [SerializeField] private GameObject rifle;
+    [SerializeField] private GameObject pointerObjectPrefab;
+    [SerializeField] GameObject chest; // For rotating aiming animation
+    [SerializeField] Transform gunEndPoint;
+    [SerializeField] GameObject laserBeamPrefab;
 
+    private GameObject pointerObject;
+    private Vector3 aimPoint;
 
     private Animator animator;
+    private Rigidbody rigidBody;
     private CharacterController controller;
 
     // Movement
@@ -32,15 +43,20 @@ public class PlayerController : MonoBehaviour
 
     // Animation
     private float speedPercent;
-
-    private Rigidbody rigidBody;
+    
 
     // Camera
     private Vector2 cameraPitchClamp;
     private float cameraYaw;
     private float cameraPitch;
 
-    private Transform cameraArm;
+
+    // Body aiming
+    private Vector3 aimRotOffset = new Vector3(2f, 0, 0); // Best compromise of far and near target aiming rotation
+    private Quaternion aimRotation;
+    private RaycastHit hit;
+    private Vector3 target;
+    
 
     #endregion
 
@@ -49,6 +65,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         InitializePlayerController();
+
+        
     }
 
     private void Update()
@@ -56,22 +74,22 @@ public class PlayerController : MonoBehaviour
         CheckForGrounded();
         GetInput();
 
-        targetSpeed = mySpeed * inputDir.magnitude;
-        currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedSmoothVelocity, speedSmoothTime);
-        
-        if (currentSpeed < 0.05f)
-            currentSpeed = 0;
+        AnimationHandling();
 
-        // Animation handling
-        animationSpeedPercent = currentSpeed / mySpeed;       
-        animator.SetFloat("xAxis", inputDir.x);
-        animator.SetFloat("zAxis", inputDir.y);
-        animator.SetFloat("speedPercent", animationSpeedPercent);
+        Shooting();
 
-        // Rotate character yaw with mouse X input
-        transform.Rotate(new Vector3(0, cameraYaw, 0));
-        
-        
+    }
+
+    private void Shooting()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
+            beam.transform.LookAt(target);
+            beam.GetComponent<LaserBeam>().direction = pointerObject.transform.position - gunEndPoint.position;
+        }
+
+        Debug.DrawLine(gunEndPoint.position, target, Color.red, 0.5f);
     }
 
     private void FixedUpdate()
@@ -79,12 +97,15 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = transform.forward * inputDir.y + transform.right * inputDir.x;
         moveDirection.Normalize();
         rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
+
     }
 
     private void LateUpdate()
     {
         cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
-        cameraArm.localRotation = Quaternion.Euler(cameraPitch, 0, 0);
+        cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0);
+
+        CreateAimPoint();
     }
 
     #endregion
@@ -95,13 +116,15 @@ public class PlayerController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
-        cameraArm = transform.GetChild(3);
         cameraPitchClamp = new Vector2(-50f, 70f); // cameraArm X rotation clamp
         cameraPitch = 20f;
         mySpeed = runSpeed;
+        
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        aimPoint = new Vector3();
     }
     private void GetInput()
     {
@@ -149,6 +172,48 @@ public class PlayerController : MonoBehaviour
             grounded = true;
             animator.SetBool("grounded", true);
         }
+    }
+    private void AnimationHandling()
+    {
+        targetSpeed = mySpeed * inputDir.magnitude;
+        currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedSmoothVelocity, speedSmoothTime);
+
+        if (currentSpeed < 0.05f)
+            currentSpeed = 0;
+
+        // Animation handling
+        animationSpeedPercent = currentSpeed / mySpeed;
+        animator.SetFloat("xAxis", inputDir.x);
+        animator.SetFloat("zAxis", inputDir.y);
+        animator.SetFloat("speedPercent", animationSpeedPercent);
+
+        // Rotate character yaw with mouse X input
+        transform.Rotate(new Vector3(0, cameraYaw, 0));
+    }
+    void CreateAimPoint()
+    {
+        Ray ray = new Ray(camera.transform.position, camera.transform.forward);
+        
+
+        if (pointerObject == null)
+            pointerObject = Instantiate(pointerObjectPrefab);
+
+        int ground = 1 << LayerMask.NameToLayer("PlanetGround");
+
+        if (Physics.Raycast(ray, out hit, maxDistance: 300f, ground))
+        {
+            target = hit.point;
+            Debug.Log("hit ground");
+            aimPoint = target;
+            pointerObject.transform.position = aimPoint;
+            rifle.transform.LookAt(target);
+        }
+        
+
+        //Vector3 direction = aimPoint - rifle.transform.position;
+
+        aimRotation = chest.transform.rotation * Quaternion.Euler(cameraPitch * 0.7f, 0, 0);
+        chest.transform.rotation = aimRotation;
     }
 
     #endregion
