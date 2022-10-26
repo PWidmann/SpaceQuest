@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +19,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject laserBeamPrefab;
 
     private GameObject pointerObject;
-    private Vector3 aimPoint;
 
     private Animator animator;
     private Rigidbody rigidBody;
@@ -138,8 +136,6 @@ public class PlayerController : MonoBehaviour
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
-        aimPoint = new Vector3();
     }
     private void GetInput()
     {

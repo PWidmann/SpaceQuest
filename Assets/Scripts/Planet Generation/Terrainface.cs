@@ -15,6 +15,12 @@ public class Terrainface
     private int[] triangles;
     private Vector2[] uv;
 
+    private float minHeightValue;
+    private float maxHeightValue;
+
+    public float MinHeightValue { get => minHeightValue; }
+    public float MaxHeightValue { get => maxHeightValue; }
+
     public Terrainface(ShapeGenerator _shapeGenerator, Mesh _mesh, int _resolution, Vector3 _localUp)
     {
         this.shapeGenerator = _shapeGenerator;
@@ -24,9 +30,10 @@ public class Terrainface
 
         axisA = new Vector3(localUp.y, localUp.z, localUp.x);
         axisB = Vector3.Cross(localUp, axisA);
+        minHeightValue = 300f; // Planet is usually around radius 200-240
     }
 
-    public void ConstructMesh()
+    public void GenerateMeshData()
     {
         vertices = new Vector3[(resolution + 1) * (resolution + 1)];
         triangles = new int[(resolution) * (resolution) * 6];
@@ -43,6 +50,16 @@ public class Terrainface
                 Vector3 pointOnUnitSphere = PointOnCubeToPointOnSphere(pointOnUnitCube);
 
                 vertices[i] = shapeGenerator.CalculatePointOnPlanet(pointOnUnitSphere);
+
+                // Set min and max terrain height value
+                if (Vector3.Distance(Vector3.zero, vertices[i]) < minHeightValue)
+                {
+                    minHeightValue = Vector3.Distance(Vector3.zero, vertices[i]);
+                }
+                if (Vector3.Distance(Vector3.zero, vertices[i]) > maxHeightValue)
+                {
+                    maxHeightValue = Vector3.Distance(Vector3.zero, vertices[i]);
+                }
 
                 if (x != resolution - 1 && y != resolution - 1)
                 {
@@ -64,9 +81,6 @@ public class Terrainface
                 }
             }
         }
-
-        
-
 
         mesh.Clear();
         mesh.vertices = vertices;

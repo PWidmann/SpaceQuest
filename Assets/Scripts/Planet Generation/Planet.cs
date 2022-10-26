@@ -14,6 +14,8 @@ public class Planet
     #region Members
 
     public GameObject[] faceMeshes;
+    private float minHeightValue = 300;
+    private float maxHeightValue = 0;
 
     private PlanetType planetType;
     //private int seed = 1337;
@@ -23,7 +25,10 @@ public class Planet
     private Terrainface[] terrainFaces;
     private ShapeGenerator shapeGenerator;
     private ShapeSettings shapeSettings;
-    
+
+    public float MinHeightValue { get => minHeightValue; }
+    public float MaxHeightValue { get => maxHeightValue; }
+
 
     #endregion
 
@@ -35,8 +40,10 @@ public class Planet
     public void GeneratePlanet()
     {
         Initialize();
+        
         CreateMeshObjects();
-        GenerateMesh();
+        GenerateMeshData();
+        SetMinMaxHeight();
     }
 
     private void Initialize()
@@ -52,27 +59,6 @@ public class Planet
         faceMeshes = new GameObject[6];
     }
 
-    private void SetShapeSettings()
-    {
-        // "Normal" settings with light mountains
-        // 
-        // Layer 1 | Mask Layer
-        shapeSettings.planetRadius = 200;
-        shapeSettings.noiseSettingsL1.useFirstLayerAsMask = false;
-
-        // Layer 2 
-        shapeSettings.noiseSettingsL2.filterType = NoiseSettings.FilterType.Rigid;
-        shapeSettings.noiseSettingsL2.useFirstLayerAsMask = true;
-        shapeSettings.noiseSettingsL2.rigidNoiseSettings.strength = 3.05f;
-        shapeSettings.noiseSettingsL2.rigidNoiseSettings.numLayers = 5;
-        shapeSettings.noiseSettingsL2.rigidNoiseSettings.baseRoughness = 1.71f;
-        shapeSettings.noiseSettingsL2.rigidNoiseSettings.roughness = -0.34f;
-        shapeSettings.noiseSettingsL2.rigidNoiseSettings.persistence = 0.5f;
-        shapeSettings.noiseSettingsL2.rigidNoiseSettings.minValue = 0.6f;
-        shapeSettings.noiseSettingsL2.rigidNoiseSettings.weightMultiplier = 0.5f;
-
-    }
-
     private void SetRandomShapeSettings()
     {
         // Layer 1 | Mask Layer
@@ -82,9 +68,6 @@ public class Planet
 
         float rnd = UnityEngine.Random.Range(0f, 2f);
         shapeSettings.noiseSettingsL1.simpleNoiseSettings.centre = new Vector3(rnd, rnd, rnd);
-        
-
-
 
         // Layer 2 
         shapeSettings.noiseSettingsL2.filterType = NoiseSettings.FilterType.Rigid;
@@ -134,14 +117,28 @@ public class Planet
         }
     }
 
-    private void GenerateMesh()
+    private void SetMinMaxHeight()
     {
-        //Debug.Log("Before GenerateMesh: " + DateTime.Now.Second + "," + DateTime.Now.Millisecond);
         foreach (Terrainface face in terrainFaces)
         {
-            face.ConstructMesh();
+            // Set min terrain height
+            if (face.MinHeightValue < minHeightValue)
+                minHeightValue = face.MinHeightValue;
+            // Set max terrain height
+            if (face.MaxHeightValue > MaxHeightValue)
+                maxHeightValue = face.MaxHeightValue;
         }
-        //Debug.Log("After GenerateMesh: " + DateTime.Now.Second + "," + DateTime.Now.Millisecond);
+
+        Debug.Log("Min Height: " + minHeightValue);
+        Debug.Log("Max Height: " + maxHeightValue);
+    }
+
+    private void GenerateMeshData()
+    {
+        foreach (Terrainface face in terrainFaces)
+        {
+            face.GenerateMeshData();
+        }
     }
 }
 

@@ -22,8 +22,13 @@ public class PlanetGenerator : MonoBehaviour
 
     [SerializeField] private GameObject generatorPanel;
 
+    [Header("Planet Surface")]
+    [SerializeField] Gradient gradient;
+    [SerializeField] Texture2D texture;
+    [SerializeField] int textureResolution = 50;
+
     private GameObject planetObject;
-    
+    private Planet planet;
 
     float yaw;
     float pitch;
@@ -63,11 +68,30 @@ public class PlanetGenerator : MonoBehaviour
 
     public void GenerateNewPlanet()
     {
+        texture = new Texture2D(textureResolution, 1);
+
         DeleteOldPlanet();
         CreatePlanetObject();
+        UpdateColors();
 
         Debug.Log("Generated New Planet");
+
     }
+
+    public void UpdateColors()
+    {
+        Color[] colors = new Color[textureResolution];
+        for (int i = 0; i < textureResolution; i++)
+        {
+            colors[i] = gradient.Evaluate(i / (textureResolution - 1f));
+        }
+        texture.SetPixels(colors);
+        texture.Apply();
+        surfaceMaterial.SetTexture("_Texture", texture);
+        surfaceMaterial.SetVector("_ElevationMinMax", new Vector2(planet.MinHeightValue, planet.MaxHeightValue));
+        
+    }
+
     public void SpawnPlayer()
     {
         if (IsFirstPlayerSpawn())
@@ -99,11 +123,7 @@ public class PlanetGenerator : MonoBehaviour
 
     private void CreatePlanetObject()
     {
-        
-        
-        Planet planet = new Planet();
-        
-        
+        planet = new Planet();  
 
         // Create planet GameObject
         planetObject = new GameObject("Planet");
