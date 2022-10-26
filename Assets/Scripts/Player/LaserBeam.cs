@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class LaserBeam : MonoBehaviour
 {
-    private float speed = 16f;
-    private float maxLifeTime = 5f;
+    private float speed = 30f;
+    private float maxLifeTime = 3f;
 
     void FixedUpdate()
     {

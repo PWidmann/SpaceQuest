@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,8 +57,10 @@ public class PlayerController : MonoBehaviour
     private Quaternion aimRotation;
     private RaycastHit hit;
     private Vector3 target;
-    
 
+    // Shooting
+    private float autoShootRate = 0.2f;
+    private float shootTimer = 0f;
     #endregion
 
     #region UnityMethods
@@ -84,14 +87,22 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 towards = target - gunEndPoint.position;
             GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
             beam.transform.LookAt(target);
-            
-            
+            shootTimer = 0;
         }
 
-        Debug.DrawLine(gunEndPoint.position, target, Color.red, 0.5f);
+        if (Input.GetMouseButton(0))
+        {
+            shootTimer += Time.deltaTime;
+
+            if (shootTimer > autoShootRate)
+            {
+                GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
+                beam.transform.LookAt(target);
+                shootTimer = 0;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -108,6 +119,8 @@ public class PlayerController : MonoBehaviour
         cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0);
 
         CreateAimPoint();
+
+        
     }
 
     #endregion
@@ -118,7 +131,7 @@ public class PlayerController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
-        cameraPitchClamp = new Vector2(-50f, 70f); // cameraArm X rotation clamp
+        cameraPitchClamp = new Vector2(-50f, 50f); // cameraArm X rotation clamp
         cameraPitch = 20f;
         mySpeed = runSpeed;
         
@@ -197,29 +210,33 @@ public class PlayerController : MonoBehaviour
         Ray ray = new Ray(camera.transform.position, camera.transform.forward);
         
 
-        if (pointerObject == null)
-            pointerObject = Instantiate(pointerObjectPrefab);
+        
 
         int ground = 1 << LayerMask.NameToLayer("PlanetGround");
 
-        //Vector3 direction = aimPoint - rifle.transform.position;
 
-        aimRotation = chest.transform.rotation * Quaternion.Euler(cameraPitch * 0.7f, 0, 0);
+        aimRotation = chest.transform.rotation * Quaternion.Euler(cameraPitch * 0.5f, 0, 0);
         chest.transform.rotation = aimRotation;
+
+        // Lift / lower the rifle height based on aim height
+        rifle.transform.localPosition = new Vector3(rifle.transform.localPosition.x, -cameraPitch / 400, rifle.transform.localPosition.z);
+
 
         if (Physics.Raycast(ray, out hit, maxDistance: 300f, ground))
         {
             target = hit.point;
-            Debug.Log("hit ground");
-            aimPoint = target;
-            pointerObject.transform.position = aimPoint;
-            rifle.transform.LookAt(target);
+
+            //if (pointerObject == null)
+            //    pointerObject = Instantiate(pointerObjectPrefab);
+            //pointerObject.transform.position = target;
         }
         else
         {
-            target = camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 100f));
-            rifle.transform.LookAt(target);
+            target = camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));  
         }
+        rifle.transform.LookAt(target, transform.up);
+
+        Debug.DrawLine(gunEndPoint.position, target, Color.red, 0.2f);
     }
 
     #endregion
