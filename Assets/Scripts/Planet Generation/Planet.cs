@@ -7,6 +7,14 @@ using UnityEngine;
 public enum PlanetType { Desert, Green, Ice }
 public enum PlanetWeather { Clear, Cloudy, Storm, Foggy}
 public enum PlanetShape { Flat, BigMountain}
+
+[System.Serializable]
+public struct PlanetSurfaceCurves
+{
+    public AnimationCurve animCurve;
+    public Gradient colorGradient;
+}
+
 #endregion
 
 public class Planet

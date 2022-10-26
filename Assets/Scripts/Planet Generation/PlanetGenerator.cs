@@ -24,6 +24,7 @@ public class PlanetGenerator : MonoBehaviour
 
     [Header("Planet Surface")]
     [SerializeField] Gradient gradient;
+    [SerializeField] AnimationCurve animCurve;
     [SerializeField] Texture2D texture;
     [SerializeField] int textureResolution = 50;
 

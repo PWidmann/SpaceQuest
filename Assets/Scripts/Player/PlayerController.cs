@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
@@ -17,6 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject chest; // For rotating aiming animation
     [SerializeField] Transform gunEndPoint;
     [SerializeField] GameObject laserBeamPrefab;
+    [SerializeField] GameObject flashLightGO;
+    
 
     private GameObject pointerObject;
 
@@ -59,6 +62,8 @@ public class PlayerController : MonoBehaviour
     // Shooting
     private float autoShootRate = 0.2f;
     private float shootTimer = 0f;
+
+    private bool flashLight = false;
     #endregion
 
     #region UnityMethods
@@ -154,6 +159,13 @@ public class PlayerController : MonoBehaviour
                 mySpeed = runSpeed;
             }
         }
+
+        // Flashlight
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            flashLight = !flashLight;
+        }
+        flashLightGO.SetActive(flashLight);
 
         //debugText.text = "Crouching: " + crouching + "\n" + "Grounded: " + grounded;
 
