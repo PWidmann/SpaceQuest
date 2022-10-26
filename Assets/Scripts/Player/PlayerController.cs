@@ -84,9 +84,11 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            Vector3 towards = target - gunEndPoint.position;
             GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
             beam.transform.LookAt(target);
-            beam.GetComponent<LaserBeam>().direction = pointerObject.transform.position - gunEndPoint.position;
+            
+            
         }
 
         Debug.DrawLine(gunEndPoint.position, target, Color.red, 0.5f);
@@ -200,6 +202,11 @@ public class PlayerController : MonoBehaviour
 
         int ground = 1 << LayerMask.NameToLayer("PlanetGround");
 
+        //Vector3 direction = aimPoint - rifle.transform.position;
+
+        aimRotation = chest.transform.rotation * Quaternion.Euler(cameraPitch * 0.7f, 0, 0);
+        chest.transform.rotation = aimRotation;
+
         if (Physics.Raycast(ray, out hit, maxDistance: 300f, ground))
         {
             target = hit.point;
@@ -208,12 +215,11 @@ public class PlayerController : MonoBehaviour
             pointerObject.transform.position = aimPoint;
             rifle.transform.LookAt(target);
         }
-        
-
-        //Vector3 direction = aimPoint - rifle.transform.position;
-
-        aimRotation = chest.transform.rotation * Quaternion.Euler(cameraPitch * 0.7f, 0, 0);
-        chest.transform.rotation = aimRotation;
+        else
+        {
+            target = camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 100f));
+            rifle.transform.LookAt(target);
+        }
     }
 
     #endregion

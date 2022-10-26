@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class LaserBeam : MonoBehaviour
 {
-    private float speed = 2f;
-    public Vector3 direction = new Vector3(0,0,0);
+    private float speed = 16f;
+    private float maxLifeTime = 5f;
 
-    void Update()
+    void FixedUpdate()
     {
-        transform.Translate(direction * Time.deltaTime * speed);
+        maxLifeTime -= Time.fixedDeltaTime;
+
+        if (maxLifeTime < 0)
+        {
+            Destroy(gameObject);
+        }
+
+        transform.Translate(0, 0, speed * Time.fixedDeltaTime);
         
     }
 }

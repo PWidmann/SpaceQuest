@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6225519051899567631}
   - component: {fileID: 647070153770218760}
-  m_Layer: 0
+  - component: {fileID: 9074042107894931666}
+  m_Layer: 7
   m_Name: LaserBeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,6 +46,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7daec307ed69c7942bb9182cacf6f9f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &9074042107894931666
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669887147069142599}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.12
+  m_Height: 2.58
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4923829122017951826
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +71,7 @@ GameObject:
   - component: {fileID: 34014173686008808}
   - component: {fileID: 1222427026863056059}
   - component: {fileID: 4179852763693264914}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
