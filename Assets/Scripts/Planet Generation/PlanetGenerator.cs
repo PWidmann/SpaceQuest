@@ -17,8 +17,9 @@ public class PlanetGenerator : MonoBehaviour
     [Header("Planet Materials")]
     [SerializeField] private Material surfaceMaterial;
 
-    [Header("Player Prefab")]
+    [Header("Prefabs")]
     [SerializeField] private GameObject playerObject;
+    [SerializeField] private GameObject waterSpherePrefab;
 
     [SerializeField] private GameObject generatorPanel;
 
@@ -90,7 +91,6 @@ public class PlanetGenerator : MonoBehaviour
         texture.Apply();
         surfaceMaterial.SetTexture("_Texture", texture);
         surfaceMaterial.SetVector("_ElevationMinMax", new Vector2(planet.MinHeightValue, planet.MaxHeightValue));
-        
     }
 
     public void SpawnPlayer()
@@ -130,7 +130,11 @@ public class PlanetGenerator : MonoBehaviour
         planetObject = new GameObject("Planet");
         planetObject.tag = "Planet";
         planetObject.transform.position = Vector3.zero;
-        
+
+        GameObject waterSphere = Instantiate(waterSpherePrefab, Vector3.zero, Quaternion.identity);
+        waterSphere.transform.SetParent(planetObject.transform);
+
+
 
         planetObject.AddComponent<GravityAttractor>();
         planetObject.tag = "Planet";
