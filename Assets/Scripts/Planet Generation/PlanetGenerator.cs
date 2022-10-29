@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -23,11 +24,11 @@ public class PlanetGenerator : MonoBehaviour
 
     [SerializeField] private GameObject generatorPanel;
 
-    [Header("Planet Surface")]
-    [SerializeField] Gradient gradient;
-    [SerializeField] AnimationCurve animCurve;
-    [SerializeField] Texture2D texture;
-    [SerializeField] int textureResolution = 50;
+    [Header("Planet Configurations")]
+    [SerializeField] PlanetScriptableObject[] configurations;
+    private PlanetScriptableObject currentPlanetConfiguration;
+    private Texture2D texture;
+    private int textureResolution = 50;
 
     private GameObject planetObject;
     private Planet planet;
@@ -71,6 +72,10 @@ public class PlanetGenerator : MonoBehaviour
     public void GenerateNewPlanet()
     {
         texture = new Texture2D(textureResolution, 1);
+        currentPlanetConfiguration = configurations[UnityEngine.Random.Range(0, configurations.Length)];
+
+        yaw = 0;
+        pitch = 0;
 
         DeleteOldPlanet();
         CreatePlanetObject();
@@ -85,7 +90,7 @@ public class PlanetGenerator : MonoBehaviour
         Color[] colors = new Color[textureResolution];
         for (int i = 0; i < textureResolution; i++)
         {
-            colors[i] = gradient.Evaluate(i / (textureResolution - 1f));
+            colors[i] = currentPlanetConfiguration.TerrainHeightColor.Evaluate(i / (textureResolution - 1f));
         }
         texture.SetPixels(colors);
         texture.Apply();
@@ -101,7 +106,7 @@ public class PlanetGenerator : MonoBehaviour
         GameObject player = Instantiate(playerObject);
         player.name = "Player";
         player.tag = "Player";
-        player.transform.position = new Vector3(0, 225f, 0);
+        player.transform.position = new Vector3(0, 270f, 0);
 
         generatorPanel.SetActive(false);
     }
@@ -115,7 +120,7 @@ public class PlanetGenerator : MonoBehaviour
         if (planetObject != null && Input.GetMouseButton(1))
         {
             yaw += Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-            pitch += Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+            pitch += Input.GetAxis("Mouse Y") * -mouseSensitivity * Time.deltaTime;
 
             planetObject.transform.eulerAngles = new Vector3(-pitch, -yaw, 0);
         }
@@ -124,15 +129,18 @@ public class PlanetGenerator : MonoBehaviour
 
     private void CreatePlanetObject()
     {
-        planet = new Planet(animCurve);  
+        planet = new Planet(currentPlanetConfiguration.TerrainHeightCurve, currentPlanetConfiguration.CreateWater);  
 
         // Create planet GameObject
         planetObject = new GameObject("Planet");
         planetObject.tag = "Planet";
         planetObject.transform.position = Vector3.zero;
 
-        GameObject waterSphere = Instantiate(waterSpherePrefab, Vector3.zero, Quaternion.identity);
-        waterSphere.transform.SetParent(planetObject.transform);
+        if (currentPlanetConfiguration.CreateWater)
+        {
+            GameObject waterSphere = Instantiate(waterSpherePrefab, Vector3.zero, Quaternion.identity);
+            waterSphere.transform.SetParent(planetObject.transform);
+        }
 
         planetObject.AddComponent<GravityAttractor>();
         planetObject.tag = "Planet";

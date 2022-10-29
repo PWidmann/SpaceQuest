@@ -171,7 +171,7 @@ Material:
     - _CullMode: 2
     - _CullModeForward: 2
     - _Cutoff: 0.5
-    - _Depth: 4.11
+    - _Depth: -5.14
     - _DepthOffsetEnable: 0
     - _DetailAlbedoScale: 1
     - _DetailNormalScale: 1
@@ -276,13 +276,13 @@ Material:
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
     - _ZWrite: 0
-    - _strength: 0.733
+    - _strength: 0.089
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DeepColor: {r: 0, g: 0, b: 0, a: 0}
-    - _DeepWaterColor: {r: 0.1462264, g: 0.5624941, b: 1, a: 1}
+    - _DeepWaterColor: {r: 0.057271298, g: 0.4835522, b: 0.9339623, a: 1}
     - _DepthColor: {r: 0.08454966, g: 0.2731007, b: 0.7169812, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
@@ -293,7 +293,7 @@ Material:
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _RefractionScale: {r: 10, g: 10, b: 0, a: 0}
-    - _ShallowWaterColor: {r: 0.26379478, g: 0.53638315, b: 0.9811321, a: 0.8235294}
+    - _ShallowWaterColor: {r: 1, g: 1, b: 1, a: 0.8235294}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _SurfaceColor: {r: 0.30704874, g: 0.57897943, b: 0.8679245, a: 1}
     - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}

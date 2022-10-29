@@ -3,19 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-#region Global Enums
-public enum PlanetType { Desert, Green, Ice }
-public enum PlanetWeather { Clear, Cloudy, Storm, Foggy}
-public enum PlanetShape { Flat, BigMountain}
 
-[System.Serializable]
-public struct PlanetSurfaceCurves
-{
-    public AnimationCurve animCurve;
-    public Gradient colorGradient;
-}
-
-#endregion
 
 public class Planet
 {
@@ -34,6 +22,7 @@ public class Planet
     private ShapeGenerator shapeGenerator;
     private ShapeSettings shapeSettings;
     private AnimationCurve terrainHeightAnimCurve;
+    private bool useWater;
 
     public float MinHeightValue { get => minHeightValue; }
     public float MaxHeightValue { get => maxHeightValue; }
@@ -41,8 +30,9 @@ public class Planet
 
     #endregion
 
-    public Planet(AnimationCurve _animationCurve)
+    public Planet(AnimationCurve _animationCurve, bool _useWater)
     {
+        useWater = _useWater;
         terrainHeightAnimCurve = _animationCurve;
         GeneratePlanet();
     }
@@ -59,7 +49,6 @@ public class Planet
     private void Initialize()
     {
         shapeSettings = new ShapeSettings();
-        //SetShapeSettings();
         SetRandomShapeSettings();
         
         shapeGenerator = new ShapeGenerator(shapeSettings);
@@ -75,6 +64,13 @@ public class Planet
         shapeSettings.planetRadius = 200;
         shapeSettings.noiseSettingsL1.filterType = NoiseSettings.FilterType.Simple;
         shapeSettings.noiseSettingsL1.useFirstLayerAsMask = false;
+
+        // How much base globe exposed to the surface
+        // minvalue 0.3 = no water, 0,7 water
+        if (useWater)
+            shapeSettings.noiseSettingsL1.simpleNoiseSettings.minValue = 0.7f;
+        else
+            shapeSettings.noiseSettingsL1.simpleNoiseSettings.minValue = 0.3f;
 
         float rnd = UnityEngine.Random.Range(0f, 2f);
         shapeSettings.noiseSettingsL1.simpleNoiseSettings.centre = new Vector3(rnd, rnd, rnd);

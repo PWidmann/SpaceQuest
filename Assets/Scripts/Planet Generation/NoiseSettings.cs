@@ -11,12 +11,14 @@ public class NoiseSettings
     public SimpleNoiseSettings simpleNoiseSettings;
     public RigidNoiseSettings rigidNoiseSettings;
     public bool useFirstLayerAsMask = false;
+    private bool useWater = true;
 
     public NoiseSettings()
     {
         simpleNoiseSettings = new SimpleNoiseSettings();
         rigidNoiseSettings = new RigidNoiseSettings();
         filterType = FilterType.Simple;
+        
     }
     public class SimpleNoiseSettings
     {
@@ -27,6 +29,8 @@ public class NoiseSettings
         public float roughness = 2.2f;
         public float persistence = 0.5f;
         public Vector3 centre = new Vector3(0.8f, 0.2f, 0);
+        
+        
         public float minValue = 0.7f;
         // minvalue 0.3 = no water, 0,7 water
     }
