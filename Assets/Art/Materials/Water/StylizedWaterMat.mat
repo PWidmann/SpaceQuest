@@ -32,19 +32,19 @@ Material:
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords:
   - _NORMALMAP_TANGENT_SPACE
-  m_LightmapFlags: 0
+  m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2750
+  m_CustomRenderQueue: 3000
   stringTagMap:
     MotionVector: User
     RenderType: Transparent
   disabledShaderPasses:
-  - TransparentDepthPrepass
+  - MOTIONVECTORS
   - TransparentDepthPostpass
   - TransparentBackface
   - RayTracingPrepass
-  - MOTIONVECTORS
+  - TransparentDepthPrepass
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -171,7 +171,7 @@ Material:
     - _CullMode: 2
     - _CullModeForward: 2
     - _Cutoff: 0.5
-    - _Depth: 1.52
+    - _Depth: 4.11
     - _DepthOffsetEnable: 0
     - _DetailAlbedoScale: 1
     - _DetailNormalScale: 1
@@ -230,8 +230,8 @@ Material:
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
     - _RefractionSpeed: 0.005
-    - _RefractionStrength: 2.3
-    - _RenderQueueType: 3
+    - _RefractionStrength: 1.97
+    - _RenderQueueType: 4
     - _RequireSplitLighting: 0
     - _Smoothness: 0.5
     - _SmoothnessRemapMax: 1
@@ -282,7 +282,7 @@ Material:
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DeepColor: {r: 0, g: 0, b: 0, a: 0}
-    - _DeepWaterColor: {r: 0.038047332, g: 0.45108226, b: 0.8962264, a: 0.9647059}
+    - _DeepWaterColor: {r: 0.1462264, g: 0.5624941, b: 1, a: 1}
     - _DepthColor: {r: 0.08454966, g: 0.2731007, b: 0.7169812, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
@@ -293,7 +293,7 @@ Material:
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _RefractionScale: {r: 10, g: 10, b: 0, a: 0}
-    - _ShallowWaterColor: {r: 0.2637949, g: 0.53638315, b: 0.9811321, a: 0.45490196}
+    - _ShallowWaterColor: {r: 0.26379478, g: 0.53638315, b: 0.9811321, a: 0.8235294}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _SurfaceColor: {r: 0.30704874, g: 0.57897943, b: 0.8679245, a: 1}
     - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}

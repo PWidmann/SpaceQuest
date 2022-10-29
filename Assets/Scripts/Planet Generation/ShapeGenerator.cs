@@ -17,7 +17,7 @@ public class ShapeGenerator
 
     }
 
-    public Vector3 CalculatePointOnPlanet(Vector3 _pointOnUnitSphere)
+    public Vector3 CalculatePointOnPlanet(Vector3 _pointOnUnitSphere, AnimationCurve _animCurve)
     {
         float firstLayerValue = 0;
         float elevation = 0;
@@ -30,7 +30,9 @@ public class ShapeGenerator
             float mask = (settings.useFirstLayerAsMask) ? firstLayerValue : 1;
             elevation += noiseFilters[1].Evaluate(_pointOnUnitSphere) * mask;
         }
-    
-        return _pointOnUnitSphere * settings.planetRadius * (1 + elevation);
+
+        float height = 1 + _animCurve.Evaluate(elevation);
+
+        return _pointOnUnitSphere * settings.planetRadius * height;
     }
 }

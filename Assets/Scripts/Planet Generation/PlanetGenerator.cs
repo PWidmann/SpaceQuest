@@ -124,7 +124,7 @@ public class PlanetGenerator : MonoBehaviour
 
     private void CreatePlanetObject()
     {
-        planet = new Planet();  
+        planet = new Planet(animCurve);  
 
         // Create planet GameObject
         planetObject = new GameObject("Planet");
@@ -133,8 +133,6 @@ public class PlanetGenerator : MonoBehaviour
 
         GameObject waterSphere = Instantiate(waterSpherePrefab, Vector3.zero, Quaternion.identity);
         waterSphere.transform.SetParent(planetObject.transform);
-
-
 
         planetObject.AddComponent<GravityAttractor>();
         planetObject.tag = "Planet";

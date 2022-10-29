@@ -33,6 +33,7 @@ public class Planet
     private Terrainface[] terrainFaces;
     private ShapeGenerator shapeGenerator;
     private ShapeSettings shapeSettings;
+    private AnimationCurve terrainHeightAnimCurve;
 
     public float MinHeightValue { get => minHeightValue; }
     public float MaxHeightValue { get => maxHeightValue; }
@@ -40,8 +41,9 @@ public class Planet
 
     #endregion
 
-    public Planet()
+    public Planet(AnimationCurve _animationCurve)
     {
+        terrainHeightAnimCurve = _animationCurve;
         GeneratePlanet();
     }
 
@@ -119,7 +121,7 @@ public class Planet
                 meshFilters[i].sharedMesh.RecalculateNormals();
             }
 
-            terrainFaces[i] = new Terrainface(shapeGenerator, meshFilters[i].sharedMesh, planetFaceResolution, directions[i]);
+            terrainFaces[i] = new Terrainface(shapeGenerator, meshFilters[i].sharedMesh, planetFaceResolution, directions[i], terrainHeightAnimCurve);
             faceMeshes[i].GetComponent<MeshFilter>().sharedMesh = terrainFaces[i].mesh;
             faceMeshes[i].GetComponent<MeshFilter>().sharedMesh.RecalculateNormals();
         }
@@ -137,8 +139,7 @@ public class Planet
                 maxHeightValue = face.MaxHeightValue;
         }
 
-        Debug.Log("Min Height: " + minHeightValue);
-        Debug.Log("Max Height: " + maxHeightValue);
+        Debug.Log("Min Height: " + minHeightValue + ", Max Height: " + maxHeightValue);
     }
 
     private void GenerateMeshData()

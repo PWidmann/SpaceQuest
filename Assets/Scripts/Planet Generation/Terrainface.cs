@@ -18,15 +18,18 @@ public class Terrainface
     private float minHeightValue;
     private float maxHeightValue;
 
+    private AnimationCurve animCurve;
+
     public float MinHeightValue { get => minHeightValue; }
     public float MaxHeightValue { get => maxHeightValue; }
 
-    public Terrainface(ShapeGenerator _shapeGenerator, Mesh _mesh, int _resolution, Vector3 _localUp)
+    public Terrainface(ShapeGenerator _shapeGenerator, Mesh _mesh, int _resolution, Vector3 _localUp, AnimationCurve _animCurve)
     {
         this.shapeGenerator = _shapeGenerator;
         this.mesh = _mesh;
         this.resolution = _resolution;
         this.localUp = _localUp;
+        this.animCurve = _animCurve;
 
         axisA = new Vector3(localUp.y, localUp.z, localUp.x);
         axisB = Vector3.Cross(localUp, axisA);
@@ -49,7 +52,7 @@ public class Terrainface
                 Vector3 pointOnUnitCube = localUp + (percent.x - 0.5f) * 2 * axisA + (percent.y - 0.5f) * 2 * axisB;
                 Vector3 pointOnUnitSphere = PointOnCubeToPointOnSphere(pointOnUnitCube);
 
-                vertices[i] = shapeGenerator.CalculatePointOnPlanet(pointOnUnitSphere);
+                vertices[i] = shapeGenerator.CalculatePointOnPlanet(pointOnUnitSphere, animCurve);
 
                 // Set min and max terrain height value
                 if (Vector3.Distance(Vector3.zero, vertices[i]) < minHeightValue)
