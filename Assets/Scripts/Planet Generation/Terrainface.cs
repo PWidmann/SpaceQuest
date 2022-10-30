@@ -4,37 +4,49 @@ using UnityEngine;
 
 public class Terrainface
 {
-    ShapeGenerator shapeGenerator;
-    public Mesh mesh;
-    int resolution;
-    Vector3 localUp;
-    Vector3 axisA; // perpendicular to localUp
-    Vector3 axisB; // perpendicular to localUp & perpendicular to axisA
+    #region Members
 
+    private ShapeGenerator shapeGenerator;
+    private AnimationCurve animCurve;
+    private Mesh mesh;
+    private int resolution;
+    private Vector3 localUp;
+    private Vector3 axisA; // perpendicular to localUp
+    private Vector3 axisB; // perpendicular to localUp & perpendicular to axisA
+
+    // Mesh variables
     private Vector3[] vertices;
     private int[] triangles;
     private Vector2[] uv;
 
+    // For generation references
     private float minHeightValue;
     private float maxHeightValue;
 
-    private AnimationCurve animCurve;
-
     public float MinHeightValue { get => minHeightValue; }
     public float MaxHeightValue { get => maxHeightValue; }
+    public Mesh Mesh { get => mesh; }
+
+    #endregion
+
+    #region Constructor
 
     public Terrainface(ShapeGenerator _shapeGenerator, Mesh _mesh, int _resolution, Vector3 _localUp, AnimationCurve _animCurve)
     {
-        this.shapeGenerator = _shapeGenerator;
-        this.mesh = _mesh;
-        this.resolution = _resolution;
-        this.localUp = _localUp;
-        this.animCurve = _animCurve;
+        shapeGenerator = _shapeGenerator;
+        mesh = _mesh;
+        resolution = _resolution;
+        localUp = _localUp;
+        animCurve = _animCurve;
 
         axisA = new Vector3(localUp.y, localUp.z, localUp.x);
         axisB = Vector3.Cross(localUp, axisA);
-        minHeightValue = 300f; // Planet is usually around radius 200-240
+        minHeightValue = 400f; // Planet is usually around radius 200-260
     }
+
+    #endregion
+
+    #region Methods
 
     public void GenerateMeshData()
     {
@@ -51,7 +63,6 @@ public class Terrainface
                 Vector2 percent = new Vector2(x, y) / (resolution - 1);
                 Vector3 pointOnUnitCube = localUp + (percent.x - 0.5f) * 2 * axisA + (percent.y - 0.5f) * 2 * axisB;
                 Vector3 pointOnUnitSphere = PointOnCubeToPointOnSphere(pointOnUnitCube);
-
                 vertices[i] = shapeGenerator.CalculatePointOnPlanet(pointOnUnitSphere, animCurve);
 
                 // Set min and max terrain height value
@@ -59,10 +70,12 @@ public class Terrainface
 
                 if (x != resolution - 1 && y != resolution - 1)
                 {
+                    // Triangle 1
                     triangles[triIndex] = i;
                     triangles[triIndex + 1] = i + resolution + 1;
                     triangles[triIndex + 2] = i + resolution;
 
+                    // Triangle 2
                     triangles[triIndex + 3] = i;
                     triangles[triIndex + 4] = i + 1;
                     triangles[triIndex + 5] = i + resolution + 1;
@@ -81,12 +94,11 @@ public class Terrainface
 
     public void ApplyMesh()
     {
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = uv;
-
-        mesh.RecalculateNormals();
+        Mesh.Clear();
+        Mesh.vertices = vertices;
+        Mesh.triangles = triangles;
+        Mesh.uv = uv;
+        Mesh.RecalculateNormals();
     }
 
     public void FlatShading()
@@ -108,6 +120,7 @@ public class Terrainface
 
     public static Vector3 PointOnCubeToPointOnSphere(Vector3 p)
     {
+        // Fancy black magic I stole online to produce better spread vertices even on edges
         float x2 = p.x * p.x;
         float y2 = p.y * p.y;
         float z2 = p.z * p.z;
@@ -121,7 +134,7 @@ public class Terrainface
 
     private void SetTerrainMinMax(int _i)
     {
-        // Set min and max terrain height value
+        // Set min and max terrain height value reference
         if (Vector3.Distance(Vector3.zero, vertices[_i]) < minHeightValue)
         {
             minHeightValue = Vector3.Distance(Vector3.zero, vertices[_i]);
@@ -131,4 +144,6 @@ public class Terrainface
             maxHeightValue = Vector3.Distance(Vector3.zero, vertices[_i]);
         }
     }
+
+    #endregion
 }

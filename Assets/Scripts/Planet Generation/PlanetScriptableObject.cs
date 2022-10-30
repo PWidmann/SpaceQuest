@@ -39,5 +39,4 @@ public class PlanetScriptableObject : ScriptableObject
     public GameObject[] BioMatter;
     [Range(0, 1)]
     public float BioMatterDensity;
-
 }

@@ -22,14 +22,12 @@ public class PlanetGenerator : MonoBehaviour
     [SerializeField] private GameObject playerObject;
     [SerializeField] private GameObject waterSpherePrefab;
 
-    [SerializeField] private GameObject generatorPanel;
-
     [Header("Planet Configurations")]
-    [SerializeField] PlanetScriptableObject[] configurations;
+    [SerializeField] private PlanetScriptableObject[] configurations;
+
     private PlanetScriptableObject currentPlanetConfiguration;
     private Texture2D texture;
     private int textureResolution = 50;
-
     private GameObject planetObject;
     private Planet planet;
 
@@ -52,30 +50,16 @@ public class PlanetGenerator : MonoBehaviour
 
     public void GenerateNewPlanet()
     {
-        texture = new Texture2D(textureResolution, 1);
+        // Get random planet configuration from scriptable objects and initialize planet texture
         currentPlanetConfiguration = configurations[UnityEngine.Random.Range(0, configurations.Length)];
+        texture = new Texture2D(textureResolution, 1);
 
         DeleteOldPlanet();
         CreatePlanetObject();
         UpdateColors();
 
         Debug.Log("Created new " + currentPlanetConfiguration.PlanetType.ToString() + " Planet");
-
     }
-
-    public void UpdateColors()
-    {
-        Color[] colors = new Color[textureResolution];
-        for (int i = 0; i < textureResolution; i++)
-        {
-            colors[i] = currentPlanetConfiguration.TerrainHeightColor.Evaluate(i / (textureResolution - 1f));
-        }
-        texture.SetPixels(colors);
-        texture.Apply();
-        surfaceMaterial.SetTexture("_Texture", texture);
-        surfaceMaterial.SetVector("_ElevationMinMax", new Vector2(planet.MinHeightValue, planet.MaxHeightValue));
-    }
-
     public void SpawnPlayer()
     {
         if (IsFirstPlayerSpawn())
@@ -85,15 +69,11 @@ public class PlanetGenerator : MonoBehaviour
         player.name = "Player";
         player.tag = "Player";
         player.transform.position = new Vector3(0, 270f, 0);
-
-        generatorPanel.SetActive(false);
     }
 
     #endregion
 
     #region private Methods
-
-
 
     private void CreatePlanetObject()
     {
@@ -107,12 +87,10 @@ public class PlanetGenerator : MonoBehaviour
         planetObject.tag = "Planet";
 
         // Add created planet face meshes to planet object, 6 sides
-        for (int i = 0; i < planet.faceMeshes.Length; i++)
+        for (int i = 0; i < planet.FaceMeshes.Length; i++)
         {
-            GameObject planetFace = planet.faceMeshes[i];
-            int layer = LayerMask.NameToLayer("PlanetGround");
-            planetFace.layer = layer;
-
+            GameObject planetFace = planet.FaceMeshes[i];
+            planetFace.layer = LayerMask.NameToLayer("PlanetGround");
             planetFace.transform.parent = planetObject.transform;
 
             // Add random material to planet face
@@ -142,6 +120,22 @@ public class PlanetGenerator : MonoBehaviour
         }
     }
 
+    private void UpdateColors()
+    {
+        // Create texture colors
+        Color[] colors = new Color[textureResolution];
+        for (int i = 0; i < textureResolution; i++)
+        {
+            colors[i] = currentPlanetConfiguration.TerrainHeightColor.Evaluate(i / (textureResolution - 1f));
+        }
+        texture.SetPixels(colors);
+        texture.Apply();
+
+        // Set shader values
+        surfaceMaterial.SetTexture("_Texture", texture);
+        surfaceMaterial.SetVector("_ElevationMinMax", new Vector2(planet.MinHeightValue, planet.MaxHeightValue));
+    }
+
     private void CombineFaceMeshes()
     {
         MeshFilter[] meshObjectsToCombine = planetObject.GetComponentsInChildren<MeshFilter>();
@@ -164,8 +158,6 @@ public class PlanetGenerator : MonoBehaviour
         planetObject.transform.GetComponent<MeshFilter>().mesh.RecalculateNormals();
         planetObject.transform.AddComponent<MeshCollider>().sharedMesh = planetObject.transform.GetComponent<MeshFilter>().mesh;
     }
-
-
 
     private bool IsFirstPlayerSpawn()
     {

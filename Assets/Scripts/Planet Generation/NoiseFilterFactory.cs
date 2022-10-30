@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public static class NoiseFilterFactory
 {
     public static INoiseFilter CreateNoiseFilter(NoiseSettings settings)
@@ -14,6 +10,5 @@ public static class NoiseFilterFactory
                 return new RigidNoiseFilter(settings.rigidNoiseSettings);
         }
         return null;
-
     }
 }

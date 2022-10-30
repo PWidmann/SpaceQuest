@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class ShapeGenerator
 {
-    ShapeSettings settings;
-    INoiseFilter[] noiseFilters;
+    private ShapeSettings settings;
+    private INoiseFilter[] noiseFilters;
 
     public ShapeGenerator(ShapeSettings _shapeSettings)
     {
-        this.settings = _shapeSettings;
+        settings = _shapeSettings;
         noiseFilters = new INoiseFilter[2];
 
         noiseFilters[0] = NoiseFilterFactory.CreateNoiseFilter(settings.noiseSettingsL1);
         noiseFilters[1] = NoiseFilterFactory.CreateNoiseFilter(settings.noiseSettingsL2);
-
     }
 
     public Vector3 CalculatePointOnPlanet(Vector3 _pointOnUnitSphere, AnimationCurve _animCurve)
@@ -32,7 +31,6 @@ public class ShapeGenerator
         }
 
         float height = 1 + _animCurve.Evaluate(elevation);
-
         return _pointOnUnitSphere * settings.planetRadius * height;
     }
 }

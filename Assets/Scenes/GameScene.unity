@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 304.82568, g: 371.1416, b: 337.12207, a: 1}
+  m_IndirectSpecularColor: {r: 305.21436, g: 371.8086, b: 337.5918, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -479,6 +479,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 822008780}
+        m_TargetAssemblyTypeName: PlanetGenerator, Assembly-CSharp
+        m_MethodName: ShowSpawnButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &343900402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -787,6 +799,7 @@ MonoBehaviour:
     type: 3}
   waterSpherePrefab: {fileID: 0}
   generatorPanel: {fileID: 742495987}
+  spawnButton: {fileID: 0}
   configurations:
   - {fileID: 11400000, guid: 7018a296c3f2ea644addc4b97ad12570, type: 2}
   - {fileID: 11400000, guid: 466c941ae0fd86543814ac3ab766687d, type: 2}
@@ -1170,7 +1183,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1865254493
 RectTransform:
   m_ObjectHideFlags: 0
