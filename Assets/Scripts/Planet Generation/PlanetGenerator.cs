@@ -33,11 +33,6 @@ public class PlanetGenerator : MonoBehaviour
     private GameObject planetObject;
     private Planet planet;
 
-    float yaw;
-    float pitch;
-    float mouseSensitivity = 150f;
-
-
     #endregion
 
     #region Unity Methods
@@ -51,20 +46,6 @@ public class PlanetGenerator : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        GameObject player;
-        if (player = GameObject.FindGameObjectWithTag("Player"))
-        {
-
-        }
-        else
-        {
-            DebugPlanetRotation();
-        }
-        
-    }
-
     #endregion
 
     #region Public Methods
@@ -73,9 +54,6 @@ public class PlanetGenerator : MonoBehaviour
     {
         texture = new Texture2D(textureResolution, 1);
         currentPlanetConfiguration = configurations[UnityEngine.Random.Range(0, configurations.Length)];
-
-        yaw = 0;
-        pitch = 0;
 
         DeleteOldPlanet();
         CreatePlanetObject();
@@ -115,16 +93,6 @@ public class PlanetGenerator : MonoBehaviour
 
     #region private Methods
 
-    private void DebugPlanetRotation()
-    {
-        if (planetObject != null && Input.GetMouseButton(1))
-        {
-            yaw += Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-            pitch += Input.GetAxis("Mouse Y") * -mouseSensitivity * Time.deltaTime;
-
-            planetObject.transform.eulerAngles = new Vector3(-pitch, -yaw, 0);
-        }
-    }
 
 
     private void CreatePlanetObject()

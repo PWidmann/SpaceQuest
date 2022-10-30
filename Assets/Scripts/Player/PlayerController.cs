@@ -78,6 +78,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
+
         CheckForGrounded();
         GetInput();
 
@@ -114,7 +117,6 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = transform.forward * inputDir.y + transform.right * inputDir.x;
         moveDirection.Normalize();
         rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
-
     }
 
     private void LateUpdate()
@@ -123,8 +125,6 @@ public class PlayerController : MonoBehaviour
         cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0);
 
         CreateAimPoint();
-
-        
     }
 
     #endregion

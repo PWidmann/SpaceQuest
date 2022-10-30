@@ -29,6 +29,11 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    public void QuitButton()
+    {
+        Application.Quit();
+    }
+
     public void ApplyButton()
     {
         // Screen settings
