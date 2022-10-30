@@ -22,7 +22,7 @@ public class Planet
     private ShapeGenerator shapeGenerator;
     private ShapeSettings shapeSettings;
     private AnimationCurve terrainHeightAnimCurve;
-    private bool useWater;
+    private bool exposeBaseSurface;
 
     public float MinHeightValue { get => minHeightValue; }
     public float MaxHeightValue { get => maxHeightValue; }
@@ -30,9 +30,9 @@ public class Planet
 
     #endregion
 
-    public Planet(AnimationCurve _animationCurve, bool _useWater)
+    public Planet(AnimationCurve _animationCurve, bool _exposeBaseSurface)
     {
-        useWater = _useWater;
+        exposeBaseSurface = _exposeBaseSurface;
         terrainHeightAnimCurve = _animationCurve;
         GeneratePlanet();
     }
@@ -67,7 +67,7 @@ public class Planet
 
         // How much base globe exposed to the surface
         // minvalue 0.3 = no water, 0,7 water
-        if (useWater)
+        if (shapeSettings.noiseSettingsL1.exposePlanetGround)
             shapeSettings.noiseSettingsL1.simpleNoiseSettings.minValue = 0.7f;
         else
             shapeSettings.noiseSettingsL1.simpleNoiseSettings.minValue = 0.3f;
@@ -135,7 +135,7 @@ public class Planet
                 maxHeightValue = face.MaxHeightValue;
         }
 
-        Debug.Log("Min Height: " + minHeightValue + ", Max Height: " + maxHeightValue);
+        //Debug.Log("Min Height: " + minHeightValue + ", Max Height: " + maxHeightValue);
     }
 
     private void GenerateMeshData()

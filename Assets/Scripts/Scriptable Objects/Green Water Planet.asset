@@ -48,15 +48,15 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1.1808496
-      outSlope: 1.1808496
+      inSlope: 0.72366613
+      outSlope: 0.72366613
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.1896807
-      value: 0.22398438
+      time: 0.25764334
+      value: 0.18644775
       inSlope: 0.5994238
       outSlope: 0.5994238
       tangentMode: 0
@@ -93,7 +93,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  CreateWater: 1
+  exposeBaseSurface: 1
   Watertype: 0
   GrassPrefabs: []
   GrassDensity: 0

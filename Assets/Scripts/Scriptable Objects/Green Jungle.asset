@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ace5993eb3faea4ab27696f8d4a2dda, type: 3}
-  m_Name: Lava
+  m_Name: Green Jungle
   m_EditorClassIdentifier: 
-  PlanetType: 4
+  PlanetType: 1
   TerrainHeightColor:
     serializedVersion: 2
-    key0: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 1}
-    key1: {r: 0.71963716, g: 0.6036742, b: 0.36998427, a: 1}
-    key2: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 0}
-    key5: {r: 1, g: 0.54801047, b: 0.07075471, a: 0}
-    key6: {r: 1, g: 0.54801047, b: 0.07075471, a: 0}
-    key7: {r: 1, g: 1, b: 1, a: 0}
+    key0: {r: 0, g: 0.3301887, b: 0.039063513, a: 1}
+    key1: {r: 0.061721236, g: 0.6886792, b: 0.11289114, a: 1}
+    key2: {r: 0, g: 0.4716981, b: 0.016378457, a: 0}
+    key3: {r: 0.24630652, g: 0.4245283, b: 0.24630652, a: 0}
+    key4: {r: 0.015705073, g: 0.4528302, b: 0, a: 0}
+    key5: {r: 0.11943354, g: 0.8396226, b: 0.059407253, a: 0}
+    key6: {r: 1, g: 1, b: 1, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 4955
-    ctime2: 15101
-    ctime3: 33564
-    ctime4: 58044
-    ctime5: 65476
+    ctime1: 7196
+    ctime2: 9674
+    ctime3: 25660
+    ctime4: 41232
+    ctime5: 59872
     ctime6: 65476
-    ctime7: 65476
+    ctime7: 0
     atime0: 0
     atime1: 65535
     atime2: 0
@@ -40,7 +40,7 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 6
+    m_NumColorKeys: 7
     m_NumAlphaKeys: 2
   TerrainHeightCurve:
     serializedVersion: 2
@@ -48,15 +48,15 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.7783035
-      outSlope: 0.7783035
+      inSlope: 0.72741723
+      outSlope: 0.72741723
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.2481829
-      value: 0.19316162
+      time: 0.2507769
+      value: 0.18241943
       inSlope: 0.5994238
       outSlope: 0.5994238
       tangentMode: 0
@@ -64,8 +64,8 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.08609401
     - serializedVersion: 3
-      time: 0.6935409
-      value: 0.3368997
+      time: 0.672911
+      value: 0.36637968
       inSlope: 0.55224735
       outSlope: 0.55224735
       tangentMode: 0
@@ -73,8 +73,8 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.15274635
     - serializedVersion: 3
-      time: 0.8332311
-      value: 0.4333117
+      time: 0.9322301
+      value: 0.54184747
       inSlope: 0.6797097
       outSlope: 0.6797097
       tangentMode: 0
@@ -82,19 +82,10 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.4300598
     - serializedVersion: 3
-      time: 0.98878896
-      value: 0.56527245
-      inSlope: 0.6986915
-      outSlope: 0.6986915
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
       time: 1.0152588
       value: 0.59023666
-      inSlope: 0.94311965
-      outSlope: 0.94311965
+      inSlope: 0.58280104
+      outSlope: 0.58280104
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

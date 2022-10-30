@@ -81,7 +81,7 @@ public class PlanetGenerator : MonoBehaviour
         CreatePlanetObject();
         UpdateColors();
 
-        Debug.Log("Generated New Planet");
+        Debug.Log("Created new " + currentPlanetConfiguration.PlanetType.ToString() + " Planet");
 
     }
 
@@ -129,25 +129,16 @@ public class PlanetGenerator : MonoBehaviour
 
     private void CreatePlanetObject()
     {
-        planet = new Planet(currentPlanetConfiguration.TerrainHeightCurve, currentPlanetConfiguration.CreateWater);  
+        planet = new Planet(currentPlanetConfiguration.TerrainHeightCurve, currentPlanetConfiguration.exposeBaseSurface);  
 
         // Create planet GameObject
         planetObject = new GameObject("Planet");
         planetObject.tag = "Planet";
         planetObject.transform.position = Vector3.zero;
-
-        if (currentPlanetConfiguration.CreateWater)
-        {
-            GameObject waterSphere = Instantiate(waterSpherePrefab, Vector3.zero, Quaternion.identity);
-            waterSphere.transform.SetParent(planetObject.transform);
-        }
-
         planetObject.AddComponent<GravityAttractor>();
         planetObject.tag = "Planet";
 
         // Add created planet face meshes to planet object, 6 sides
-
-
         for (int i = 0; i < planet.faceMeshes.Length; i++)
         {
             GameObject planetFace = planet.faceMeshes[i];
@@ -159,7 +150,23 @@ public class PlanetGenerator : MonoBehaviour
             // Add random material to planet face
             planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;
         }
-        
+
+        if (waterSpherePrefab)
+        {
+            switch (currentPlanetConfiguration.Watertype)
+            {
+                case WaterType.Normal:
+                    GameObject waterSphere = Instantiate(waterSpherePrefab, Vector3.zero, Quaternion.identity);
+                    waterSphere.transform.SetParent(planetObject.transform);
+                    break;
+                case WaterType.Lava:
+                    break;
+                case WaterType.Poison:
+                    break;
+                case WaterType.None:
+                    break;
+            }
+        }
 
         if (combinePlanetFaces)
         {

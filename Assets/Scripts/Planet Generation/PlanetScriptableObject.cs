@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 #region Global Enums
 public enum PlanetType { GreenWater, GreenJungle, Ice, Desert, Lava, Poison }
 public enum PlanetWeather { Clear, Cloudy, Storm, Foggy }
-public enum WaterType { Normal, Lava, Poison}
+public enum WaterType { Normal, Lava, Poison, None}
 #endregion
 
 [CreateAssetMenu(fileName = "New Planet", menuName = "Planet Creaton/PlanetConfiguration")]
@@ -19,7 +19,7 @@ public class PlanetScriptableObject : ScriptableObject
 
     [Space(20)]
     [Header("Settings")]
-    public bool CreateWater;
+    public bool exposeBaseSurface;
     public WaterType Watertype;
 
     [Space(20)]
