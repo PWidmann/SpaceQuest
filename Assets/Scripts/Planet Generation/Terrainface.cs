@@ -55,14 +55,7 @@ public class Terrainface
                 vertices[i] = shapeGenerator.CalculatePointOnPlanet(pointOnUnitSphere, animCurve);
 
                 // Set min and max terrain height value
-                if (Vector3.Distance(Vector3.zero, vertices[i]) < minHeightValue)
-                {
-                    minHeightValue = Vector3.Distance(Vector3.zero, vertices[i]);
-                }
-                if (Vector3.Distance(Vector3.zero, vertices[i]) > maxHeightValue)
-                {
-                    maxHeightValue = Vector3.Distance(Vector3.zero, vertices[i]);
-                }
+                SetTerrainMinMax(i);
 
                 if (x != resolution - 1 && y != resolution - 1)
                 {
@@ -84,13 +77,33 @@ public class Terrainface
                 }
             }
         }
+    }
 
+    public void ApplyMesh()
+    {
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uv;
 
         mesh.RecalculateNormals();
+    }
+
+    public void FlatShading()
+    {
+        // Duplicate vertices for each triangle to prevent smooth edges
+        Vector3[] flatShadedVertices = new Vector3[triangles.Length];
+        Vector2[] flatShadedUvs = new Vector2[triangles.Length];
+
+        for (int i = 0; i < triangles.Length; i++)
+        {
+            flatShadedVertices[i] = vertices[triangles[i]];
+            flatShadedUvs[i] = uv[triangles[i]];
+            triangles[i] = i;
+        }
+
+        vertices = flatShadedVertices;
+        uv = flatShadedUvs;
     }
 
     public static Vector3 PointOnCubeToPointOnSphere(Vector3 p)
@@ -106,5 +119,16 @@ public class Terrainface
         return new Vector3(x, y, z);
     }
 
-    
+    private void SetTerrainMinMax(int _i)
+    {
+        // Set min and max terrain height value
+        if (Vector3.Distance(Vector3.zero, vertices[_i]) < minHeightValue)
+        {
+            minHeightValue = Vector3.Distance(Vector3.zero, vertices[_i]);
+        }
+        if (Vector3.Distance(Vector3.zero, vertices[_i]) > maxHeightValue)
+        {
+            maxHeightValue = Vector3.Distance(Vector3.zero, vertices[_i]);
+        }
+    }
 }

@@ -114,6 +114,8 @@ public class Planet
                 meshFilters[i].sharedMesh = new Mesh();
 
                 faceMeshes[i].AddComponent<MeshCollider>().sharedMesh = meshFilters[i].sharedMesh;
+                faceMeshes[i].GetComponent<MeshCollider>().sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
                 meshFilters[i].sharedMesh.RecalculateNormals();
             }
 
@@ -143,6 +145,8 @@ public class Planet
         foreach (Terrainface face in terrainFaces)
         {
             face.GenerateMeshData();
+            face.FlatShading();
+            face.ApplyMesh();
         }
     }
 }

@@ -193,7 +193,7 @@ public class PlanetGenerator : MonoBehaviour
         planetObject.transform.AddComponent<MeshRenderer>().material = mat;
         planetObject.transform.AddComponent<MeshFilter>().mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         planetObject.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
-        //planetObject.transform.GetComponent<MeshFilter>().mesh.RecalculateNormals();
+        planetObject.transform.GetComponent<MeshFilter>().mesh.RecalculateNormals();
         planetObject.transform.AddComponent<MeshCollider>().sharedMesh = planetObject.transform.GetComponent<MeshFilter>().mesh;
     }
 

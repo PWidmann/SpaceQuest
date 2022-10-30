@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     #region Members
 
     [SerializeField] private Text debugText;
-    [SerializeField] private new Camera camera;
+    
     [SerializeField] private GameObject cameraArm;
     [SerializeField] private GameObject rifle;
     [SerializeField] private GameObject pointerObjectPrefab;
@@ -45,9 +45,10 @@ public class PlayerController : MonoBehaviour
 
     // Animation
     private float speedPercent;
-    
+
 
     // Camera
+    private Camera playerCamera;
     private Vector2 cameraPitchClamp;
     private float cameraYaw;
     private float cameraPitch;
@@ -137,7 +138,7 @@ public class PlayerController : MonoBehaviour
         cameraPitchClamp = new Vector2(-50f, 50f); // cameraArm X rotation clamp
         cameraPitch = 20f;
         mySpeed = runSpeed;
-        
+        playerCamera = Camera.main;
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -215,7 +216,7 @@ public class PlayerController : MonoBehaviour
     }
     void CreateAimPoint()
     {
-        Ray ray = new Ray(camera.transform.position, camera.transform.forward);
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         
 
         
@@ -240,7 +241,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            target = camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));  
+            target = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));  
         }
         rifle.transform.LookAt(target, transform.up);
 
