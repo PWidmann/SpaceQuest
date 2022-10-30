@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 305.21436, g: 371.8086, b: 337.5918, a: 1}
+  m_IndirectSpecularColor: {r: 15.240814, g: 18.55603, b: 16.8564, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -200,6 +200,7 @@ GameObject:
   - component: {fileID: 190232206}
   - component: {fileID: 190232205}
   - component: {fileID: 190232209}
+  - component: {fileID: 190232210}
   m_Layer: 5
   m_Name: GameInterfaceCanvas
   m_TagString: Untagged
@@ -304,6 +305,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeImage: {fileID: 0}
   fadeSpeed: 0.2
+--- !u!114 &190232210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190232204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 085c424f96f443e4da63e1b32e493b11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetGeneratorPanel: {fileID: 742495987}
+  spawnPlayerButton: {fileID: 1865254492}
 --- !u!1 &312761241
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,8 +494,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 822008780}
-        m_TargetAssemblyTypeName: PlanetGenerator, Assembly-CSharp
+      - m_Target: {fileID: 190232210}
+        m_TargetAssemblyTypeName: GameGUI, Assembly-CSharp
         m_MethodName: ShowSpawnButton
         m_Mode: 1
         m_Arguments:
@@ -798,14 +813,12 @@ MonoBehaviour:
   playerObject: {fileID: 4351341498097132266, guid: e2f7582675c83344fad1dfec7e9b137f,
     type: 3}
   waterSpherePrefab: {fileID: 0}
-  generatorPanel: {fileID: 742495987}
-  spawnButton: {fileID: 0}
   configurations:
-  - {fileID: 11400000, guid: 7018a296c3f2ea644addc4b97ad12570, type: 2}
   - {fileID: 11400000, guid: 466c941ae0fd86543814ac3ab766687d, type: 2}
-  - {fileID: 11400000, guid: 56ac05c7c90e67f44b92b7093556411a, type: 2}
-  - {fileID: 11400000, guid: f18f05f50e852494e987e26b2bed678b, type: 2}
+  - {fileID: 11400000, guid: d1c27b3559b825f43be5544ad945e55f, type: 2}
   - {fileID: 11400000, guid: 4e02660bcc988fd409a3c62709be3cde, type: 2}
+  - {fileID: 11400000, guid: f18f05f50e852494e987e26b2bed678b, type: 2}
+  - {fileID: 11400000, guid: 56ac05c7c90e67f44b92b7093556411a, type: 2}
 --- !u!4 &822008781
 Transform:
   m_ObjectHideFlags: 0
@@ -1035,8 +1048,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 3
-  maxDistanceFromTarget: 700
-  minDistanceFromTarget: 300
 --- !u!1 &1421232020
 GameObject:
   m_ObjectHideFlags: 1
@@ -1252,6 +1263,18 @@ MonoBehaviour:
       - m_Target: {fileID: 822008780}
         m_TargetAssemblyTypeName: PlanetGenerator, Assembly-CSharp
         m_MethodName: SpawnPlayer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 190232210}
+        m_TargetAssemblyTypeName: GameGUI, Assembly-CSharp
+        m_MethodName: HideGeneratorPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6287,7 +6310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Intensity: 76344
+  m_Intensity: 2500
   m_EnableSpotReflector: 1
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
@@ -6384,7 +6407,7 @@ MonoBehaviour:
   m_ShadowVariant: 0
   m_ShadowPrecision: 0
   useOldInspector: 0
-  useVolumetric: 0
+  useVolumetric: 1
   featuresFoldout: 1
   m_AreaLightEmissiveMeshShadowCastingMode: 0
   m_AreaLightEmissiveMeshMotionVectorGenerationMode: 0
@@ -6427,7 +6450,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 76344
+  m_Intensity: 2500
   m_Range: 100000
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

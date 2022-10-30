@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     private float speedSmoothVelocity;
     private float speedSmoothTime = 0.05f;
     //private float turnSmoothTime = 0.1f;
-    private float runSpeed = 6f;
+    private float runSpeed = 8f;
     private float crouchSpeed = 2.3f;
     private float mySpeed = 0;
     private float currentSpeed;
@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 target;
 
     // Shooting
-    private float autoShootRate = 0.2f;
+    private float autoShootRate = 0.1f;
     private float shootTimer = 0f;
     private bool flashLight = false;
 

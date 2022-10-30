@@ -1393,14 +1393,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3049448464936466982}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.01007, y: 0.0002, z: 0.00222}
+  m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: -0.5}
+  m_LocalPosition: {x: -0.02427, y: 0.0002, z: 0.00222}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3974640686366689361}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 180, y: -270, z: 90}
 --- !u!1 &3266309141970249359
 GameObject:
   m_ObjectHideFlags: 0
@@ -1666,8 +1666,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8411c5d41b4dbe42bc3d078012e9a0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugText: {fileID: 0}
-  camera: {fileID: 1611544726804599474}
   cameraArm: {fileID: 626065031371695451}
   rifle: {fileID: 7263334591013167526}
   pointerObjectPrefab: {fileID: 8827141099003527189, guid: 2c09e2a578b65a64689806a4a5ac1211,
@@ -2522,10 +2520,10 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 7260000
-  m_Range: 250
-  m_SpotAngle: 70
-  m_InnerSpotAngle: 7
+  m_Intensity: 240000
+  m_Range: 300
+  m_SpotAngle: 60
+  m_InnerSpotAngle: 6
   m_CookieSize: 10
   m_Shadows:
     m_Type: 2
@@ -2561,16 +2559,16 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 2
   m_AreaSize: {x: 0.5, y: 0.5}
   m_BounceIntensity: 1
-  m_ColorTemperature: 6570
+  m_ColorTemperature: 9123
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
-  m_ShadowRadius: 0
+  m_ShadowRadius: 0.001
   m_ShadowAngle: 0
 --- !u!114 &7004809049737083874
 MonoBehaviour:
@@ -2586,8 +2584,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Intensity: 60000
   m_EnableSpotReflector: 1
-  m_LuxAtDistance: 11
-  m_InnerSpotPercent: 29.4
+  m_LuxAtDistance: 2
+  m_InnerSpotPercent: 70
   m_SpotIESCutoffPercent: 100
   m_LightDimmer: 1
   m_VolumetricDimmer: 1
@@ -2600,10 +2598,10 @@ MonoBehaviour:
   m_ShapeWidth: 0.5
   m_ShapeHeight: 0.5
   m_AspectRatio: 1
-  m_ShapeRadius: 0.025
+  m_ShapeRadius: 0.001
   m_SoftnessScale: 1
   m_UseCustomSpotLightShadowCone: 0
-  m_CustomSpotLightShadowCone: 30
+  m_CustomSpotLightShadowCone: 6
   m_MaxSmoothness: 0.99
   m_ApplyRangeAttenuation: 1
   m_DisplayAreaLightEmissiveMesh: 0

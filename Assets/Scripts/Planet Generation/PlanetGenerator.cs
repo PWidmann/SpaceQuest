@@ -59,7 +59,15 @@ public class PlanetGenerator : MonoBehaviour
         UpdateColors();
 
         Debug.Log("Created new " + currentPlanetConfiguration.PlanetType.ToString() + " Planet");
+
+        GenerateFoliage();
     }
+
+    private void GenerateFoliage()
+    {
+        
+    }
+
     public void SpawnPlayer()
     {
         if (IsFirstPlayerSpawn())
