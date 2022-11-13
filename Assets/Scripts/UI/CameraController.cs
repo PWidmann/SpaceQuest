@@ -29,7 +29,7 @@ public class CameraController : MonoBehaviour
 
     private bool mouseButtonPressed = false;
     private Vector3 target;
-    private bool canRotate = false;
+    public bool canRotate = false;
 
     #endregion
 

@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+//using UnityEngine.Windows;
 
 public class PlayerController : MonoBehaviour
 {
@@ -58,8 +59,10 @@ public class PlayerController : MonoBehaviour
     private float autoShootRate = 0.1f;
     private float shootTimer = 0f;
     private bool flashLight = false;
-
-    
+    private float standardFOV = 60f;
+    private float targetFOV = 60f;
+    private float currentFOV = 0;
+    private float zoomFOV = 30f;
 
     #endregion
 
@@ -75,6 +78,7 @@ public class PlayerController : MonoBehaviour
         GetInput();
         AnimationHandling();
         Shooting();
+        Zoom();
     }
     private void FixedUpdate()
     {
@@ -161,8 +165,9 @@ public class PlayerController : MonoBehaviour
             flashLightGO.SetActive(flashLight);
 
             // Rotate camera
-            cameraPitch += Input.GetAxis("Mouse Y") * -2; // mouse Y input amount per frame (-1 to 1 in 0.05 steps)
-            cameraYaw = Input.GetAxis("Mouse X") * 2;
+            cameraPitch += Input.GetAxis("Mouse Y") * -GameManager.MouseSensitivity; // mouse Y input amount per frame (-1 to 1 in 0.05 steps)
+            cameraYaw = Input.GetAxis("Mouse X") * GameManager.MouseSensitivity;
+
             // Movement
             inputDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             // Jumping
@@ -240,6 +245,23 @@ public class PlayerController : MonoBehaviour
             target = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));
         }
         rifle.transform.LookAt(target, transform.up);
+    }
+    private void Zoom()
+    {
+        if (playerHasControl)
+        {
+            if (Input.GetMouseButton(1))
+            {
+                targetFOV = zoomFOV;
+            }
+            else
+            {
+                targetFOV = standardFOV;
+            }
+
+            float cameraFOV = Mathf.SmoothDamp(playerCamera.fieldOfView, targetFOV, ref currentFOV, 0.2f);
+            playerCamera.fieldOfView = cameraFOV;
+        }
     }
 
     #endregion

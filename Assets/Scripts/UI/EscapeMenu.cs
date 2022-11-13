@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class EscapeMenu : MonoBehaviour
 {
     [SerializeField] private GameObject escapeMenuPanel;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject menuBackGround;
+
+    [SerializeField] private TMP_Dropdown resolutionDropdown;
+    [SerializeField] private TMP_Dropdown windowDropdown;
+    [SerializeField] private Slider mouseSensitivitySlider;
 
     private PlayerController playerController;
 
@@ -49,6 +54,7 @@ public class EscapeMenu : MonoBehaviour
 
     public void BackToMenuButton()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -58,8 +64,13 @@ public class EscapeMenu : MonoBehaviour
     }
 
     public void ApplyButton()
-    { 
-    
+    {
+        // Screen settings
+        string dropDownValue = resolutionDropdown.options[resolutionDropdown.value].text;
+        string[] resolution = dropDownValue.Split('x');
+        bool fullScreen = windowDropdown.value == 0 ? false : true;
+
+        Screen.SetResolution(int.Parse(resolution[0]), int.Parse(resolution[1]), fullScreen);
     }
 
     public void BackButton()
@@ -67,6 +78,11 @@ public class EscapeMenu : MonoBehaviour
         settingsPanel.SetActive(false);
         escapeMenuPanel.SetActive(true);
         isInSettingsMenu = false;
+    }
+
+    public void SetMouseSensitivity()
+    {
+        GameManager.MouseSensitivity = mouseSensitivitySlider.value;
     }
 
     private void SearchForPlayerController()
@@ -108,4 +124,6 @@ public class EscapeMenu : MonoBehaviour
             }
         }
     }
+
+
 }
