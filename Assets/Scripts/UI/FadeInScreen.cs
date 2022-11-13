@@ -8,10 +8,14 @@ public class FadeInScreen : MonoBehaviour
 
     private float alpha = 1f;
 
-    void Update()
+    public bool fadeStarted = false;
+
+    public void FadeIn()
     {
-        if (fadeImage != null)
+        if (fadeStarted)
         {
+            fadeImage.enabled = true;
+
             alpha -= Time.deltaTime * fadeSpeed;
 
             fadeImage.color = new Color(0, 0, 0, alpha);
@@ -20,6 +24,15 @@ public class FadeInScreen : MonoBehaviour
             {
                 Destroy(fadeImage.gameObject);
             }
+        }
+        
+    }
+
+    void Update()
+    {
+        if (fadeImage != null)
+        {
+            FadeIn();
         }
     }
 }

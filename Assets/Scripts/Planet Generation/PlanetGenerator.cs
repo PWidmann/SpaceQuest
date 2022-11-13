@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Burst.CompilerServices;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlanetGenerator : MonoBehaviour
 {
@@ -21,6 +23,7 @@ public class PlanetGenerator : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject playerObject;
     [SerializeField] private GameObject waterSpherePrefab;
+    [SerializeField] private GameObject targetNavPoint;
 
     [Header("Planet Configurations")]
     [SerializeField] private PlanetScriptableObject[] configurations;
@@ -42,6 +45,16 @@ public class PlanetGenerator : MonoBehaviour
             GenerateNewPlanet();
             SpawnPlayer();
         }
+    }
+
+    private void GenerateDestinationPoint()
+    {
+        GameObject navPoint = Instantiate(targetNavPoint);
+        navPoint.name = "NavPoint";
+        navPoint.transform.position = RandomPlanetSpawnPoint();
+
+        Debug.Log("NavPoint generated!");
+
     }
 
     #endregion
@@ -70,18 +83,65 @@ public class PlanetGenerator : MonoBehaviour
 
     public void SpawnPlayer()
     {
+        
+        GenerateDestinationPoint();
+
         if (IsFirstPlayerSpawn())
             Destroy(Camera.main.gameObject);
 
         GameObject player = Instantiate(playerObject);
         player.name = "Player";
         player.tag = "Player";
-        player.transform.position = new Vector3(0, 270f, 0);
+        player.transform.position = MostNordPointOnPlanetTerrain();
+        GameObject go = GameObject.Find("GameInterfaceCanvas");
+        go.GetComponent<FadeInScreen>().fadeStarted = true;
+        go.GetComponentInChildren<GameGUI>().ShowPlayerHUD();
     }
 
     #endregion
 
     #region private Methods
+
+    private Vector3 MostNordPointOnPlanetTerrain()
+    {
+        Vector3 outputPoint = Vector3.zero;
+
+        Ray ray = new Ray(new Vector3(0, 400f, 0), Vector3.down);
+        int ground = 1 << LayerMask.NameToLayer("PlanetGround");
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, maxDistance: 500f, ground))
+        {
+            outputPoint = hit.point;
+        }
+        else
+        {
+            
+        }
+
+        return outputPoint;
+    }
+
+    private Vector3 RandomPlanetSpawnPoint()
+    {
+        Vector3 outputPoint = Vector3.zero;
+        Vector3 point = new Vector3(50, 400, 50);
+        Vector3 direction = Vector3.zero - point;
+        Ray ray = new Ray(point, direction);
+        int ground = 1 << LayerMask.NameToLayer("PlanetGround");
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, maxDistance: 500f, ground))
+        {
+            outputPoint = hit.point;
+        }
+        else
+        {
+            Debug.Log("ray hasnt hit anything");
+        }
+
+        return outputPoint;
+    }
 
     private void CreatePlanetObject()
     {

@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
 
     // Movement
+    private bool playerHasControl = true;
     private Vector2 inputDir;
     private Vector3 velocity;
     private bool crouching = false;
@@ -58,6 +59,8 @@ public class PlayerController : MonoBehaviour
     private float shootTimer = 0f;
     private bool flashLight = false;
 
+    
+
     #endregion
 
     #region UnityMethods
@@ -68,9 +71,6 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-            Application.Quit();
-
         CheckForGrounded();
         GetInput();
         AnimationHandling();
@@ -95,6 +95,16 @@ public class PlayerController : MonoBehaviour
 
     #region Methods
 
+    public void SetPlayerControlTrue()
+    {
+        playerHasControl = true;
+    }
+    public void SetPlayerControlFalse()
+    {
+        playerHasControl = false;
+        cameraYaw = 0;
+    }
+
     private void InitializePlayerController()
     {
         animator = GetComponent<Animator>();
@@ -107,7 +117,7 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
-    void CheckForGrounded()
+    private void CheckForGrounded()
     {
         RaycastHit hit;
         Physics.Raycast(transform.position, -transform.up, out hit);
@@ -124,40 +134,48 @@ public class PlayerController : MonoBehaviour
     }
     private void GetInput()
     {
-        // Crouching
-        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetButtonDown("J_Fire1"))
+        if (playerHasControl)
         {
-            crouching = !crouching;
+            // Crouching
+            if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetButtonDown("J_Fire1"))
+            {
+                crouching = !crouching;
 
-            if (crouching)
-            {
-                animator.SetBool("crouching", true);
-                mySpeed = crouchSpeed;
+                if (crouching)
+                {
+                    animator.SetBool("crouching", true);
+                    mySpeed = crouchSpeed;
+                }
+                else
+                {
+                    animator.SetBool("crouching", false);
+                    mySpeed = runSpeed;
+                }
             }
-            else
+
+            // Flashlight
+            if (Input.GetKeyDown(KeyCode.F))
             {
-                animator.SetBool("crouching", false);
-                mySpeed = runSpeed;
+                flashLight = !flashLight;
+            }
+            flashLightGO.SetActive(flashLight);
+
+            // Rotate camera
+            cameraPitch += Input.GetAxis("Mouse Y") * -2; // mouse Y input amount per frame (-1 to 1 in 0.05 steps)
+            cameraYaw = Input.GetAxis("Mouse X") * 2;
+            // Movement
+            inputDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            // Jumping
+            if (Input.GetKeyDown(KeyCode.Space) && grounded)
+            {
+                rigidBody.AddForce(transform.up * 400f);
+                animator.SetTrigger("jump");
             }
         }
-
-        // Flashlight
-        if (Input.GetKeyDown(KeyCode.F))
+        else
         {
-            flashLight = !flashLight;
-        }
-        flashLightGO.SetActive(flashLight);
-
-        // Rotate camera
-        cameraPitch += Input.GetAxis("Mouse Y") * -2; // mouse Y input amount per frame (-1 to 1 in 0.05 steps)
-        cameraYaw = Input.GetAxis("Mouse X") * 2;
-        // Movement
-        inputDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        // Jumping
-        if (Input.GetKeyDown(KeyCode.Space) && grounded)
-        {
-            rigidBody.AddForce(transform.up * 400f);
-            animator.SetTrigger("jump");
+            // For when the EscapeMenu gets opened, character movement smoothes to zero
+            inputDir = Vector2.Lerp(inputDir, Vector3.zero, Time.deltaTime * 10);
         }
     }
     private void AnimationHandling()
@@ -179,23 +197,26 @@ public class PlayerController : MonoBehaviour
     }
     private void Shooting()
     {
-        // Very inefficient, CREATE SOMETING BETTER HERE
-        if (Input.GetMouseButtonDown(0))
+        if (playerHasControl)
         {
-            GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
-            beam.transform.LookAt(target);
-            shootTimer = 0;
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            shootTimer += Time.deltaTime;
-
-            if (shootTimer > autoShootRate)
+            // Very inefficient, CREATE SOMETING BETTER HERE
+            if (Input.GetMouseButtonDown(0))
             {
                 GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
                 beam.transform.LookAt(target);
                 shootTimer = 0;
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                shootTimer += Time.deltaTime;
+
+                if (shootTimer > autoShootRate)
+                {
+                    GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
+                    beam.transform.LookAt(target);
+                    shootTimer = 0;
+                }
             }
         }
     }
@@ -216,7 +237,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            target = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));  
+            target = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));
         }
         rifle.transform.LookAt(target, transform.up);
     }
