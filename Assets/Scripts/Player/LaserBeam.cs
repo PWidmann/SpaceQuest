@@ -17,6 +17,10 @@ public class LaserBeam : MonoBehaviour
         }
 
         transform.Translate(0, 0, speed * Time.fixedDeltaTime);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
         
     }
 }

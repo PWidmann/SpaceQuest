@@ -14,7 +14,7 @@ public class PlanetGenerator : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerObject;
-    [SerializeField] private GameObject waterSpherePrefab;
+    [SerializeField] private GameObject lavaSpherePrefab;
     [SerializeField] private GameObject targetNavPoint;
     [SerializeField] private GameObject clericPrefab;
 
@@ -26,6 +26,7 @@ public class PlanetGenerator : MonoBehaviour
     private int textureResolution = 50;
     private GameObject planetObject;
     private Planet planet;
+    private bool hasLava;
 
     #endregion
 
@@ -72,7 +73,7 @@ public class PlanetGenerator : MonoBehaviour
         // Set current planet view camera inactive
         Camera.main.gameObject.SetActive(false);
 
-        SpawnEnemy();
+        
 
         GameObject player = Instantiate(playerObject);
         player.name = "Player";
@@ -83,12 +84,11 @@ public class PlanetGenerator : MonoBehaviour
         go.GetComponentInChildren<GameGUI>().ShowPlayerHUD();
     }
 
-    private void SpawnEnemy()
+    public void SpawnEnemyRandomPositionOnPlanet()
     {
         GameObject enemy = Instantiate(clericPrefab);
         enemy.name = "Cleric";
         enemy.transform.position = RandomPlanetSpawnPoint();
-        enemy.transform.rotation = Quaternion.Euler(0, 180f, 0);
 
         Debug.Log("Cleric spawned!");
     }
@@ -119,23 +119,39 @@ public class PlanetGenerator : MonoBehaviour
 
     private Vector3 RandomPlanetSpawnPoint()
     {
-        Vector3 outputPoint = Vector3.zero;
-        Vector3 point = new Vector3(0, 400, -60f);
-        Vector3 direction = Vector3.zero - point;
-        Ray ray = new Ray(point, direction);
-        int ground = 1 << LayerMask.NameToLayer("PlanetGround");
+        // Planet terrain max height + margin
+        float radius = 300f;
+
+        // Generate a random angle for the x and y axes.
+        float angleX = Random.Range(0.0f, 360.0f);
+        float angleY = Random.Range(0.0f, 360.0f);
+
+        // Calculate the x, y, and z coordinates of the point on the sphere using the input radius and the generated angles.
+        float x = radius * Mathf.Sin(angleX) * Mathf.Cos(angleY);
+        float y = radius * Mathf.Sin(angleX) * Mathf.Sin(angleY);
+        float z = radius * Mathf.Cos(angleX);
+
+        Vector3 point = new Vector3(x, y, z);
+
+        
+
+        // Return the point on the sphere as a Vector3.
+        return SpawnPointTowardsPlanet(point);
+    }
+
+    private Vector3 SpawnPointTowardsPlanet(Vector3 origin)
+    {
+        // Create a raycast from the input point to Vector3.Zero.
+        Ray ray = new Ray(origin, Vector3.zero - origin);
+        Vector3 output = Vector3.zero;
+        // Perform the raycast and store the result in a RaycastHit object.
         RaycastHit hit;
+        Physics.Raycast(ray, out hit);
+        output = hit.point;
 
-        if (Physics.Raycast(ray, out hit, maxDistance: 500f, ground))
-        {
-            outputPoint = hit.point;
-        }
-        else
-        {
-            Debug.Log("ray hasnt hit anything");
-        }
+        Debug.Log("Enemy Spawn Point generated: " + output);
 
-        return outputPoint;
+        return output;
     }
 
     private void CreatePlanetObject()
@@ -160,21 +176,10 @@ public class PlanetGenerator : MonoBehaviour
             planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;
         }
 
-        if (waterSpherePrefab)
+        if (lavaSpherePrefab && hasLava)
         {
-            switch (currentPlanetConfiguration.Watertype)
-            {
-                case WaterType.Normal:
-                    GameObject waterSphere = Instantiate(waterSpherePrefab, Vector3.zero, Quaternion.identity);
-                    waterSphere.transform.SetParent(planetObject.transform);
-                    break;
-                case WaterType.Lava:
-                    break;
-                case WaterType.Poison:
-                    break;
-                case WaterType.None:
-                    break;
-            }
+            GameObject lavaSphere = Instantiate(lavaSpherePrefab, Vector3.zero, Quaternion.identity);
+            lavaSphere.transform.SetParent(planetObject.transform);
         }
 
         if (combinePlanetFaces)

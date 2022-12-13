@@ -151,6 +151,25 @@ MonoBehaviour:
   proceduralSoftness:
     m_OverrideState: 0
     m_Value: 0.5
+--- !u!114 &-2775825508692787943
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32b6af8f7ad32324cb6941c3290e5895, type: 3}
+  m_Name: MicroShadowing
+  m_EditorClassIdentifier: 
+  active: 0
+  enable:
+    m_OverrideState: 0
+    m_Value: 1
+  opacity:
+    m_OverrideState: 0
+    m_Value: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +185,7 @@ MonoBehaviour:
   components:
   - {fileID: -6031342889187154874}
   - {fileID: 9100523671091572876}
+  - {fileID: -2775825508692787943}
 --- !u!114 &9100523671091572876
 MonoBehaviour:
   m_ObjectHideFlags: 3

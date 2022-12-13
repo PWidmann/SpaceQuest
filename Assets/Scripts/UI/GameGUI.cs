@@ -16,7 +16,7 @@ public class GameGUI : MonoBehaviour
         escapeMenuObject.SetActive(false);
         planetGeneratorPanel.SetActive(true);
 
-        Debug.Log("DLSS capabilities detected: " + UnityEngine.Rendering.HighDefinition.HDDynamicResolutionPlatformCapabilities.DLSSDetected);
+        //Debug.Log("DLSS capabilities detected: " + UnityEngine.Rendering.HighDefinition.HDDynamicResolutionPlatformCapabilities.DLSSDetected);
     }
     public void HideGeneratorPanel()
     {

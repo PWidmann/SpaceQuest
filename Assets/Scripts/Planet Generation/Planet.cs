@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+#region Global Enums
+public enum PlanetType { Green, Ice, Desert, Lava, Poison }
+public enum PlanetWeather { Clear, Cloudy, Storm, Foggy }
+#endregion
 
 public class Planet
 {

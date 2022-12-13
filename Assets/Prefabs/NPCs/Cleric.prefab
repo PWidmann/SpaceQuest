@@ -739,6 +739,7 @@ GameObject:
   - component: {fileID: 8428561836379924294}
   - component: {fileID: 3189395325041690555}
   - component: {fileID: 4165468821469995722}
+  - component: {fileID: 5239768805252485535}
   m_Layer: 0
   m_Name: Cleric
   m_TagString: Untagged
@@ -825,6 +826,20 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &5239768805252485535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6894574914442115472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fdb0b24b6635194d8226d1766016885, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyType: 1
+  EnemyStrength: 0
 --- !u!1 &6894574915177768673
 GameObject:
   m_ObjectHideFlags: 0
