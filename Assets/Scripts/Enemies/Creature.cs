@@ -19,7 +19,9 @@ public class Creature : MonoBehaviour, IEnemy
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         agentState = AgentState.Idle;
+        Health = 100f;
     }
 
 
@@ -76,7 +78,9 @@ public class Creature : MonoBehaviour, IEnemy
 
     public void Die()
     {
+        animator.SetTrigger("Die");
         Debug.Log("Creature has died");
+        Destroy(transform.GetComponent<Creature>());
     }
 
     public void Flee()

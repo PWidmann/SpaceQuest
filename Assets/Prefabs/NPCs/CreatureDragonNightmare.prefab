@@ -557,7 +557,7 @@ GameObject:
   - component: {fileID: 4618257141777905493}
   - component: {fileID: 3930431478107157501}
   - component: {fileID: 6866142311988640988}
-  - component: {fileID: 2187505924071069301}
+  - component: {fileID: 479765939536245007}
   m_Layer: 9
   m_Name: CreatureDragonNightmare
   m_TagString: Enemy
@@ -652,24 +652,23 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 2
+  m_Radius: 2.33
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 1.93, z: -0.55}
---- !u!64 &2187505924071069301
-MeshCollider:
+  m_Center: {x: 0, y: 2.21, z: -0.55}
+--- !u!65 &479765939536245007
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4618257141777905488}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  serializedVersion: 2
+  m_Size: {x: 1.4649549, y: 1.4119668, z: 3.0061798}
+  m_Center: {x: -0.09192855, y: 2.7073374, z: 2.8887124}
 --- !u!1 &4618257141777905572
 GameObject:
   m_ObjectHideFlags: 0

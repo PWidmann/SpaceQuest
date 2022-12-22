@@ -1,12 +1,15 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
+using static UnityEngine.UI.Image;
 
 public class PlanetGenerator : MonoBehaviour
 {
     #region member
 
     [Header("General Settings")]
-    [SerializeField] private bool autoGenerateAndPlay;
+    [SerializeField] private bool DevMode;
     [SerializeField] private bool combinePlanetFaces;
 
     [Header("Planet Materials")]
@@ -17,9 +20,13 @@ public class PlanetGenerator : MonoBehaviour
     [SerializeField] private GameObject lavaSpherePrefab;
     [SerializeField] private GameObject targetNavPoint;
     [SerializeField] private GameObject clericPrefab;
+    [SerializeField] private GameObject creaturePrefab;
 
     [Header("Planet Configurations")]
     [SerializeField] private PlanetScriptableObject[] configurations;
+
+    [Header("Creature Variations")]
+    [SerializeField] private Material[] creatureMatVariants;
 
     private PlanetScriptableObject currentPlanetConfiguration;
     private Texture2D texture;
@@ -27,6 +34,7 @@ public class PlanetGenerator : MonoBehaviour
     private GameObject planetObject;
     private Planet planet;
     private bool hasLava;
+    private Bloom bloom;
 
     #endregion
 
@@ -34,10 +42,27 @@ public class PlanetGenerator : MonoBehaviour
 
     private void Start()
     {
-        if (autoGenerateAndPlay)
+        if (DevMode)
+        {
+
+
+        }
+        else
         {
             GenerateNewPlanet();
-            SpawnPlayer();
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            GameObject.Find("Spitfire_Ship").GetComponent<Animator>().SetTrigger("FlyToPlanet");
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            GameObject.Find("Spitfire_Ship").GetComponent<Animator>().SetTrigger("Reset");
         }
     }
 
@@ -57,6 +82,9 @@ public class PlanetGenerator : MonoBehaviour
 
         Debug.Log("Created new " + currentPlanetConfiguration.PlanetType.ToString() + " Planet");
 
+        GameObject camGO = GameObject.Find("Camera");
+        camGO.GetComponent<CameraController>().SetCameraRotationActive();
+
         GenerateFoliage();
     }
 
@@ -67,14 +95,6 @@ public class PlanetGenerator : MonoBehaviour
 
     public void SpawnPlayer()
     {
-
-        //GenerateDestinationPoint();
-
-        // Set current planet view camera inactive
-        Camera.main.gameObject.SetActive(false);
-
-        
-
         GameObject player = Instantiate(playerObject);
         player.name = "Player";
         player.tag = "Player";
@@ -82,15 +102,9 @@ public class PlanetGenerator : MonoBehaviour
         GameObject go = GameObject.Find("GameInterfaceCanvas");
         go.GetComponent<FadeInScreen>().fadeStarted = true;
         go.GetComponentInChildren<GameGUI>().ShowPlayerHUD();
-    }
 
-    public void SpawnEnemyRandomPositionOnPlanet()
-    {
-        GameObject enemy = Instantiate(clericPrefab);
-        enemy.name = "Cleric";
-        enemy.transform.position = RandomPlanetSpawnPoint();
-
-        Debug.Log("Cleric spawned!");
+        // Set current planet view camera inactive
+        Camera.main.gameObject.SetActive(false);
     }
 
     #endregion
@@ -101,13 +115,13 @@ public class PlanetGenerator : MonoBehaviour
     {
         Vector3 outputPoint = Vector3.zero;
 
-        Ray ray = new Ray(new Vector3(0, 400f, 0), Vector3.down);
+        Ray ray = new Ray(new Vector3(0, 500f, 0), Vector3.down);
         int ground = 1 << LayerMask.NameToLayer("PlanetGround");
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, maxDistance: 500f, ground))
         {
-            outputPoint = hit.point;
+            outputPoint = hit.point + new Vector3(0, 0.5f, 0);
         }
         else
         {
@@ -115,43 +129,6 @@ public class PlanetGenerator : MonoBehaviour
         }
 
         return outputPoint;
-    }
-
-    private Vector3 RandomPlanetSpawnPoint()
-    {
-        // Planet terrain max height + margin
-        float radius = 300f;
-
-        // Generate a random angle for the x and y axes.
-        float angleX = Random.Range(0.0f, 360.0f);
-        float angleY = Random.Range(0.0f, 360.0f);
-
-        // Calculate the x, y, and z coordinates of the point on the sphere using the input radius and the generated angles.
-        float x = radius * Mathf.Sin(angleX) * Mathf.Cos(angleY);
-        float y = radius * Mathf.Sin(angleX) * Mathf.Sin(angleY);
-        float z = radius * Mathf.Cos(angleX);
-
-        Vector3 point = new Vector3(x, y, z);
-
-        
-
-        // Return the point on the sphere as a Vector3.
-        return SpawnPointTowardsPlanet(point);
-    }
-
-    private Vector3 SpawnPointTowardsPlanet(Vector3 origin)
-    {
-        // Create a raycast from the input point to Vector3.Zero.
-        Ray ray = new Ray(origin, Vector3.zero - origin);
-        Vector3 output = Vector3.zero;
-        // Perform the raycast and store the result in a RaycastHit object.
-        RaycastHit hit;
-        Physics.Raycast(ray, out hit);
-        output = hit.point;
-
-        Debug.Log("Enemy Spawn Point generated: " + output);
-
-        return output;
     }
 
     private void CreatePlanetObject()

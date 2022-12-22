@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 target;
 
     // Shooting
-    private float autoShootRate = 0.1f;
+    private float autoShootRate = 1.0f;
     private float shootTimer = 0f;
     private bool flashLight = false;
     private float standardFOV = 60f;
