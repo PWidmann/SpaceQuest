@@ -141,7 +141,7 @@ public class PlayerController : MonoBehaviour
         if (playerHasControl)
         {
             // Crouching
-            if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetButtonDown("J_Fire1"))
+            if (Input.GetKeyDown(KeyCode.LeftControl))
             {
                 crouching = !crouching;
 

@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Planet
   - NavPoint
   - Enemy
+  - Planet
   layers:
   - Default
   - TransparentFX
@@ -15,9 +15,9 @@ TagManager:
   - Water
   - UI
   - PlanetGround
-  - LaserBeam
-  - Player
-  - Enemy
+  - 
+  - 
+  - 
   - 
   - 
   - 

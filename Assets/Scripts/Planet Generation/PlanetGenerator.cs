@@ -1,7 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.HighDefinition;
 using static UnityEngine.UI.Image;
 
 public class PlanetGenerator : MonoBehaviour
@@ -34,7 +33,7 @@ public class PlanetGenerator : MonoBehaviour
     private GameObject planetObject;
     private Planet planet;
     private bool hasLava;
-    private Bloom bloom;
+
 
     #endregion
 

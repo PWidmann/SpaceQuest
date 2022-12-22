@@ -3,7 +3,7 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 using TMPro;
-using UnityEngine.Rendering.HighDefinition;
+
 
 public enum CollectQuestItem { Herb, Mineral, Artifact}
 public class QuestManager: MonoBehaviour

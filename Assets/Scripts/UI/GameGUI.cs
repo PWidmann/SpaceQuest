@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
+
 
 public class GameGUI : MonoBehaviour
 {
@@ -9,8 +9,6 @@ public class GameGUI : MonoBehaviour
     [SerializeField] private GameObject spawnPlayerButton;
     [SerializeField] private GameObject playerHUD;
     [SerializeField] private GameObject escapeMenuObject;
-
-    private Bloom bloom;
 
     public void Start()
     {
@@ -25,14 +23,6 @@ public class GameGUI : MonoBehaviour
         //Debug.Log("DLSS capabilities detected: " + UnityEngine.Rendering.HighDefinition.HDDynamicResolutionPlatformCapabilities.DLSSDetected);
     }
 
-    /// <summary>
-    /// Set bloom value 0 - 1, float will be clamped
-    /// </summary>
-    /// <param name="_value"></param>
-    public void SetBloom(float _value)
-    {
-        bloom.intensity = new UnityEngine.Rendering.ClampedFloatParameter(_value, 0, 1);
-    }
 
     public void HideGeneratorPanel()
     {

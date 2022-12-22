@@ -76,7 +76,7 @@ public class Planet
             {
 
                 FaceMeshes[i] = new GameObject("PlanetFace");
-                FaceMeshes[i].AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("HDRP/Lit"));
+                FaceMeshes[i].AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
                 meshFilters[i] = FaceMeshes[i].AddComponent<MeshFilter>();
                 meshFilters[i].sharedMesh = new Mesh();
 
