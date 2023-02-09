@@ -5,6 +5,7 @@ using static UnityEngine.UI.Image;
 using System.IO;
 using UnityEditor;
 using UnityEngine.Diagnostics;
+using UnityEngine.SceneManagement;
 
 public class PlanetGenerator : MonoBehaviour
 {
@@ -65,7 +66,7 @@ public class PlanetGenerator : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            GameObject.Find("Spitfire_Ship").GetComponent<Animator>().SetTrigger("Reset");
+            SceneManager.LoadScene(2);
         }
     }
 
@@ -82,6 +83,12 @@ public class PlanetGenerator : MonoBehaviour
         DeleteOldPlanet();
         CreatePlanetObject();
         UpdateColors();
+
+        if (currentPlanetConfiguration.PlanetType == PlanetType.Lava)
+        {
+            GameObject lavaSphere = Instantiate(lavaSpherePrefab, Vector3.zero, Quaternion.identity);
+            lavaSphere.transform.SetParent(planetObject.transform);
+        }
 
 
         Debug.Log("Created new " + currentPlanetConfiguration.PlanetType.ToString() + " Planet");
@@ -155,12 +162,6 @@ public class PlanetGenerator : MonoBehaviour
 
             // Add random material to planet face
             planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;           
-        }
-
-        if (lavaSpherePrefab && hasLava)
-        {
-            GameObject lavaSphere = Instantiate(lavaSpherePrefab, Vector3.zero, Quaternion.identity);
-            lavaSphere.transform.SetParent(planetObject.transform);
         }
 
         if (combinePlanetFaces)
