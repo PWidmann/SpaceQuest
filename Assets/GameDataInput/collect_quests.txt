@@ -1,3 +1,5 @@
+// Collect Quests
+
 [Name]
 Retrieve Lost Artifacts
 [Description]
@@ -12,8 +14,3 @@ Collect a list of ingredients for the local witch to use in her potions.
 Gather Magical Components
 [Description]
 Find and collect a set of magical components for a powerful spell
-
-[Name]
-Sugma Johnson
-[Description]
-Tales are told that OP loves sucking big dick

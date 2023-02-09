@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class Cleric : MonoBehaviour, IEnemy
 {
     [SerializeField] private EnemyType EnemyType;
@@ -14,9 +12,9 @@ public class Cleric : MonoBehaviour, IEnemy
     public float MaxHealth { get; set; }
 
 
-    private float MovementSpeed;
-    private AgentState AgentState;
-    private float AggroRange;
+    //private float MovementSpeed;
+    //private AgentState AgentState;
+    //private float AggroRange;
     private Vector3 playerPos;
     private float attackRange = 10f;
 
@@ -45,29 +43,29 @@ public class Cleric : MonoBehaviour, IEnemy
                 break;
         }
 
-        AggroRange = 20f;
+        //AggroRange = 20f;
 
         // Set enemy based on tape
         switch (EnemyType)
         {
             case EnemyType.Melee:
-                MovementSpeed = 3f;
+                //MovementSpeed = 3f;
                 break;
             case EnemyType.Range:
-                MovementSpeed = 5f;
+                //MovementSpeed = 5f;
                 break;
             case EnemyType.FlyingRange:
-                MovementSpeed = 5f;
+                //MovementSpeed = 5f;
                 break;
             case EnemyType.Creature:
-                MovementSpeed = 3f;
+                //MovementSpeed = 3f;
                 break;
         }
 
         // Check for player pos
         SearchForPlayer();
 
-        AgentState = AgentState.Idle;
+        //AgentState = AgentState.Idle;
     }
 
     public void TakeDamage(float _damage)

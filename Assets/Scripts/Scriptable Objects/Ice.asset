@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ace5993eb3faea4ab27696f8d4a2dda, type: 3}
   m_Name: Ice
   m_EditorClassIdentifier: 
-  PlanetType: 2
+  PlanetType: 1
   TerrainHeightColor:
     serializedVersion: 2
     key0: {r: 0.5613208, g: 0.83578366, b: 1, a: 1}
@@ -76,7 +76,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   exposeBaseSurface: 1
-  Watertype: 3
   GrassPrefabs: []
   GrassDensity: 0
   StonePrefabs: []

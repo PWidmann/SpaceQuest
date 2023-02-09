@@ -99,15 +99,11 @@ public class PlayerController : MonoBehaviour
 
     #region Methods
 
-    public void SetPlayerControlTrue()
+    public void SetPlayerIsInControl(bool active)
     {
-        playerHasControl = true;
+        playerHasControl = active;
     }
-    public void SetPlayerControlFalse()
-    {
-        playerHasControl = false;
-        cameraYaw = 0;
-    }
+
 
     private void InitializePlayerController()
     {

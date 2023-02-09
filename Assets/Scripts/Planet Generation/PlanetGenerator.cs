@@ -2,6 +2,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static UnityEngine.UI.Image;
+using System.IO;
+using UnityEditor;
+using UnityEngine.Diagnostics;
 
 public class PlanetGenerator : MonoBehaviour
 {
@@ -49,6 +52,7 @@ public class PlanetGenerator : MonoBehaviour
         else
         {
             GenerateNewPlanet();
+            
         }
     }
 
@@ -79,6 +83,11 @@ public class PlanetGenerator : MonoBehaviour
         CreatePlanetObject();
         UpdateColors();
 
+
+      
+        //AssetDatabase.CreateAsset(texture, "Assets/genTexture.png");
+
+
         Debug.Log("Created new " + currentPlanetConfiguration.PlanetType.ToString() + " Planet");
 
         GameObject camGO = GameObject.Find("Camera");
@@ -100,10 +109,10 @@ public class PlanetGenerator : MonoBehaviour
         player.transform.position = MostNordPointOnPlanetTerrain();
         GameObject go = GameObject.Find("GameInterfaceCanvas");
         go.GetComponent<FadeInScreen>().fadeStarted = true;
-        go.GetComponentInChildren<GameGUI>().ShowPlayerHUD();
 
         // Set current planet view camera inactive
         Camera.main.gameObject.SetActive(false);
+        GameObject.Find("PlanetGeneratorPanel").SetActive(false);
     }
 
     #endregion
@@ -150,6 +159,15 @@ public class PlanetGenerator : MonoBehaviour
 
             // Add random material to planet face
             planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;
+
+            Mesh mesh = planetFace.GetComponent<MeshFilter>().sharedMesh;
+            //var savePath = "Assets/" + "planet" + ".asset";
+
+
+            // Save planet mesh for debug
+            //AssetDatabase.CreateAsset(mesh, savePath);
+
+            
         }
 
         if (lavaSpherePrefab && hasLava)
