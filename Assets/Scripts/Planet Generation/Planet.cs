@@ -69,21 +69,19 @@ public class Planet
     private void CreateMeshObjects()
     {
         Vector3[] directions = { Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
+        Material material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
 
         for (int i = 0; i < 6; i++)
         {
             if (meshFilters[i] == null)
             {
-
                 FaceMeshes[i] = new GameObject("PlanetFace");
-                FaceMeshes[i].AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+                FaceMeshes[i].AddComponent<MeshRenderer>().sharedMaterial = material;
                 meshFilters[i] = FaceMeshes[i].AddComponent<MeshFilter>();
                 meshFilters[i].sharedMesh = new Mesh();
 
                 FaceMeshes[i].AddComponent<MeshCollider>().sharedMesh = meshFilters[i].sharedMesh;
                 FaceMeshes[i].GetComponent<MeshCollider>().sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-
-                meshFilters[i].sharedMesh.RecalculateNormals();
             }
 
             terrainFaces[i] = new Terrainface(shapeGenerator, meshFilters[i].sharedMesh, planetFaceResolution, directions[i], terrainHeightAnimCurve);

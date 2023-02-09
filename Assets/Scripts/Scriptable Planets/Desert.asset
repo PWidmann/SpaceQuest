@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ace5993eb3faea4ab27696f8d4a2dda, type: 3}
-  m_Name: Poison
+  m_Name: Desert
   m_EditorClassIdentifier: 
-  PlanetType: 5
+  PlanetType: 2
   TerrainHeightColor:
     serializedVersion: 2
-    key0: {r: 0.13207549, g: 0.13207549, b: 0.13207549, a: 1}
-    key1: {r: 0.21564655, g: 0.06274509, b: 0.43137255, a: 1}
-    key2: {r: 0.26537913, g: 0, b: 0.7075472, a: 0}
-    key3: {r: 0.735849, g: 0.7029823, b: 0.024296915, a: 0}
+    key0: {r: 0.7075472, g: 0.52963835, b: 0.3504361, a: 1}
+    key1: {r: 0.43137255, g: 0.26482064, b: 0.06274509, a: 1}
+    key2: {r: 0.6698113, g: 0.5411567, b: 0.30647027, a: 0}
+    key3: {r: 0.7924528, g: 0.67156553, b: 0.497152, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 14806
-    ctime2: 40996
+    ctime1: 14647
+    ctime2: 41499
     ctime3: 65535
     ctime4: 0
     ctime5: 0
@@ -84,8 +84,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  exposeBaseSurface: 1
-  Watertype: 2
+  exposeBaseSurface: 0
   GrassPrefabs: []
   GrassDensity: 0
   StonePrefabs: []

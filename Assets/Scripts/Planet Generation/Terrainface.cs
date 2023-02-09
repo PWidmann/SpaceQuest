@@ -62,8 +62,7 @@ public class Terrainface
                 int i = x + y * resolution;
                 Vector2 percent = new Vector2(x, y) / (resolution - 1);
                 Vector3 pointOnUnitCube = localUp + (percent.x - 0.5f) * 2 * axisA + (percent.y - 0.5f) * 2 * axisB;
-                Vector3 pointOnUnitSphere = PointOnCubeToPointOnSphere(pointOnUnitCube);
-                vertices[i] = shapeGenerator.CalculatePointOnPlanet(pointOnUnitSphere, animCurve);
+                vertices[i] = shapeGenerator.CalculatePointOnPlanet(PointOnCubeToPointOnSphere(pointOnUnitCube), animCurve);
 
                 // Set min and max terrain height value
                 SetTerrainMinMax(i);

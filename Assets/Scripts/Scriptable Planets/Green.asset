@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ace5993eb3faea4ab27696f8d4a2dda, type: 3}
-  m_Name: Lavadeep
+  m_Name: Green
   m_EditorClassIdentifier: 
-  PlanetType: 4
+  PlanetType: 0
   TerrainHeightColor:
     serializedVersion: 2
-    key0: {r: 1, g: 0.6372213, b: 0.10849059, a: 1}
-    key1: {r: 0.8151956, g: 0.56937975, b: 0.17992666, a: 1}
-    key2: {r: 0.71963716, g: 0.6036742, b: 0.36998427, a: 0}
-    key3: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 0}
-    key6: {r: 1, g: 0.54801047, b: 0.07075471, a: 0}
-    key7: {r: 1, g: 1, b: 1, a: 0}
-    ctime0: 59
-    ctime1: 767
-    ctime2: 8671
-    ctime3: 15101
-    ctime4: 33564
-    ctime5: 58044
+    key0: {r: 0, g: 0.3301887, b: 0.039063513, a: 1}
+    key1: {r: 0.061721236, g: 0.6886792, b: 0.11289114, a: 1}
+    key2: {r: 0, g: 0.4716981, b: 0.016378457, a: 0}
+    key3: {r: 0.24630652, g: 0.4245283, b: 0.24630652, a: 0}
+    key4: {r: 0.015705073, g: 0.4528302, b: 0, a: 0}
+    key5: {r: 0.11943354, g: 0.8396226, b: 0.059407253, a: 0}
+    key6: {r: 1, g: 1, b: 1, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 7196
+    ctime2: 9674
+    ctime3: 25660
+    ctime4: 41232
+    ctime5: 59872
     ctime6: 65476
-    ctime7: 65476
+    ctime7: 0
     atime0: 0
     atime1: 65535
     atime2: 0
@@ -48,24 +48,15 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1.0499154
-      outSlope: 1.0499154
+      inSlope: 0.72741723
+      outSlope: 0.72741723
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.16193222
-      value: 0.17001513
-      inSlope: 0.69949365
-      outSlope: 0.69949365
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.25507987
-      value: 0.17643799
+      time: 0.2507769
+      value: 0.18241943
       inSlope: 0.5994238
       outSlope: 0.5994238
       tangentMode: 0
@@ -102,8 +93,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  exposeBaseSurface: 1
-  Watertype: 3
+  exposeBaseSurface: 0
   GrassPrefabs: []
   GrassDensity: 0
   StonePrefabs: []

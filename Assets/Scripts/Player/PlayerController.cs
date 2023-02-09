@@ -158,6 +158,7 @@ public class PlayerController : MonoBehaviour
             {
                 flashLight = !flashLight;
             }
+
             flashLightGO.SetActive(flashLight);
 
             // Rotate camera
@@ -166,6 +167,7 @@ public class PlayerController : MonoBehaviour
 
             // Movement
             inputDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            
             // Jumping
             if (Input.GetKeyDown(KeyCode.Space) && grounded)
             {
@@ -175,8 +177,9 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // For when the EscapeMenu gets opened, character movement smoothes to zero
-            inputDir = Vector2.Lerp(inputDir, Vector3.zero, Time.deltaTime * 10);
+            // For when the EscapeMenu gets opened
+            inputDir = Vector3.zero;
+            cameraYaw = 0;
         }
     }
     private void AnimationHandling()

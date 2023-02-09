@@ -10,6 +10,9 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject settingsPanel;
+    private FadeInScreen fadeScreen;
+
+
 
     #endregion
 
@@ -19,6 +22,14 @@ public class MainMenu : MonoBehaviour
     {
         mainMenuPanel.SetActive(true);
         settingsPanel.SetActive(false);
+        fadeScreen = GetComponent<FadeInScreen>();
+    }
+
+    private void Start()
+    {
+        Time.timeScale = 1;
+        fadeScreen.fadeStarted = true;
+        fadeScreen.alpha = 1;
     }
 
     public void StartButton()

@@ -84,10 +84,6 @@ public class PlanetGenerator : MonoBehaviour
         UpdateColors();
 
 
-      
-        //AssetDatabase.CreateAsset(texture, "Assets/genTexture.png");
-
-
         Debug.Log("Created new " + currentPlanetConfiguration.PlanetType.ToString() + " Planet");
 
         GameObject camGO = GameObject.Find("Camera");
@@ -158,16 +154,7 @@ public class PlanetGenerator : MonoBehaviour
             planetFace.transform.parent = planetObject.transform;
 
             // Add random material to planet face
-            planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;
-
-            Mesh mesh = planetFace.GetComponent<MeshFilter>().sharedMesh;
-            //var savePath = "Assets/" + "planet" + ".asset";
-
-
-            // Save planet mesh for debug
-            //AssetDatabase.CreateAsset(mesh, savePath);
-
-            
+            planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;           
         }
 
         if (lavaSpherePrefab && hasLava)

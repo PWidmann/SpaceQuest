@@ -53,8 +53,6 @@ public class SettingsPanel : MonoBehaviour
         QualitySettings.antiAliasing = aaDropdown.value;
 
         applyButton.interactable = false;
-
-        Debug.Log("Settings applied!");
     }
 
     public void ActivateApplyButton()
@@ -70,17 +68,13 @@ public class SettingsPanel : MonoBehaviour
 
     public void SfxSlider()
     {
-        
         GameManager.SfxVolume = effectsVolumeSlider.value;
-        sfxValueText.text = (GameManager.SfxVolume * 100f) + " %";
-        Debug.Log("sfx value changed in game manager to: " + GameManager.SfxVolume);
+        sfxValueText.text = (GameManager.SfxVolume) + " %";
     }
 
     public void MusicSlider()
     {
-        
         GameManager.MusicVolume = musicVolumeSlider.value;
-        musicValueText.text = (int)(GameManager.MusicVolume * 100f) + " %";
-        Debug.Log("music value changed in game manager to: " + GameManager.MusicVolume);
+        musicValueText.text = (int)(GameManager.MusicVolume) + " %";
     }
 }
