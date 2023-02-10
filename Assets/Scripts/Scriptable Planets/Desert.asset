@@ -89,7 +89,10 @@ MonoBehaviour:
   GrassDensity: 0
   StonePrefabs: []
   StoneDensity: 0
-  TreePrefabs: []
-  TreeDensity: 0
+  TreePrefabs:
+  - {fileID: 1962632425140759606, guid: 5c81a2266f53b934f9526c1eca2be007, type: 3}
+  - {fileID: 9222001197902261612, guid: d90164d2da162454781ca989dd7962b4, type: 3}
+  - {fileID: 2317851399657652727, guid: 784854c21b0e3044c910a5555b078abb, type: 3}
+  TreeDensity: 1
   BioMatter: []
   BioMatterDensity: 0

@@ -103,6 +103,7 @@ MonoBehaviour:
   - {fileID: 8790522339504496268, guid: 27ecdb7e65f6dd64194f49d16636a2b4, type: 3}
   - {fileID: 8118659105457703798, guid: 5d1b0f53facb86747a21079050aff993, type: 3}
   - {fileID: 3830801503532763657, guid: c8d6ff8da70fce64cb04d008fce7982e, type: 3}
+  - {fileID: 2824952358329020415, guid: 320ea62bde5e60c43aa1a0e9a462c64f, type: 3}
   TreeDensity: 0
   BioMatter: []
   BioMatterDensity: 0

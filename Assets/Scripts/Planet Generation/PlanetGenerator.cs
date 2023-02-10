@@ -151,7 +151,7 @@ public class PlanetGenerator : MonoBehaviour
         // Spawn Trees
         if (currentPlanetConfiguration.TreePrefabs.Length > 0)
         {
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 500; i++)
             {
                 int rnd = UnityEngine.Random.Range(0, currentPlanetConfiguration.TreePrefabs.Length);
 
