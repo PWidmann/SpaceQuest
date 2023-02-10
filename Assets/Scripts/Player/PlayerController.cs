@@ -87,12 +87,6 @@ public class PlayerController : MonoBehaviour
         AnimationHandling();
         Shooting();
         Zoom();
-
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            Death();
-        }
     }
     private void FixedUpdate()
     {
@@ -109,6 +103,14 @@ public class PlayerController : MonoBehaviour
         CreateAimPoint();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Lava"))
+        {
+            Death();
+        }
+    }
+
     #endregion
 
     #region Methods
@@ -121,9 +123,10 @@ public class PlayerController : MonoBehaviour
     public void Death()
     {
         playerHasControl = false;
-        animator.enabled = false;
-        rdollController.EnableRigidbodyParts();
-        cameraArm.transform.parent = null;
+
+        int rnd = UnityEngine.Random.Range(0, 2);
+
+        animator.SetTrigger("Death" + (rnd + 1));
     }
 
 

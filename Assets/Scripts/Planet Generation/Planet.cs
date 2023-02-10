@@ -73,20 +73,18 @@ public class Planet
 
         for (int i = 0; i < 6; i++)
         {
-            if (meshFilters[i] == null)
-            {
-                FaceMeshes[i] = new GameObject("PlanetFace");
-                FaceMeshes[i].AddComponent<MeshRenderer>().sharedMaterial = material;
-                meshFilters[i] = FaceMeshes[i].AddComponent<MeshFilter>();
-                meshFilters[i].sharedMesh = new Mesh();
-
-                FaceMeshes[i].AddComponent<MeshCollider>().sharedMesh = meshFilters[i].sharedMesh;
-                FaceMeshes[i].GetComponent<MeshCollider>().sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            }
+            FaceMeshes[i] = new GameObject("PlanetFace");
+            FaceMeshes[i].AddComponent<MeshRenderer>().sharedMaterial = material;
+            meshFilters[i] = FaceMeshes[i].AddComponent<MeshFilter>();
+            meshFilters[i].sharedMesh = new Mesh();
 
             terrainFaces[i] = new Terrainface(shapeGenerator, meshFilters[i].sharedMesh, planetFaceResolution, directions[i], terrainHeightAnimCurve);
             FaceMeshes[i].GetComponent<MeshFilter>().sharedMesh = terrainFaces[i].Mesh;
             FaceMeshes[i].GetComponent<MeshFilter>().sharedMesh.RecalculateNormals();
+
+            
+            FaceMeshes[i].AddComponent<MeshCollider>().sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            FaceMeshes[i].GetComponent<MeshCollider>().sharedMesh = terrainFaces[i].Mesh;
         }
     }
 

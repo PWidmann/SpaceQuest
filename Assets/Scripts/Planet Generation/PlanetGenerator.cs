@@ -6,6 +6,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine.Diagnostics;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class PlanetGenerator : MonoBehaviour
 {
@@ -39,12 +40,16 @@ public class PlanetGenerator : MonoBehaviour
     private bool hasLava;
 
 
+    private SpawnHelper spawnHelper;
+
     #endregion
 
     #region Unity Methods
 
     private void Start()
     {
+        spawnHelper = GameObject.Find("QuestManager").GetComponent<SpawnHelper>();
+
         if (DevMode)
         {
 
@@ -53,7 +58,8 @@ public class PlanetGenerator : MonoBehaviour
         else
         {
             GenerateNewPlanet();
-            
+            GenerateFoliage();
+            SpawnPlayer();
         }
     }
 
@@ -66,7 +72,16 @@ public class PlanetGenerator : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            SceneManager.LoadScene(2);
+            int rnd = UnityEngine.Random.Range(0, currentPlanetConfiguration.TreePrefabs.Length);
+
+            GameObject tree = Instantiate(currentPlanetConfiguration.TreePrefabs[rnd]);
+
+            tree.transform.position = spawnHelper.GetRandomSurfaceSpawnPoint();
+
+            Vector3 toAttractorDir = (tree.transform.position - transform.position).normalized;
+            Vector3 bodyUp = tree.transform.up;
+            tree.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * tree.transform.rotation;
+            tree.transform.parent = GameObject.Find("Foliage").transform;
         }
     }
 
@@ -74,15 +89,44 @@ public class PlanetGenerator : MonoBehaviour
 
     #region Public Methods
 
+    public void CheckForGeneratedPlanetType(PlanetType currentPlanetType)
+    {
+        List<int> availableConfigurations = new List<int>();
+        for (int i = 0; i < configurations.Length; i++)
+        {
+            availableConfigurations.Add(i);
+        }
+
+        while (availableConfigurations.Count > 0)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, availableConfigurations.Count);
+            currentPlanetConfiguration = configurations[availableConfigurations[randomIndex]];
+
+            if (currentPlanetConfiguration.PlanetType != GameManager.LastPlanet)
+            {
+                GameManager.LastPlanet = currentPlanetConfiguration.PlanetType;
+                break;
+            }
+            availableConfigurations.RemoveAt(randomIndex);
+        }
+    }
+
+
     public void GenerateNewPlanet()
     {
         // Get random planet configuration from scriptable objects and initialize planet texture
         currentPlanetConfiguration = configurations[UnityEngine.Random.Range(0, configurations.Length)];
+
+        // Prevent the same type of planet after another
+        CheckForGeneratedPlanetType(currentPlanetConfiguration.PlanetType);
+
         texture = new Texture2D(textureResolution, 1);
 
         DeleteOldPlanet();
         CreatePlanetObject();
         UpdateColors();
+
+        
 
         if (currentPlanetConfiguration.PlanetType == PlanetType.Lava)
         {
@@ -90,20 +134,41 @@ public class PlanetGenerator : MonoBehaviour
             lavaSphere.transform.SetParent(planetObject.transform);
         }
 
-
-        Debug.Log("Created new " + currentPlanetConfiguration.PlanetType.ToString() + " Planet");
-
         GameObject camGO = GameObject.Find("Camera");
         camGO.GetComponent<CameraController>().SetCameraRotationActive();
 
-        GenerateFoliage();
-    }
-
-    private void GenerateFoliage()
-    {
         
     }
 
+    public void GenerateFoliage()
+    {
+        GameObject foliage = new GameObject("Foliage");
+        foliage.transform.parent = planetObject.transform;
+
+        
+
+
+        // Spawn Trees
+        if (currentPlanetConfiguration.TreePrefabs.Length > 0)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                int rnd = UnityEngine.Random.Range(0, currentPlanetConfiguration.TreePrefabs.Length);
+
+                GameObject tree = Instantiate(currentPlanetConfiguration.TreePrefabs[rnd]);
+                
+                tree.transform.position = spawnHelper.GetRandomSurfaceSpawnPoint();
+
+                Vector3 toAttractorDir = (tree.transform.position - transform.position).normalized;
+                Vector3 bodyUp = tree.transform.up;
+                tree.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * tree.transform.rotation;
+
+                tree.transform.parent = foliage.transform;
+            }
+        }
+    }
+
+    
     public void SpawnPlayer()
     {
         GameObject player = Instantiate(playerObject);
@@ -144,14 +209,17 @@ public class PlanetGenerator : MonoBehaviour
 
     private void CreatePlanetObject()
     {
-        planet = new Planet(currentPlanetConfiguration.TerrainHeightCurve, currentPlanetConfiguration.exposeBaseSurface);  
+        planet = new Planet(currentPlanetConfiguration.TerrainHeightCurve, currentPlanetConfiguration.exposeBaseSurface);
 
         // Create planet GameObject
+        planetObject = null;
         planetObject = new GameObject("Planet");
         planetObject.tag = "Planet";
         planetObject.transform.position = Vector3.zero;
         planetObject.AddComponent<GravityAttractor>();
         planetObject.tag = "Planet";
+
+        
 
         // Add created planet face meshes to planet object, 6 sides
         for (int i = 0; i < planet.FaceMeshes.Length; i++)
@@ -159,9 +227,8 @@ public class PlanetGenerator : MonoBehaviour
             GameObject planetFace = planet.FaceMeshes[i];
             planetFace.layer = LayerMask.NameToLayer("PlanetGround");
             planetFace.transform.parent = planetObject.transform;
-
-            // Add random material to planet face
-            planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;           
+            planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;
+            planetFace.GetComponent<MeshCollider>().sharedMesh = planetFace.GetComponent<MeshFilter>().mesh;
         }
 
         if (combinePlanetFaces)
@@ -207,21 +274,6 @@ public class PlanetGenerator : MonoBehaviour
         planetObject.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
         planetObject.transform.GetComponent<MeshFilter>().mesh.RecalculateNormals();
         planetObject.transform.AddComponent<MeshCollider>().sharedMesh = planetObject.transform.GetComponent<MeshFilter>().mesh;
-    }
-
-    private bool IsFirstPlayerSpawn()
-    {
-        // If there is an old player, destroy it
-        GameObject player;
-        if (player = GameObject.FindGameObjectWithTag("Player"))
-        {
-            Destroy(player);
-            return false;
-        }
-        else
-        {
-            return true;
-        }
     }
 
     private void DeleteOldPlanet()
