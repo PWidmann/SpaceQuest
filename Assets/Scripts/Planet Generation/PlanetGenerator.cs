@@ -226,6 +226,7 @@ public class PlanetGenerator : MonoBehaviour
         {
             GameObject planetFace = planet.FaceMeshes[i];
             planetFace.layer = LayerMask.NameToLayer("PlanetGround");
+            planetFace.tag = "Planet";
             planetFace.transform.parent = planetObject.transform;
             planetFace.GetComponent<MeshRenderer>().sharedMaterial = surfaceMaterial;
             planetFace.GetComponent<MeshCollider>().sharedMesh = planetFace.GetComponent<MeshFilter>().mesh;

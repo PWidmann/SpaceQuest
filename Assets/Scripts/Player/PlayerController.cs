@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 //using UnityEngine.Windows;
 
 public class PlayerController : MonoBehaviour
@@ -37,7 +38,7 @@ public class PlayerController : MonoBehaviour
     private float speedSmoothVelocity;
     private float speedSmoothTime = 0.05f;
     //private float turnSmoothTime = 0.1f;
-    private float runSpeed = 8f;
+    private float runSpeed = 15f; // about 8 intended
     private float crouchSpeed = 2.3f;
     private float mySpeed = 0;
     private float currentSpeed;
@@ -69,6 +70,10 @@ public class PlayerController : MonoBehaviour
     private float currentFOV = 0;
     private float zoomFOV = 30f;
 
+    // Floor checking
+    Ray floorcheckRay;
+    RaycastHit floorcheckHit;
+
     #endregion
 
     #region UnityMethods
@@ -94,7 +99,27 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = transform.forward * inputDir.y + transform.right * inputDir.x;
         moveDirection.Normalize();
         rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
+
+        // Floor check
+        CheckFloorMaterial();
     }
+
+    private void CheckFloorMaterial()
+    {
+        floorcheckRay.origin = transform.position + new Vector3(0, 4, 0);
+        floorcheckRay.direction = -transform.up;
+
+        if (Physics.Raycast(floorcheckRay, out floorcheckHit, 5f))
+        {
+            Debug.Log("Hit " + floorcheckHit.collider.transform.gameObject.name);
+        }
+
+        //if (Vector3.Distance(transform.position, Vector3.zero) < 199.5f)
+        //{
+        //    Debug.Log("Deaad!");
+        //}
+    }
+
     private void LateUpdate()
     {
         cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
@@ -105,10 +130,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Lava"))
-        {
-            Death();
-        }
+        //if (other.gameObject.CompareTag("Lava"))
+        //{
+        //    Death();
+        //}
     }
 
     #endregion
@@ -141,8 +166,8 @@ public class PlayerController : MonoBehaviour
         playerCamera = Camera.main;
 
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     }
     private void CheckForGrounded()
     {
