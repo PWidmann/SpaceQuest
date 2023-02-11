@@ -16,6 +16,9 @@ public class PlanetGenerator : MonoBehaviour
     [SerializeField] private bool DevMode;
     [SerializeField] private bool combinePlanetFaces;
 
+    [Header("UI Panel")]
+    [SerializeField] public GameObject planetGeneratorPanel;
+
     [Header("Planet Materials")]
     [SerializeField] private Material surfaceMaterial;
 
@@ -41,6 +44,7 @@ public class PlanetGenerator : MonoBehaviour
 
 
     private SpawnHelper spawnHelper;
+    private SpaceShipIntro spaceshipIntro;
 
     #endregion
 
@@ -49,40 +53,26 @@ public class PlanetGenerator : MonoBehaviour
     private void Start()
     {
         spawnHelper = GameObject.Find("QuestManager").GetComponent<SpawnHelper>();
+        spaceshipIntro = GameObject.Find("SpaceShip").GetComponent<SpaceShipIntro>();
 
         if (DevMode)
         {
-
+            GameObject camGO = GameObject.Find("Camera");
+            camGO.GetComponent<CameraController>().SetCameraRotationActive(true);
 
         }
         else
         {
             GenerateNewPlanet();
             GenerateFoliage();
-            SpawnPlayer();
+            planetGeneratorPanel.SetActive(false);
+            spaceshipIntro.StartIntro();
         }
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            GameObject.Find("Spitfire_Ship").GetComponent<Animator>().SetTrigger("FlyToPlanet");
-        }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            int rnd = UnityEngine.Random.Range(0, currentPlanetConfiguration.TreePrefabs.Length);
-
-            GameObject tree = Instantiate(currentPlanetConfiguration.TreePrefabs[rnd]);
-
-            tree.transform.position = spawnHelper.GetRandomSurfaceSpawnPoint();
-
-            Vector3 toAttractorDir = (tree.transform.position - transform.position).normalized;
-            Vector3 bodyUp = tree.transform.up;
-            tree.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * tree.transform.rotation;
-            tree.transform.parent = GameObject.Find("Foliage").transform;
-        }
     }
 
     #endregion
@@ -133,11 +123,6 @@ public class PlanetGenerator : MonoBehaviour
             GameObject lavaSphere = Instantiate(lavaSpherePrefab, Vector3.zero, Quaternion.identity);
             lavaSphere.transform.SetParent(planetObject.transform);
         }
-
-        GameObject camGO = GameObject.Find("Camera");
-        camGO.GetComponent<CameraController>().SetCameraRotationActive();
-
-        
     }
 
     public void GenerateFoliage()
@@ -180,7 +165,7 @@ public class PlanetGenerator : MonoBehaviour
 
         // Set current planet view camera inactive
         Camera.main.gameObject.SetActive(false);
-        GameObject.Find("PlanetGeneratorPanel").SetActive(false);
+        planetGeneratorPanel.SetActive(false);
     }
 
     #endregion
@@ -191,13 +176,13 @@ public class PlanetGenerator : MonoBehaviour
     {
         Vector3 outputPoint = Vector3.zero;
 
-        Ray ray = new Ray(new Vector3(0, 500f, 0), Vector3.down);
+        Ray ray = new Ray(new Vector3(0, 400f, 0), Vector3.down);
         int ground = 1 << LayerMask.NameToLayer("PlanetGround");
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, maxDistance: 500f, ground))
         {
-            outputPoint = hit.point + new Vector3(0, 0.5f, 0);
+            outputPoint = hit.point + new Vector3(0, 0, 0);
         }
         else
         {

@@ -78,6 +78,8 @@ public class PlayerController : MonoBehaviour
 
     private GameGUI playerGUI;
 
+    public bool Death { get => death; set => death = value; }
+
     #endregion
 
     #region UnityMethods
@@ -97,81 +99,76 @@ public class PlayerController : MonoBehaviour
         Shooting();
         Zoom();
 
-        CheckFloorMaterial();
+        CheckForLava();
     }
     private void FixedUpdate()
     {
-        // Player Movement
-        Vector3 moveDirection = transform.forward * inputDir.y + transform.right * inputDir.x;
-        moveDirection.Normalize();
-        rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
-
-        // Floor check
-        
+        if (playerHasControl)
+        {
+            // Player Movement
+            Vector3 moveDirection = transform.forward * inputDir.y + transform.right * inputDir.x;
+            moveDirection.Normalize();
+            rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
+        }
     }
 
-    private void CheckFloorMaterial()
+    private void CheckForLava()
     {
-        LayerMask checkLayer = (1 << LayerMask.NameToLayer("PlanetGround") | 1 << LayerMask.NameToLayer("Lava"));
-        bool isOnlava = false;
-
-        Vector3 awayfromcenter = (transform.position - Vector3.zero).normalized;
-        floorcheckRay.origin = transform.position + awayfromcenter * 5;
-        floorcheckRay.direction = -awayfromcenter;
-
-        if (Physics.Raycast(floorcheckRay, out floorcheckHit, 7f, checkLayer))
+        if (playerHasControl)
         {
-            if (floorcheckHit.transform.gameObject.tag == "Lava")
+            LayerMask checkLayer = (1 << LayerMask.NameToLayer("PlanetGround") | 1 << LayerMask.NameToLayer("Lava"));
+            bool isOnlava = false;
+
+            Vector3 awayfromcenter = (transform.position - Vector3.zero).normalized;
+            floorcheckRay.origin = transform.position + awayfromcenter * 5;
+            floorcheckRay.direction = -awayfromcenter;
+
+            if (Physics.Raycast(floorcheckRay, out floorcheckHit, 7f, checkLayer))
             {
-                isOnlava = true;
+                if (floorcheckHit.transform.gameObject.tag == "Lava")
+                {
+                    isOnlava = true;
+                }
+                else
+                {
+                    isOnlava = false;
+                }
+            }
+
+            if (isOnlava)
+            {
+                lavaTimer += Time.deltaTime;
+                if (lavaTimer > 2f && !death)
+                {
+                    death = true;
+                    playerGUI.HideLavaMeter();
+                    TriggerDeath();
+                }
+
             }
             else
             {
-                isOnlava = false;
+                if (lavaTimer > 0)
+                    lavaTimer -= Time.deltaTime;
+                if (lavaTimer < 0)
+                    lavaTimer = 0;
             }
-        }
 
-        if (isOnlava)
-        {
-            lavaTimer += Time.deltaTime;
-            if (lavaTimer > 2f && !death)
-            {
-                death = true;
+            if (lavaTimer > 0 && !death)
+                playerGUI.ShowLavaMeter(lavaTimer * 50);
+
+            if (lavaTimer <= 0)
                 playerGUI.HideLavaMeter();
-                Death();
-            }
-                
         }
-        else
-        {
-            if(lavaTimer > 0)
-                lavaTimer -= Time.deltaTime;
-            if (lavaTimer < 0)
-                lavaTimer = 0;
-        }
-
-        if (lavaTimer > 0)
-            playerGUI.ShowLavaMeter(lavaTimer * 50);
-
-        if (lavaTimer == 0)
-            playerGUI.HideLavaMeter();
-
     }
 
     private void LateUpdate()
     {
-        cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
-        cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0);
-
-        CreateAimPoint();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        //if (other.gameObject.CompareTag("Lava"))
-        //{
-        //    Death();
-        //}
+        if (playerHasControl)
+        {
+            cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
+            cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0);
+        }
     }
 
     #endregion
@@ -183,13 +180,15 @@ public class PlayerController : MonoBehaviour
         playerHasControl = active;
     }
 
-    public void Death()
+    public void TriggerDeath()
     {
         playerHasControl = false;
 
         int rnd = UnityEngine.Random.Range(0, 2);
 
         animator.SetTrigger("Death" + (rnd + 1));
+
+        playerGUI.SetDeathPanel(true);
     }
 
 
@@ -210,6 +209,7 @@ public class PlayerController : MonoBehaviour
     }
     private void CheckForGrounded()
     {
+        // Ground for jumping animation
         RaycastHit hit;
         Physics.Raycast(transform.position, -transform.up, out hit);
         if (hit.distance > 0.2f)
@@ -222,10 +222,16 @@ public class PlayerController : MonoBehaviour
             grounded = true;
             animator.SetBool("grounded", true);
         }
+
+        // Reset player if under the map
+        if (Vector3.Distance(transform.position, Vector3.zero) < 200f)
+        {
+            transform.position = transform.position + (transform.up * 50f);
+        }
     }
     private void GetInput()
     {
-        if (playerHasControl)
+        if (playerHasControl && !death)
         {
             // Crouching
             if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -275,24 +281,29 @@ public class PlayerController : MonoBehaviour
     }
     private void AnimationHandling()
     {
-        targetSpeed = mySpeed * inputDir.magnitude;
-        currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedSmoothVelocity, speedSmoothTime);
+        if (playerHasControl && !death)
+        {
+            targetSpeed = mySpeed * inputDir.magnitude;
+            currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedSmoothVelocity, speedSmoothTime);
 
-        if (currentSpeed < 0.05f)
-            currentSpeed = 0;
+            if (currentSpeed < 0.05f)
+                currentSpeed = 0;
 
-        // Animation handling
-        animationSpeedPercent = currentSpeed / mySpeed;
-        animator.SetFloat("xAxis", inputDir.x);
-        animator.SetFloat("zAxis", inputDir.y);
-        animator.SetFloat("speedPercent", animationSpeedPercent);
+            // Animation handling
+            animationSpeedPercent = currentSpeed / mySpeed;
+            animator.SetFloat("xAxis", inputDir.x);
+            animator.SetFloat("zAxis", inputDir.y);
+            animator.SetFloat("speedPercent", animationSpeedPercent);
 
-        // Rotate character yaw with mouse X input
-        transform.Rotate(new Vector3(0, cameraYaw, 0));
+            // Rotate character yaw with mouse X input
+            transform.Rotate(new Vector3(0, cameraYaw, 0));
+
+            CreateAimPoint();
+        }
     }
     private void Shooting()
     {
-        if (playerHasControl)
+        if (playerHasControl && !death)
         {
             // Very inefficient, CREATE SOMETING BETTER HERE
             if (Input.GetMouseButtonDown(0))
@@ -338,7 +349,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Zoom()
     {
-        if (playerHasControl)
+        if (playerHasControl && !death)
         {
             if (Input.GetMouseButton(1))
             {

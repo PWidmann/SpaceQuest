@@ -82,9 +82,9 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// Sets camera rotation mode around planet active (right click hold to rotate).
     /// </summary>
-    public void SetCameraRotationActive()
+    public void SetCameraRotationActive(bool active)
     {
-        canRotate = true;
+        canRotate = active;
     }
 
     private void CreateTargetRotation()

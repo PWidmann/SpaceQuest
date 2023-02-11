@@ -18,14 +18,21 @@ public class EscapeMenu : MonoBehaviour
     private bool escapeMenuActive = false;
     private bool isInSettingsMenu = false;
 
-    
+
+    private void Start()
+    {
+        
+    }
 
     private void Update()
     {
         // Get ref for player controller if not initialized
         SearchForPlayerController();
 
-        SetMenuActive();
+        if (playerController)
+        {
+            SetMenuActive();
+        }
     }
 
     private void SetMenuActive()
@@ -34,7 +41,7 @@ public class EscapeMenu : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
 
-            if (!escapeMenuActive)
+            if (!escapeMenuActive && !playerController.Death)
             {
                 escapeMenuActive = true;
             }
@@ -106,9 +113,16 @@ public class EscapeMenu : MonoBehaviour
 
     private void SearchForPlayerController()
     {
-        if (escapeMenuActive && !playerController)
+        if (!playerController)
         {
-            playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            try
+            {
+                playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            }
+            catch
+            { 
+            
+            }
         }
     }
 }
