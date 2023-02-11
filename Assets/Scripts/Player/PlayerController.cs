@@ -71,8 +71,12 @@ public class PlayerController : MonoBehaviour
     private float zoomFOV = 30f;
 
     // Floor checking
-    Ray floorcheckRay;
-    RaycastHit floorcheckHit;
+    private Ray floorcheckRay;
+    private RaycastHit floorcheckHit;
+    private float lavaTimer = 0;
+    private bool death = false;
+
+    private GameGUI playerGUI;
 
     #endregion
 
@@ -92,6 +96,8 @@ public class PlayerController : MonoBehaviour
         AnimationHandling();
         Shooting();
         Zoom();
+
+        CheckFloorMaterial();
     }
     private void FixedUpdate()
     {
@@ -101,15 +107,15 @@ public class PlayerController : MonoBehaviour
         rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
 
         // Floor check
-        CheckFloorMaterial();
+        
     }
 
     private void CheckFloorMaterial()
     {
         LayerMask checkLayer = (1 << LayerMask.NameToLayer("PlanetGround") | 1 << LayerMask.NameToLayer("Lava"));
+        bool isOnlava = false;
 
         Vector3 awayfromcenter = (transform.position - Vector3.zero).normalized;
-
         floorcheckRay.origin = transform.position + awayfromcenter * 5;
         floorcheckRay.direction = -awayfromcenter;
 
@@ -117,9 +123,38 @@ public class PlayerController : MonoBehaviour
         {
             if (floorcheckHit.transform.gameObject.tag == "Lava")
             {
-                Debug.Log("Dead!");
+                isOnlava = true;
+            }
+            else
+            {
+                isOnlava = false;
             }
         }
+
+        if (isOnlava)
+        {
+            lavaTimer += Time.deltaTime;
+            if (lavaTimer > 2f && !death)
+            {
+                death = true;
+                playerGUI.HideLavaMeter();
+                Death();
+            }
+                
+        }
+        else
+        {
+            if(lavaTimer > 0)
+                lavaTimer -= Time.deltaTime;
+            if (lavaTimer < 0)
+                lavaTimer = 0;
+        }
+
+        if (lavaTimer > 0)
+            playerGUI.ShowLavaMeter(lavaTimer * 50);
+
+        if (lavaTimer == 0)
+            playerGUI.HideLavaMeter();
 
     }
 
@@ -163,6 +198,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
         rdollController = GetComponent<RagdollController>();
+        playerGUI = GameObject.Find("PlayerGUI").GetComponent<GameGUI>();
         cameraPitchClamp = new Vector2(-50f, 50f); // cameraArm X rotation clamp
         cameraPitch = 20f;
         mySpeed = runSpeed;

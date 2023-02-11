@@ -1,23 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class GameGUI : MonoBehaviour
 {
-    [SerializeField] private GameObject planetGeneratorPanel;
-    [SerializeField] private GameObject spawnPlayerButton;
-    [SerializeField] private GameObject playerHUD;
+    [SerializeField] private Slider lavaSlider;
 
     public void Start()
     {
-        playerHUD.SetActive(false);
-        planetGeneratorPanel.SetActive(true);
+        lavaSlider.gameObject.SetActive(false);
     }
 
-
-    public void ShowPlayerHUD()
+    public void ShowLavaMeter(float value)
     {
-        playerHUD.SetActive(true);
+        lavaSlider.gameObject.SetActive(true);
+        lavaSlider.value = value;
     }
+
+    public void HideLavaMeter()
+    {
+        lavaSlider.gameObject.SetActive(false);
+    }
+
+
+    
 }
