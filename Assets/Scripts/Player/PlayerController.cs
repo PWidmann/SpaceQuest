@@ -106,18 +106,21 @@ public class PlayerController : MonoBehaviour
 
     private void CheckFloorMaterial()
     {
-        floorcheckRay.origin = transform.position + new Vector3(0, 4, 0);
-        floorcheckRay.direction = -transform.up;
+        LayerMask checkLayer = (1 << LayerMask.NameToLayer("PlanetGround") | 1 << LayerMask.NameToLayer("Lava"));
 
-        if (Physics.Raycast(floorcheckRay, out floorcheckHit, 5f))
+        Vector3 awayfromcenter = (transform.position - Vector3.zero).normalized;
+
+        floorcheckRay.origin = transform.position + awayfromcenter * 5;
+        floorcheckRay.direction = -awayfromcenter;
+
+        if (Physics.Raycast(floorcheckRay, out floorcheckHit, 7f, checkLayer))
         {
-            Debug.Log("Hit " + floorcheckHit.collider.transform.gameObject.name);
+            if (floorcheckHit.transform.gameObject.tag == "Lava")
+            {
+                Debug.Log("Dead!");
+            }
         }
 
-        //if (Vector3.Distance(transform.position, Vector3.zero) < 199.5f)
-        //{
-        //    Debug.Log("Deaad!");
-        //}
     }
 
     private void LateUpdate()
