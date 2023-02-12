@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.Mathematics;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +16,8 @@ public struct WayPointPosition
 public class SpaceShipIntro : MonoBehaviour
 {
     [SerializeField] private GameObject[] wayPoints;
+    [SerializeField] private Transform touchpoint1;
+    [SerializeField] private Transform touchpoint2;
 
     private int currentWayPoint = 0;
     private Vector3 currentVelocity = Vector3.zero;
@@ -34,7 +37,7 @@ public class SpaceShipIntro : MonoBehaviour
         camGO.GetComponent<CameraController>().SetCameraRotationActive(false);
 
         planetGenerator = GameObject.Find("PlanetGenerator").GetComponent<PlanetGenerator>();
-        zSpawnOffsetPos = -40f;
+        zSpawnOffsetPos = -20f;
     }
 
     public void StartIntro()
@@ -132,14 +135,13 @@ public class SpaceShipIntro : MonoBehaviour
         if (Physics.Raycast(ray, out hit, maxDistance: 500f, ground))
         {
             // If it doesn't find obstructing objects in the landing space
-            if (!Physics.CheckSphere(hit.point + new Vector3(0, 5.1f, 0), 5f))
+            if (!Physics.CheckSphere(hit.point + new Vector3(0, 4.2f, 0), 4f))
             {
                 outputPoint = hit.point + new Vector3(0, 3.5f, 0);
             }
             else
             {
-                Debug.Log("couldnt spawn ship, moving forward");
-                zSpawnOffsetPos -= 10f;
+                zSpawnOffsetPos -= 5f;
                 outputPoint = SearchLandPosition();
             }
         }

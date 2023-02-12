@@ -46,6 +46,7 @@ public class PlanetGenerator : MonoBehaviour
     private SpawnHelper spawnHelper;
     private SpaceShipIntro spaceshipIntro;
     private FadeScreen fadeScreen;
+    private GameGUI playerGUI;
 
     #endregion
 
@@ -60,6 +61,7 @@ public class PlanetGenerator : MonoBehaviour
     {
         spawnHelper = GameObject.Find("QuestManager").GetComponent<SpawnHelper>();
         spaceshipIntro = GameObject.Find("SpaceShip").GetComponent<SpaceShipIntro>();
+        playerGUI = GameObject.Find("PlayerGUI").GetComponent<GameGUI>();
         fadeScreen.FadeIn();
 
         if (DevMode)
@@ -127,6 +129,9 @@ public class PlanetGenerator : MonoBehaviour
         player.name = "Player";
         player.tag = "Player";
         player.transform.position = MostNordPointOnPlanetTerrain();
+        playerGUI.SetCompass(true);
+
+
         fadeScreen.FadeIn();
 
         // Set current planet view camera inactive

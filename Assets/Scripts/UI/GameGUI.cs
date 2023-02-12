@@ -8,11 +8,13 @@ public class GameGUI : MonoBehaviour
 {
     [SerializeField] private Slider lavaSlider;
     [SerializeField] private GameObject youDiedPanel;
+    [SerializeField] private GameObject compass;
 
-    public void Start()
+    private void Awake()
     {
         lavaSlider.gameObject.SetActive(false);
         youDiedPanel.SetActive(false);
+        compass.SetActive(false);
     }
 
     public void ShowLavaMeter(float value)
@@ -30,5 +32,9 @@ public class GameGUI : MonoBehaviour
     {
         youDiedPanel.SetActive(active);
     }
-    
+
+    public void SetCompass(bool active)
+    {
+        compass.SetActive(active);
+    }
 }

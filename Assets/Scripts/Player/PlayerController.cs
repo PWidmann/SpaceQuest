@@ -21,9 +21,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject laserBeamPrefab;
     [SerializeField] private GameObject flashLightGO;
 
-    private RagdollController rdollController;
-
-
     private Animator animator;
     private Rigidbody rigidBody;
     private CharacterController controller;
@@ -37,7 +34,7 @@ public class PlayerController : MonoBehaviour
     private float speedSmoothVelocity;
     private float speedSmoothTime = 0.05f;
     //private float turnSmoothTime = 0.1f;
-    private float runSpeed = 15f; // about 8 intended
+    private float runSpeed = 8f; // about 8 intended
     private float crouchSpeed = 2.3f;
     private float mySpeed = 0;
     private float currentSpeed;
@@ -58,7 +55,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 aimRotOffset = new Vector3(2f, 0, 0); // Best compromise of far and near target aiming rotation
     private Quaternion aimRotation;
     private RaycastHit hit;
-    private Vector3 target;
+    private Vector3 aimTarget;
 
     // Shooting
     private float autoShootRate = 1.0f;
@@ -78,7 +75,12 @@ public class PlayerController : MonoBehaviour
     private GameGUI playerGUI;
     private FadeScreen fadeScreen;
 
+    private Vector3 spawnPoint = Vector3.zero;
+    private float respawnTimer = 5f;
+    private bool respawnStarted = false;
+
     public bool Death { get => death; set => death = value; }
+    public Vector3 SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
 
     #endregion
 
@@ -89,8 +91,6 @@ public class PlayerController : MonoBehaviour
         InitializePlayerController(); 
     }
 
-    
-
     private void Update()
     {
         CheckForGrounded();
@@ -100,6 +100,7 @@ public class PlayerController : MonoBehaviour
         Zoom();
 
         CheckForLava();
+        Respawn();
     }
     private void FixedUpdate()
     {
@@ -108,9 +109,61 @@ public class PlayerController : MonoBehaviour
             // Player Movement
             Vector3 moveDirection = transform.forward * inputDir.y + transform.right * inputDir.x;
             moveDirection.Normalize();
-            rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
+            rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime); 
+        }
+    }
 
-            
+    private void LateUpdate()
+    {
+        if (playerHasControl && !death)
+        {
+            cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
+            cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0);
+
+            CreateAimPoint();
+        }
+    }
+
+    #endregion
+
+    #region Methods
+
+    public void SetPlayerIsInControl(bool active)
+    {
+        playerHasControl = active;
+        
+    }
+
+    public void TriggerDeath()
+    {
+        playerHasControl = false;
+
+        int rnd = UnityEngine.Random.Range(0, 2);
+        animator.SetTrigger("Death" + (rnd + 1));
+        playerGUI.SetDeathPanel(true);
+        fadeScreen.FadeOut();
+        respawnStarted = true;
+    }
+
+    public void Respawn()
+    {
+        if (respawnStarted)
+        {
+            respawnTimer -= Time.deltaTime;
+
+            if (respawnTimer < 0)
+            {
+                death = false;
+                playerHasControl = true;
+                transform.position = spawnPoint;
+                animator.Play("SpaceRanger_Rifle_Aim_Idle");
+                playerGUI.SetDeathPanel(false);
+                playerGUI.HideLavaMeter();
+                fadeScreen.FadeIn();
+                lavaTimer = 0;
+                respawnStarted = false;
+                respawnTimer = 5f;
+            }
         }
     }
 
@@ -164,52 +217,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
-    {
-        if (playerHasControl && !death)
-        {
-            cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
-            cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0);
-
-            CreateAimPoint();
-        }
-    }
-
-    #endregion
-
-    #region Methods
-
-    public void SetPlayerIsInControl(bool active)
-    {
-        playerHasControl = active;
-    }
-
-    public void TriggerDeath()
-    {
-        playerHasControl = false;
-
-        int rnd = UnityEngine.Random.Range(0, 2);
-
-        animator.SetTrigger("Death" + (rnd + 1));
-
-        playerGUI.SetDeathPanel(true);
-        fadeScreen.FadeOut();
-    }
-
-
     private void InitializePlayerController()
     {
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
-        rdollController = GetComponent<RagdollController>();
         playerGUI = GameObject.Find("PlayerGUI").GetComponent<GameGUI>();
         fadeScreen = GameObject.Find("FadeCanvas").GetComponent<FadeScreen>();
         cameraPitchClamp = new Vector2(-50f, 50f); // cameraArm X rotation clamp
         cameraPitch = 20f;
         mySpeed = runSpeed;
         playerCamera = Camera.main;
-        target = new Vector3(0, 0, 0);
-
+        aimTarget = new Vector3(0, 0, 0);
+        spawnPoint = transform.position;
 
         UnityEngine.Cursor.visible = false;
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -316,7 +335,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
-                beam.transform.LookAt(target);
+                beam.transform.LookAt(aimTarget);
                 shootTimer = 0;
             }
 
@@ -327,7 +346,7 @@ public class PlayerController : MonoBehaviour
                 if (shootTimer > autoShootRate)
                 {
                     GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
-                    beam.transform.LookAt(target);
+                    beam.transform.LookAt(aimTarget);
                     shootTimer = 0;
                 }
             }
@@ -346,13 +365,13 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, maxDistance: 300f, ground))
         {
-            target = hit.point;
+            aimTarget = hit.point;
         }
         else
         {
-            target = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));
+            aimTarget = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));
         }
-        rifle.transform.LookAt(target, transform.up);
+        rifle.transform.LookAt(aimTarget, transform.up);
     }
     private void Zoom()
     {
