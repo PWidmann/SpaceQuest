@@ -42,11 +42,11 @@ public class PlanetGenerator : MonoBehaviour
     private int textureResolution = 50;
     private GameObject planetObject;
     private Planet planet;
-    private bool hasLava;
     private SpawnHelper spawnHelper;
     private SpaceShipIntro spaceshipIntro;
     private FadeScreen fadeScreen;
     private GameGUI playerGUI;
+    private float playerSpawnOffset = 0;
 
     #endregion
 
@@ -168,14 +168,23 @@ public class PlanetGenerator : MonoBehaviour
     {
         Vector3 outputPoint = Vector3.zero;
 
-        Ray ray = new Ray(new Vector3(0, 400f, 0), Vector3.down);
-        int ground = 1 << LayerMask.NameToLayer("PlanetGround");
+        Ray ray = new Ray(new Vector3(0, 400f, -playerSpawnOffset), Vector3.down);
+        int ground = 1 << LayerMask.NameToLayer("PlanetGround") | 1 << LayerMask.NameToLayer("Lava");
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, maxDistance: 500f, ground))
         {
             outputPoint = hit.point + new Vector3(0, 0, 0);
+
+            if (hit.transform.gameObject.tag == "Lava")
+            {
+                Debug.Log("Spawned on lava, move spawn point");
+                playerSpawnOffset += 10f;
+                outputPoint = MostNordPointOnPlanetTerrain();
+            }
         }
+
+        
 
         return outputPoint;
     }

@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
     private FadeScreen fadeScreen;
 
     private Vector3 spawnPoint = Vector3.zero;
-    private float respawnTimer = 5f;
+    private float respawnTimer = 6f;
     private bool respawnStarted = false;
 
     public bool Death { get => death; set => death = value; }
@@ -118,10 +118,13 @@ public class PlayerController : MonoBehaviour
         if (playerHasControl && !death)
         {
             cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
-            cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0);
-
-            CreateAimPoint();
+            cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0); 
         }
+
+        if (!death)
+        {
+            CreateAimPoint();
+        }  
     }
 
     #endregion
@@ -162,7 +165,7 @@ public class PlayerController : MonoBehaviour
                 fadeScreen.FadeIn();
                 lavaTimer = 0;
                 respawnStarted = false;
-                respawnTimer = 5f;
+                respawnTimer = 6f;
             }
         }
     }

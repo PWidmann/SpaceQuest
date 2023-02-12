@@ -134,16 +134,29 @@ public class SpaceShipIntro : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, maxDistance: 500f, ground))
         {
-            // If it doesn't find obstructing objects in the landing space
-            if (!Physics.CheckSphere(hit.point + new Vector3(0, 4.2f, 0), 4f))
+            if (hit.transform.gameObject.tag != "Lava")
             {
-                outputPoint = hit.point + new Vector3(0, 3.5f, 0);
+                // If it doesn't find obstructing objects in the landing space
+                if (!Physics.CheckSphere(hit.point + new Vector3(0, 6.1f, 0), 6f))
+                {
+                    outputPoint = hit.point + new Vector3(0, 3.5f, 0);
+                }
+                else
+                {
+                    zSpawnOffsetPos -= 5f;
+                    outputPoint = SearchLandPosition();
+                }
             }
             else
             {
                 zSpawnOffsetPos -= 5f;
                 outputPoint = SearchLandPosition();
             }
+        }
+
+        if (outputPoint == Vector3.zero)
+        {
+            outputPoint = SearchLandPosition();
         }
 
         return outputPoint;

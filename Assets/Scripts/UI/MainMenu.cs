@@ -39,7 +39,7 @@ public class MainMenu : MonoBehaviour
         {
             startTimer += Time.deltaTime;
 
-            if (startTimer > 4f)
+            if (startTimer > 3f)
             {
                 startGame = false;
                 startTimer = 0;
