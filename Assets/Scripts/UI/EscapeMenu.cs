@@ -103,7 +103,10 @@ public class EscapeMenu : MonoBehaviour
     public void BackToMenuButton()
     {
         Time.timeScale = 1;
+        GameObject fadeScreen = GameObject.Find("FadeCanvas");
+        Destroy(fadeScreen);
         SceneManager.LoadScene("MainMenu");
+
     }
 
     public void QuitButton()

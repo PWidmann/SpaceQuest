@@ -8,10 +8,10 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LaserBeamMat
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_ValidKeywords:
+  m_Shader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _EMISSION
-  m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -179,6 +179,7 @@ Material:
     - _Anisotropy: 0
     - _Blend: 0
     - _BlendMode: 0
+    - _BlendOp: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -244,10 +245,11 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _RayTracing: 0
-    - _ReceiveShadows: 1
+    - _ReceiveShadows: 0
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
+    - _SampleGI: 0
     - _Smoothness: 0
     - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
@@ -291,12 +293,12 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0, g: 0.37195015, b: 1, a: 1}
+    - _BaseColor: {r: 0.23113209, g: 0.5175731, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0, g: 0.37195012, b: 1, a: 1}
+    - _Color: {r: 0.23113206, g: 0.51757306, b: 1, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0.1273585, g: 0.1790961, b: 1, a: 1}
     - _EmissiveColor: {r: 0.15244976, g: 3.2748342, b: 67.90193, a: 98.36}
     - _EmissiveColorLDR: {r: 0.020024916, g: 0.20060751, b: 0.8490566, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}

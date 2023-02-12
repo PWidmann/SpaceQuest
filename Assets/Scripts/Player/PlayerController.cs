@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform gunEndPoint;
     [SerializeField] private GameObject laserBeamPrefab;
     [SerializeField] private GameObject flashLightGO;
-    [SerializeField] private GameObject hips;
 
     private RagdollController rdollController;
 
@@ -77,6 +76,7 @@ public class PlayerController : MonoBehaviour
     private bool death = false;
 
     private GameGUI playerGUI;
+    private FadeScreen fadeScreen;
 
     public bool Death { get => death; set => death = value; }
 
@@ -109,6 +109,8 @@ public class PlayerController : MonoBehaviour
             Vector3 moveDirection = transform.forward * inputDir.y + transform.right * inputDir.x;
             moveDirection.Normalize();
             rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
+
+            
         }
     }
 
@@ -164,10 +166,12 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (playerHasControl)
+        if (playerHasControl && !death)
         {
             cameraPitch = Math.Clamp(cameraPitch, cameraPitchClamp.x, cameraPitchClamp.y);
             cameraArm.transform.localRotation = Quaternion.Euler(cameraPitch, -10f, 0);
+
+            CreateAimPoint();
         }
     }
 
@@ -189,6 +193,7 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger("Death" + (rnd + 1));
 
         playerGUI.SetDeathPanel(true);
+        fadeScreen.FadeOut();
     }
 
 
@@ -198,10 +203,12 @@ public class PlayerController : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         rdollController = GetComponent<RagdollController>();
         playerGUI = GameObject.Find("PlayerGUI").GetComponent<GameGUI>();
+        fadeScreen = GameObject.Find("FadeCanvas").GetComponent<FadeScreen>();
         cameraPitchClamp = new Vector2(-50f, 50f); // cameraArm X rotation clamp
         cameraPitch = 20f;
         mySpeed = runSpeed;
         playerCamera = Camera.main;
+        target = new Vector3(0, 0, 0);
 
 
         UnityEngine.Cursor.visible = false;
@@ -298,7 +305,7 @@ public class PlayerController : MonoBehaviour
             // Rotate character yaw with mouse X input
             transform.Rotate(new Vector3(0, cameraYaw, 0));
 
-            CreateAimPoint();
+            
         }
     }
     private void Shooting()
@@ -329,7 +336,7 @@ public class PlayerController : MonoBehaviour
     private void CreateAimPoint()
     {
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        int ground = 1 << LayerMask.NameToLayer("PlanetGround");
+        int ground = 1 << LayerMask.NameToLayer("PlanetGround") | LayerMask.NameToLayer("Lava");
 
         aimRotation = chest.transform.rotation * Quaternion.Euler(cameraPitch * 0.5f, 0, 0);
         chest.transform.rotation = aimRotation;
