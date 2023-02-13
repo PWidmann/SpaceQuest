@@ -8,6 +8,7 @@ using UnityEngine.Diagnostics;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 public class PlanetGenerator : MonoBehaviour
 {
@@ -34,8 +35,8 @@ public class PlanetGenerator : MonoBehaviour
     [Header("Planet Configurations")]
     [SerializeField] private PlanetScriptableObject[] configurations;
 
-    [Header("Creature Variations")]
-    [SerializeField] private Material[] creatureMatVariants;
+    [Header("NPCs")]
+    [SerializeField] private GameObject demonEnemyPrefab;
 
     private PlanetScriptableObject currentPlanetConfiguration;
     private Texture2D texture;
@@ -47,6 +48,8 @@ public class PlanetGenerator : MonoBehaviour
     private FadeScreen fadeScreen;
     private GameGUI playerGUI;
     private float playerSpawnOffset = 0;
+
+    private List<GameObject> spawnedEnemies = new List<GameObject>();
 
     #endregion
 
@@ -72,10 +75,30 @@ public class PlanetGenerator : MonoBehaviour
         }
         else
         {
+            // Automatically generate planet and quest and start intro
             GenerateNewPlanet();
             GenerateFoliage();
+            SpawnEnemies();
             planetGeneratorPanel.SetActive(false);
             spaceshipIntro.StartIntro();
+        }
+    }
+
+    public void SpawnEnemies()
+    {
+        spawnedEnemies.Clear();
+        GameObject enemiesParent = new GameObject("Enemies");
+        enemiesParent.transform.SetParent(planetObject.transform);
+
+        for (int i = 0; i < 100; i++)
+        {
+            GameObject enemy = Instantiate(demonEnemyPrefab);
+            enemy.transform.position = spawnHelper.GetRandomSurfaceSpawnPoint();
+            Vector3 toAttractorDir = (enemy.transform.position - Vector3.zero).normalized;
+            Vector3 bodyUp = enemy.transform.up;
+            enemy.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * enemy.transform.rotation;
+            enemy.transform.SetParent(enemiesParent.transform);
+            spawnedEnemies.Add(enemy);
         }
     }
 
@@ -100,9 +123,6 @@ public class PlanetGenerator : MonoBehaviour
     {
         GameObject foliage = new GameObject("Foliage");
         foliage.transform.parent = planetObject.transform;
-
-        
-
 
         // Spawn Trees
         if (currentPlanetConfiguration.TreePrefabs.Length > 0)
@@ -137,6 +157,12 @@ public class PlanetGenerator : MonoBehaviour
         // Set current planet view camera inactive
         Camera.main.gameObject.SetActive(false);
         planetGeneratorPanel.SetActive(false);
+
+        // Set player GO in all NPCs
+        foreach (GameObject enemy in spawnedEnemies)
+        {
+            enemy.GetComponent<SimpleEnemyController>().ActivateNPC(player);
+        }
     }
 
     #endregion

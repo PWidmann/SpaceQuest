@@ -30,6 +30,7 @@ public class SpaceShipIntro : MonoBehaviour
     private bool fadeOut = false;
     private bool hasFadeScreen = false;
     private float zSpawnOffsetPos;
+    private float xSpawnOffsetPos;
 
     void Start()
     {
@@ -38,6 +39,7 @@ public class SpaceShipIntro : MonoBehaviour
 
         planetGenerator = GameObject.Find("PlanetGenerator").GetComponent<PlanetGenerator>();
         zSpawnOffsetPos = -20f;
+        xSpawnOffsetPos = 0;
     }
 
     public void StartIntro()
@@ -127,8 +129,14 @@ public class SpaceShipIntro : MonoBehaviour
 
     private Vector3 SearchLandPosition()
     {
+        if (zSpawnOffsetPos < -100)
+        {
+            xSpawnOffsetPos += 10f;
+            zSpawnOffsetPos = -20f;
+        }
+
         Vector3 outputPoint = Vector3.zero;
-        Ray ray = new Ray(new Vector3(0, 400f, zSpawnOffsetPos), Vector3.down);
+        Ray ray = new Ray(new Vector3(xSpawnOffsetPos, 400f, zSpawnOffsetPos), Vector3.down);
         int ground = 1 << LayerMask.NameToLayer("PlanetGround");
         RaycastHit hit;
 

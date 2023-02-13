@@ -22,9 +22,9 @@ public class LaserBeam : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // If the bullet hits a monster
-        if (other.GetComponent<IEnemy>() != null)
+        if (other.GetComponent<SimpleEnemyController>() != null)
         {
-            other.gameObject.GetComponent<IEnemy>().TakeDamage(10f);
+            other.gameObject.GetComponent<SimpleEnemyController>().TakeDamage(35f);
         }
 
         Destroy(gameObject);

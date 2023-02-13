@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Creature : MonoBehaviour, IEnemy
+public class Creature : MonoBehaviour
 {
     private CharacterController characterController;   
     private Animator animator;
-    private AgentState agentState;
     private Vector3 targetWalkPosition;
     private Vector3 playerPosition;
 
@@ -20,28 +19,13 @@ public class Creature : MonoBehaviour, IEnemy
     void Start()
     {
         animator = GetComponent<Animator>();
-        agentState = AgentState.Idle;
         Health = 100f;
     }
 
 
     void Update()
     {
-        switch (agentState)
-        {
-            case AgentState.Idle:
-                IdleState();
-                break;
-            case AgentState.Pathing:
-                Pathing();
-                break;
-            case AgentState.Warning:
-                break;
-            case AgentState.ReachPlayer:
-                break;
-            case AgentState.Attacking:
-                break;
-        }
+
     }
 
     private void IdleState()
@@ -50,7 +34,7 @@ public class Creature : MonoBehaviour, IEnemy
 
         if (idleTimer >= 3f)
         {
-            agentState = AgentState.Pathing;
+
             idleTimer = 0f;
         }
     }
@@ -95,11 +79,6 @@ public class Creature : MonoBehaviour, IEnemy
 
     public void TakeDamage(float _damage)
     {
-        Health -= _damage;
-        Debug.Log("Creature has taken " + _damage + " and is now at " + Health + " health");
-        if (Health <= 0)
-        {
-            Die();
-        }
+        
     }
 }

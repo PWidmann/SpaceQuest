@@ -2,35 +2,65 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public enum EnemyState { Idle, Pathing, Chase, Attack, Death, Hit }
 
 public class SimpleEnemyController : MonoBehaviour
 {
-    [SerializeField] private int healthPoints = 100;
+    private float currentHealth = 100f;
+    private float maxHealth = 100f;
 
     private EnemyState enemyState;
     private Animator animator;
 
     private Rigidbody rigidBody;
     private Vector3 spawnPoint;
-    private Vector3 nextWaypoint;
+    private Vector3 nextWaypointDirection;
     private int wayPointCounter = 0;
     private float idleTimer = 0;
-    private float moveSpeed = 4f;
+    private float deathTimer = 3f;
+    private float pathTimer = 0;
+    public float turnSpeed = 300f;
 
+    public float runSpeed = 4;
+    private float currentSpeed = 0;
+    public Vector3 velocity;
+
+    public bool hasSeenPlayer = true;
+
+    private GameObject playerObject;
+
+    private bool active = false;
+    private bool dead = false;
+
+    private SpawnHelper spawnHelper;
     void Start()
+    {
+        Initialization();
+    }
+
+    private void Initialization()
     {
         animator = GetComponent<Animator>();
         enemyState = EnemyState.Idle;
-        nextWaypoint = NextPathPoint();
+        nextWaypointDirection = Vector3.zero;
         spawnPoint = transform.position;
         rigidBody = GetComponent<Rigidbody>();
+        spawnHelper = GameObject.Find("QuestManager").GetComponent<SpawnHelper>();
     }
 
-    
     void Update()
+    {
+        if (active)
+        {
+            StateSwitch();
+        }
+    }
+
+    private void StateSwitch()
     {
         switch (enemyState)
         {
@@ -64,14 +94,34 @@ public class SimpleEnemyController : MonoBehaviour
         {
             enemyState = EnemyState.Pathing;
             idleTimer = 0f;
+            nextWaypointDirection = (NextPathPoint() - transform.position).normalized;
         }
     }
 
     private void PathingState()
     {
-        animator.SetBool("Running", true);
-        nextWaypoint = NextPathPoint();
+        pathTimer += Time.deltaTime;
 
+        if (pathTimer > 5f)
+        {
+            enemyState = EnemyState.Idle;
+            animator.SetBool("Running", false);
+            pathTimer = 0;
+            currentSpeed = 2f;
+        }
+        else
+        {
+            animator.SetBool("Running", true);
+            velocity = transform.forward * currentSpeed;
+
+            Vector3 targetDirection = nextWaypointDirection;
+            targetDirection.y = 0;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
+            currentSpeed = runSpeed;
+
+            rigidBody.MovePosition(rigidBody.position + targetDirection * currentSpeed * Time.deltaTime);
+        }
+        
     }
 
     private void HitState()
@@ -81,7 +131,12 @@ public class SimpleEnemyController : MonoBehaviour
 
     private void DeathState()
     {
-        animator.SetTrigger("Death");
+        deathTimer -= Time.deltaTime;
+
+        if (deathTimer < 0f)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void AttackState()
@@ -94,13 +149,6 @@ public class SimpleEnemyController : MonoBehaviour
         animator.SetBool("Running", true);
     }
 
-    private void FixedUpdate()
-    {
-        Vector3 moveDirection = transform.forward * 1 + transform.right * 1;
-        moveDirection.Normalize();
-        rigidBody.MovePosition(rigidBody.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
-    }
-
     private Vector3 NextPathPoint()
     {
         Vector3 output = Vector3.zero;
@@ -111,50 +159,54 @@ public class SimpleEnemyController : MonoBehaviour
         switch (rnd)
         {
             case 0:
-                output += new Vector3(0, 0, 5f);
+                output += transform.right * 5;
+
                 break;
             case 1:
-                output += new Vector3(-5f, 0, 0);
+                output += -transform.right * 5;
                 break;
             case 2:
-                output += new Vector3(0, 0, -5f);
+                output += transform.forward * 5;
                 break;
             case 3:
-                output += new Vector3(5f, 0, 0);
+                output += -transform.forward * 5;
                 break;
         }
-
-        output = GetGroundPoint(output);
-
-
         wayPointCounter++;
+
+        if (wayPointCounter >= 3)
+        {
+            wayPointCounter = 0;
+            currentSpeed *= 1.5f;
+            output = spawnPoint;
+        }
+
         return output;
     }
 
-    private Vector3 GetGroundPoint(Vector3 input)
+    public void ActivateNPC(GameObject player)
     {
-        Vector3 output = input;
+        playerObject = player;
+        spawnPoint = transform.position;
+        currentHealth = 100f;
+        
+        active = true;
+    }
 
-        LayerMask checkLayer = (1 << LayerMask.NameToLayer("PlanetGround") | 1 << LayerMask.NameToLayer("Lava"));
-        Ray floorcheckRay = new Ray();
-        RaycastHit floorcheckHit;
-        Vector3 awayfromcenter = (transform.position - Vector3.zero).normalized;
-        floorcheckRay.origin = transform.position + awayfromcenter * 5;
-        floorcheckRay.direction = -awayfromcenter;
-
-        if (Physics.Raycast(floorcheckRay, out floorcheckHit, 7f, checkLayer))
+    public void TakeDamage(float damage)
+    {
+        if (dead == false)
         {
-            if (floorcheckHit.transform.gameObject.tag == "PlanetGround")
+            animator.SetTrigger("Hit");
+
+            currentHealth -= damage;
+            if (currentHealth <= 0)
             {
-                output = floorcheckHit.point;
-            }
-            else
-            {
-                Debug.Log("No Ground found for waypoint");
-                output = NextPathPoint();
+                enemyState = EnemyState.Death;
+                animator.SetTrigger("Death");
+                dead = true;
+                Debug.Log("Enemy died");
             }
         }
-
-        return output;
     }
 }
