@@ -26,8 +26,14 @@ public class SpawnHelper: MonoBehaviour
 
         if (Physics.Raycast(position, raycastDirection, out hit, Mathf.Infinity))
         {
-            return hit.point;
-
+            if (hit.transform.gameObject.CompareTag("Lava"))
+            {
+                return Vector3.zero;
+            }
+            else
+            {
+                return hit.point;
+            }
         }
         else
         {

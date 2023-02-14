@@ -85,7 +85,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   exposeBaseSurface: 0
-  TreePrefabs: []
+  TreePrefabs:
+  - {fileID: 638444772459949231, guid: 40bf5e1ee6779154fbed309668e676b4, type: 3}
   Pickups: []
   randomEnemy: {fileID: 7430100003672081722, guid: ad312a67fc640ce4cb4b029975b1a217,
     type: 3}

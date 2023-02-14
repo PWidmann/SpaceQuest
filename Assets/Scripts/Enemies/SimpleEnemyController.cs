@@ -10,38 +10,43 @@ public enum EnemyState { Idle, Pathing, BackToSpawn, Chase, Attack, Death, Hit }
 
 public class SimpleEnemyController : MonoBehaviour
 {
-    private float currentHealth = 100f;
+    #region Members
 
-    private EnemyState enemyState;
+    // References
+    private GameObject playerObject;
     private Animator animator;
-
     private Rigidbody rigidBody;
+    private SpawnHelper spawnHelper;
+
+    // Waypoints
     private Vector3 spawnPoint;
     private Vector3 nextWaypointDirection;
     private Vector3 nextWaypointPosition;
     private int wayPointCounter = 0;
     private float idleTimer = 0;
     private float deathTimer = 3f;
-    private float pathTimer = 0;
-    public float turnSpeed = 300f;
-
-    private float runSpeed = 3;
-    private float currentSpeed = 0;
-    private Vector3 velocity;
-    private float aggroRange = 10f;
     
-    public bool hasSeenPlayer = true;
 
-    private GameObject playerObject;
-
+    // Movement
+    private float runSpeed = 4;
+    private float currentSpeed = 0;
+    private float pathTimer = 0;
+    private float turnSpeed = 300f;
+    
+    // Basics
+    private float currentHealth = 100f;
+    private EnemyState enemyState;
     private bool active = false;
     private bool dead = false;
 
+    // Behaviour
     private float detectionTimer = 0.5f;
     private float attackTimer = 1f;
     private float distanceToPlayer;
+    private float aggroRange = 15f;
 
-    private SpawnHelper spawnHelper;
+    #endregion
+
     void Start()
     {
         Initialization();
@@ -86,6 +91,7 @@ public class SimpleEnemyController : MonoBehaviour
                 enemyState = EnemyState.Pathing;
             }
 
+
             if (enemyState == EnemyState.Attack && distanceToPlayer > 1f)
             {
                 enemyState = EnemyState.Chase;
@@ -117,9 +123,6 @@ public class SimpleEnemyController : MonoBehaviour
             case EnemyState.Death:
                 DeathState();
                 break;
-            case EnemyState.Hit:
-                HitState();
-                break;
         }
     }
 
@@ -129,7 +132,6 @@ public class SimpleEnemyController : MonoBehaviour
         {
             currentSpeed = runSpeed * 1.5f;
             Vector3 targetDirection = (spawnPoint - transform.position).normalized;
-            velocity = transform.forward * currentSpeed;
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
 
             rigidBody.MovePosition(rigidBody.position + targetDirection * currentSpeed * Time.deltaTime);
@@ -178,12 +180,9 @@ public class SimpleEnemyController : MonoBehaviour
                 else
                 {
                     animator.SetBool("Running", true);
-                    velocity = transform.forward * currentSpeed;
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
                     currentSpeed = runSpeed;
                 }
-
-                
             }
         }
 
@@ -192,37 +191,27 @@ public class SimpleEnemyController : MonoBehaviour
 
     private void ChaseState()
     {
-        if (!dead)
+        if (Vector3.Distance(transform.position, spawnPoint) > 40f && !dead)
         {
-            if (Vector3.Distance(transform.position, spawnPoint) > 40f)
-            {
-                enemyState = EnemyState.BackToSpawn;
-            }
-            else
-            {
-                animator.SetBool("Running", true);
-                currentSpeed = runSpeed;
-                Vector3 targetDirection = ((playerObject.transform.position + new Vector3(0, 1f, 0)) - transform.position).normalized;
-                velocity = transform.forward * currentSpeed;
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
-                currentSpeed = runSpeed;
-
-                if (Vector3.Distance(transform.position, playerObject.transform.position) < 1f)
-                {
-                    enemyState = EnemyState.Attack;
-                    attackTimer = 0.1f;
-
-                    animator.SetBool("Running", false);
-                }
-
-                rigidBody.MovePosition(rigidBody.position + targetDirection * currentSpeed * Time.deltaTime);
-            }
+            enemyState = EnemyState.BackToSpawn;
         }
-    }
+        else
+        {
+            animator.SetBool("Running", true);
+            currentSpeed = runSpeed;
+            Vector3 targetDirection = ((playerObject.transform.position + new Vector3(0, 1f, 0)) - transform.position).normalized;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
+            currentSpeed = runSpeed;
 
-    private void HitState()
-    {
-        animator.SetTrigger("Hit");
+            if (Vector3.Distance(transform.position, playerObject.transform.position) < 1f)
+            {
+                enemyState = EnemyState.Attack;
+                attackTimer = 0.1f;
+                animator.SetBool("Running", false);
+            }
+
+            rigidBody.MovePosition(rigidBody.position + targetDirection * currentSpeed * Time.deltaTime);
+        }
     }
 
     private void DeathState()
@@ -241,12 +230,11 @@ public class SimpleEnemyController : MonoBehaviour
 
         if (attackTimer < 0)
         {
+            transform.LookAt(playerObject.transform.position + new Vector3(0, 1, 0));
             animator.SetTrigger("Attack");
             attackTimer = 2f;
-        }
+        } 
     }
-
-    
 
     private Vector3 NextPathPoint()
     {
@@ -297,17 +285,21 @@ public class SimpleEnemyController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if (dead == false)
+        if (!dead)
         {
             animator.SetTrigger("Hit");
-
             currentHealth -= damage;
             if (currentHealth <= 0)
             {
                 enemyState = EnemyState.Death;
                 animator.SetTrigger("Death");
                 dead = true;
-                Debug.Log("Enemy died");
+            }
+            else
+            {
+                // When hit, enemy chases player
+                enemyState = EnemyState.Chase;
+                aggroRange *= 3;
             }
         }
     }

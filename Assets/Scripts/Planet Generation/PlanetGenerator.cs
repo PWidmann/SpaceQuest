@@ -130,19 +130,22 @@ public class PlanetGenerator : MonoBehaviour
         // Spawn Trees
         if (currentPlanetConfiguration.TreePrefabs.Length > 0)
         {
-            for (int i = 0; i < 500; i++)
+            for (int i = 0; i < 300; i++)
             {
                 int rnd = UnityEngine.Random.Range(0, currentPlanetConfiguration.TreePrefabs.Length);
-
                 GameObject tree = Instantiate(currentPlanetConfiguration.TreePrefabs[rnd]);
-                
-                tree.transform.position = spawnHelper.GetRandomSurfaceSpawnPoint();
+                Vector3 spawnPoint = spawnHelper.GetRandomSurfaceSpawnPoint();
+                if (spawnPoint != Vector3.zero)
+                {
+                    tree.transform.position = spawnPoint;
+                    tree.transform.rotation = tree.transform.rotation * Quaternion.Euler(0, UnityEngine.Random.Range(0, 350), 0);
 
-                Vector3 toAttractorDir = (tree.transform.position - transform.position).normalized;
-                Vector3 bodyUp = tree.transform.up;
-                tree.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * tree.transform.rotation;
+                    Vector3 toAttractorDir = (tree.transform.position - transform.position).normalized;
+                    Vector3 bodyUp = tree.transform.up;
+                    tree.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * tree.transform.rotation;
 
-                tree.transform.parent = foliage.transform;
+                    tree.transform.parent = foliage.transform;
+                }
             }
         }
     }
