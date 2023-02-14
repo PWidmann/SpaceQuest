@@ -1360,18 +1360,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 445291e3a82464c4f92ad57a4a2c165d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  questgiverText: {fileID: 6642159341691250101}
-  questTitleText: {fileID: 814396935}
-  questDescriptionText: {fileID: 1294312381}
-  creaturePrefab: {fileID: 4618257141777905488, guid: 737f7ab1832cd7a43944a003220293c9,
-    type: 3}
-  clericPrefab: {fileID: 6894574914442115472, guid: 0b0f6c13701d7e14989443d9b3e89550,
-    type: 3}
-  dragonNightmareMaterials:
-  - {fileID: 2100000, guid: ca5605f13d3937e40b508c59662c25fd, type: 2}
-  - {fileID: 2100000, guid: 81d2b67dc7484724095d4343217c4e31, type: 2}
-  - {fileID: 2100000, guid: 8a2d1f9276d746a42925272a2372ca11, type: 2}
-  - {fileID: 2100000, guid: 8000a685f5b509b45b455c9ffd1f347f, type: 2}
 --- !u!4 &631526981
 Transform:
   m_ObjectHideFlags: 0
@@ -1804,7 +1792,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68c2954cf27bc34c8447e221ab066f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DevMode: 0
+  DevMode: 1
   combinePlanetFaces: 0
   planetGeneratorPanel: {fileID: 742495987}
   fadeScreenCanvasPrefab: {fileID: 7337551090204703257, guid: eed57a00a4be8654688df951583659f7,

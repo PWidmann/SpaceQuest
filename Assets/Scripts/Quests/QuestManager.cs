@@ -8,53 +8,37 @@ using TMPro;
 public enum CollectQuestItem { Herb, Mineral, Artifact}
 public class QuestManager: MonoBehaviour
 {
-    // Debug stuff
-    [SerializeField] private TMP_Text questgiverText;
-    [SerializeField] private TMP_Text questTitleText;
-    [SerializeField] private TMP_Text questDescriptionText;
+    private PlanetScriptableObject currentPlanetConfiguration;
 
-    [Header("NPC Prefabs")]
-    [SerializeField] private GameObject creaturePrefab;
-    [SerializeField] private GameObject clericPrefab;
+    private Quest introQuest;
+    private Quest confrontationQuest;
+    private Quest surpriseQuest;
 
-    [Header("NPC Variant Materials")]
-    [SerializeField] private Material[] dragonNightmareMaterials;
-
-
-    private MainQuestType questType;
     private string[] questGiverNames;
-    private string[][] collectQuestsArray;
-    private MainQuest currentQuest;
-
-
-
 
     private void Start()
     {
-        
         questGiverNames = ReadAndLoadQuestGiverNames();
-        LoadCollectQuests();
     }
 
-    public void GenerateMainQuest()
+
+    public void GenerateQuests(PlanetType planetType)
     {
-        currentQuest = GenerateQuest(MainQuestType.Collect, PlanetType.Green);
-
-        questgiverText.text = "Questgiver: " + currentQuest.QuestGiverName;
-        questTitleText.text = "Quest:" + currentQuest.QuestName;
-        questDescriptionText.text = currentQuest.Description;
+        switch (planetType)
+        {
+            case PlanetType.Green:
+                break;
+            case PlanetType.Desert:
+                break;
+            case PlanetType.Poison:
+                break;
+            case PlanetType.Lava:
+                break;
+            case PlanetType.Ice:
+                break;
+        }
     }
 
-    /// <summary>
-    /// Has 4 different material variants: 0 = Green, 1 = Blue, 2 = DarkBlue, 3 = Albino
-    /// </summary>
-    /// <param name="_variantID"></param>
-    public void SpawnCreature(int _variantID)
-    {
-        GameObject npc = SpawnNPC_RandomPlanetPos(creaturePrefab, "Creature");
-
-        npc.GetComponentInChildren<SkinnedMeshRenderer>().material = dragonNightmareMaterials[_variantID];
-    }
 
     public GameObject SpawnNPC_RandomPlanetPos(GameObject _go, string _name)
     {
@@ -90,24 +74,6 @@ public class QuestManager: MonoBehaviour
 
         // Return the point on the sphere as a Vector3.
         return output;
-    }
-
-    // Method to generate a random quest
-    private MainQuest GenerateQuest(MainQuestType _questType, PlanetType _planetType)
-    {
-        MainQuest quest = new MainQuest();
-
-        int rnd = Random.Range(0, questGiverNames.Length);
-        quest.QuestGiverName = questGiverNames[rnd];
-
-        // Set the quest type based on the input
-        quest.QuestType = _questType;
-
-        int rnd2 = Random.Range(0, collectQuestsArray.Length);
-        quest.QuestName = collectQuestsArray[rnd2][0];
-        quest.Description = collectQuestsArray[rnd2][1];
-
-        return quest;
     }
 
     private string[] ReadAndLoadQuestGiverNames()
@@ -156,8 +122,5 @@ public class QuestManager: MonoBehaviour
                 questCount++;
             }  
         }
-
-        collectQuestsArray = new string[questCount][];
-        collectQuestsArray = quests.ToArray();
     }
 }

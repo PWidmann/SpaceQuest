@@ -76,11 +76,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   exposeBaseSurface: 0
-  GrassPrefabs: []
-  GrassDensity: 0
-  StonePrefabs: []
-  StoneDensity: 0
   TreePrefabs: []
-  TreeDensity: 0
-  BioMatter: []
-  BioMatterDensity: 0
+  Pickups: []
+  randomEnemy: {fileID: 5773432353031399537, guid: 1a52a156276e83244b3dafedbeea8708,
+    type: 3}
+  boss: {fileID: 0}

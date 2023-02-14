@@ -6,12 +6,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public enum EnemyState { Idle, Pathing, Chase, Attack, Death, Hit }
+public enum EnemyState { Idle, Pathing, BackToSpawn, Chase, Attack, Death, Hit }
 
 public class SimpleEnemyController : MonoBehaviour
 {
     private float currentHealth = 100f;
-    private float maxHealth = 100f;
 
     private EnemyState enemyState;
     private Animator animator;
@@ -19,22 +18,28 @@ public class SimpleEnemyController : MonoBehaviour
     private Rigidbody rigidBody;
     private Vector3 spawnPoint;
     private Vector3 nextWaypointDirection;
+    private Vector3 nextWaypointPosition;
     private int wayPointCounter = 0;
     private float idleTimer = 0;
     private float deathTimer = 3f;
     private float pathTimer = 0;
     public float turnSpeed = 300f;
 
-    public float runSpeed = 4;
+    private float runSpeed = 3;
     private float currentSpeed = 0;
-    public Vector3 velocity;
-
+    private Vector3 velocity;
+    private float aggroRange = 10f;
+    
     public bool hasSeenPlayer = true;
 
     private GameObject playerObject;
 
     private bool active = false;
     private bool dead = false;
+
+    private float detectionTimer = 0.5f;
+    private float attackTimer = 1f;
+    private float distanceToPlayer;
 
     private SpawnHelper spawnHelper;
     void Start()
@@ -47,7 +52,7 @@ public class SimpleEnemyController : MonoBehaviour
         animator = GetComponent<Animator>();
         enemyState = EnemyState.Idle;
         nextWaypointDirection = Vector3.zero;
-        spawnPoint = transform.position;
+        spawnPoint = transform.position + new Vector3(0, 1, 0);
         rigidBody = GetComponent<Rigidbody>();
         spawnHelper = GameObject.Find("QuestManager").GetComponent<SpawnHelper>();
     }
@@ -56,7 +61,37 @@ public class SimpleEnemyController : MonoBehaviour
     {
         if (active)
         {
+            PlayerDetection();
             StateSwitch();
+        }
+    }
+
+    private void PlayerDetection()
+    {
+        detectionTimer -= Time.deltaTime;
+
+        if (detectionTimer < 0f && !dead)
+        {
+            distanceToPlayer = Vector3.Distance(playerObject.transform.position, transform.position);
+
+            // If player is near enemy, chase
+            if (distanceToPlayer < aggroRange && enemyState != EnemyState.Attack)
+            {
+                enemyState = EnemyState.Chase;
+            }
+
+            // Go back to pathing if player is far enough
+            if (enemyState == EnemyState.Chase && distanceToPlayer > aggroRange * 2)
+            {
+                enemyState = EnemyState.Pathing;
+            }
+
+            if (enemyState == EnemyState.Attack && distanceToPlayer > 1f)
+            {
+                enemyState = EnemyState.Chase;
+            }
+
+            detectionTimer = 0.5f;
         }
     }
 
@@ -68,7 +103,10 @@ public class SimpleEnemyController : MonoBehaviour
                 IdleState();
                 break;
             case EnemyState.Pathing:
-                PathingState();
+                Pathing();
+                break;
+            case EnemyState.BackToSpawn:
+                BackToSpawn();
                 break;
             case EnemyState.Chase:
                 ChaseState();
@@ -85,6 +123,25 @@ public class SimpleEnemyController : MonoBehaviour
         }
     }
 
+    private void BackToSpawn()
+    {
+        if (!dead)
+        {
+            currentSpeed = runSpeed * 1.5f;
+            Vector3 targetDirection = (spawnPoint - transform.position).normalized;
+            velocity = transform.forward * currentSpeed;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
+
+            rigidBody.MovePosition(rigidBody.position + targetDirection * currentSpeed * Time.deltaTime);
+
+            if (Vector3.Distance(transform.position, spawnPoint) < 1f)
+            {
+                enemyState = EnemyState.Pathing;
+                currentSpeed = runSpeed;
+            }
+        }
+    }
+
     private void IdleState()
     {
         animator.SetBool("Running", false);
@@ -98,30 +155,69 @@ public class SimpleEnemyController : MonoBehaviour
         }
     }
 
-    private void PathingState()
+    private void Pathing()
     {
         pathTimer += Time.deltaTime;
+        Vector3 targetDirection = nextWaypointDirection;
 
-        if (pathTimer > 5f)
+        if (Vector3.Distance(transform.position, spawnPoint) > 40f)
         {
-            enemyState = EnemyState.Idle;
-            animator.SetBool("Running", false);
-            pathTimer = 0;
-            currentSpeed = 2f;
+            enemyState = EnemyState.BackToSpawn;
         }
         else
         {
-            animator.SetBool("Running", true);
-            velocity = transform.forward * currentSpeed;
+            if (nextWaypointDirection != null)
+            {
+                if (pathTimer > 5f || Vector3.Distance(transform.position, nextWaypointPosition) < 1f)
+                {
+                    enemyState = EnemyState.Idle;
+                    animator.SetBool("Running", false);
+                    pathTimer = UnityEngine.Random.Range(-3f, 1);
+                    currentSpeed = 0;
+                }
+                else
+                {
+                    animator.SetBool("Running", true);
+                    velocity = transform.forward * currentSpeed;
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
+                    currentSpeed = runSpeed;
+                }
 
-            Vector3 targetDirection = nextWaypointDirection;
-            targetDirection.y = 0;
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
-            currentSpeed = runSpeed;
-
-            rigidBody.MovePosition(rigidBody.position + targetDirection * currentSpeed * Time.deltaTime);
+                
+            }
         }
-        
+
+        rigidBody.MovePosition(rigidBody.position + targetDirection * currentSpeed * Time.deltaTime);
+    }
+
+    private void ChaseState()
+    {
+        if (!dead)
+        {
+            if (Vector3.Distance(transform.position, spawnPoint) > 40f)
+            {
+                enemyState = EnemyState.BackToSpawn;
+            }
+            else
+            {
+                animator.SetBool("Running", true);
+                currentSpeed = runSpeed;
+                Vector3 targetDirection = ((playerObject.transform.position + new Vector3(0, 1f, 0)) - transform.position).normalized;
+                velocity = transform.forward * currentSpeed;
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
+                currentSpeed = runSpeed;
+
+                if (Vector3.Distance(transform.position, playerObject.transform.position) < 1f)
+                {
+                    enemyState = EnemyState.Attack;
+                    attackTimer = 0.1f;
+
+                    animator.SetBool("Running", false);
+                }
+
+                rigidBody.MovePosition(rigidBody.position + targetDirection * currentSpeed * Time.deltaTime);
+            }
+        }
     }
 
     private void HitState()
@@ -141,13 +237,16 @@ public class SimpleEnemyController : MonoBehaviour
 
     private void AttackState()
     {
-        animator.SetTrigger("Attack");
+        attackTimer -= Time.deltaTime;
+
+        if (attackTimer < 0)
+        {
+            animator.SetTrigger("Attack");
+            attackTimer = 2f;
+        }
     }
 
-    private void ChaseState()
-    {
-        animator.SetBool("Running", true);
-    }
+    
 
     private Vector3 NextPathPoint()
     {
@@ -172,14 +271,17 @@ public class SimpleEnemyController : MonoBehaviour
                 output += -transform.forward * 5;
                 break;
         }
-        wayPointCounter++;
 
         if (wayPointCounter >= 3)
         {
             wayPointCounter = 0;
             currentSpeed *= 1.5f;
             output = spawnPoint;
+            pathTimer -= 3f;
         }
+
+        nextWaypointPosition = transform.position + (output * 4f);
+        wayPointCounter++;
 
         return output;
     }

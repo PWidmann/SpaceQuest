@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+public enum IntroductionQuest { CollectMaterial, KillEnemies, SearchGuy }
+public enum ConfrontationQuest { Boss, EnemyCamp, Rescue, Protect }
+public enum SurpriseQuest { SurpriseBoss, SurpriseEnemyPack }
 
-public enum MainQuestType { Collect, Defend, Attack, Rescue, Following }
 
-
-public class MainQuest : MonoBehaviour
+public class Quest : MonoBehaviour
 {
-    private MainQuestType mainQuestType;
-    private PlanetType planetSpecificQuest;
-    private string questName;
-    private string description;
-    private int reward;
-    private string questGiverName;
+    
 
-    public MainQuestType QuestType { get => mainQuestType; set => mainQuestType = value; }
-    public PlanetType PlanetSpecificQuest { get => planetSpecificQuest; set => planetSpecificQuest = value; }
+    public string questName;
+    public string description;
+    public int reward;
+    public string questGiverName;
+    public int questobjectives;
+
     public string QuestName { get => questName; set => questName = value; }
     public string Description { get => description; set => description = value; }
     public int Reward { get => reward; set => reward = value; }

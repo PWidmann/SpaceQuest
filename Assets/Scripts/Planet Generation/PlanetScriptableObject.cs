@@ -13,25 +13,15 @@ public class PlanetScriptableObject : ScriptableObject
     public Gradient TerrainHeightColor;
     public AnimationCurve TerrainHeightCurve;
 
-    [Space(20)]
     [Header("Settings")]
     public bool exposeBaseSurface;
-
-    [Space(20)]
+    [Space(10)]
     [Header("Prefabs To Spawn")]
-    public GameObject[] GrassPrefabs;
-    [Range(0,1)]
-    public float GrassDensity;
-    [Space(10)] 
-    public GameObject[] StonePrefabs;
-    [Range(0, 1)]
-    public float StoneDensity;
-    [Space(10)] 
     public GameObject[] TreePrefabs;
-    [Range(0, 1)]
-    public float TreeDensity;
     [Space(10)] 
-    public GameObject[] BioMatter;
-    [Range(0, 1)]
-    public float BioMatterDensity;
+    public GameObject[] Pickups;
+    [Space(10)]
+    public GameObject randomEnemy;
+    [Space(10)]
+    public GameObject boss;
 }

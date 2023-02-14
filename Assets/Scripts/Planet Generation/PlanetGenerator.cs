@@ -48,7 +48,6 @@ public class PlanetGenerator : MonoBehaviour
     private FadeScreen fadeScreen;
     private GameGUI playerGUI;
     private float playerSpawnOffset = 0;
-
     private List<GameObject> spawnedEnemies = new List<GameObject>();
 
     #endregion
@@ -67,7 +66,7 @@ public class PlanetGenerator : MonoBehaviour
         playerGUI = GameObject.Find("PlayerGUI").GetComponent<GameGUI>();
         fadeScreen.FadeIn();
 
-        if (DevMode)
+        if (DevMode) // Dev mode is for manually generating with individual steps
         {
             GameObject camGO = GameObject.Find("Camera");
             camGO.GetComponent<CameraController>().SetCameraRotationActive(true);
@@ -76,15 +75,17 @@ public class PlanetGenerator : MonoBehaviour
         else
         {
             // Automatically generate planet and quest and start intro
+            planetGeneratorPanel.SetActive(false);
             GenerateNewPlanet();
             GenerateFoliage();
             SpawnEnemies();
-            planetGeneratorPanel.SetActive(false);
+            
+            // Start intro
             spaceshipIntro.StartIntro();
         }
     }
 
-    public void SpawnEnemies()
+    private void SpawnEnemies()
     {
         spawnedEnemies.Clear();
         GameObject enemiesParent = new GameObject("Enemies");
@@ -92,7 +93,7 @@ public class PlanetGenerator : MonoBehaviour
 
         for (int i = 0; i < 100; i++)
         {
-            GameObject enemy = Instantiate(demonEnemyPrefab);
+            GameObject enemy = Instantiate(currentPlanetConfiguration.randomEnemy);
             enemy.transform.position = spawnHelper.GetRandomSurfaceSpawnPoint();
             Vector3 toAttractorDir = (enemy.transform.position - Vector3.zero).normalized;
             Vector3 bodyUp = enemy.transform.up;
@@ -100,6 +101,8 @@ public class PlanetGenerator : MonoBehaviour
             enemy.transform.SetParent(enemiesParent.transform);
             spawnedEnemies.Add(enemy);
         }
+
+        Debug.Log("common enemies spawned");
     }
 
     #endregion
@@ -150,8 +153,6 @@ public class PlanetGenerator : MonoBehaviour
         player.tag = "Player";
         player.transform.position = MostNordPointOnPlanetTerrain();
         playerGUI.SetCompass(true);
-
-
         fadeScreen.FadeIn();
 
         // Set current planet view camera inactive
