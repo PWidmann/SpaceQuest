@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Rigidbody rigidBody;
     private CharacterController controller;
+    private QuestManager questManager;
 
     // Movement
     private bool playerHasControl = true;
@@ -236,6 +237,7 @@ public class PlayerController : MonoBehaviour
         playerCamera = Camera.main;
         aimTarget = new Vector3(0, 0, 0);
         spawnPoint = transform.position;
+        questManager = GameObject.Find("QuestManager").GetComponent<QuestManager>();
 
         UnityEngine.Cursor.visible = false;
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -408,24 +410,27 @@ public class PlayerController : MonoBehaviour
     }
     private void CreateAimPoint()
     {
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        int ground = 1 << LayerMask.NameToLayer("PlanetGround") | LayerMask.NameToLayer("Lava");
-
-        aimRotation = chest.transform.rotation * Quaternion.Euler(cameraPitch * 0.5f, 0, 0);
-        chest.transform.rotation = aimRotation;
-
-        // Lift / lower the rifle height based on aim height
-        rifle.transform.localPosition = new Vector3(rifle.transform.localPosition.x, -cameraPitch / 400, rifle.transform.localPosition.z);
-
-        if (Physics.Raycast(ray, out hit, maxDistance: 300f, ground))
+        if (playerHasControl)
         {
-            aimTarget = hit.point;
+            Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+            int ground = 1 << LayerMask.NameToLayer("PlanetGround") | LayerMask.NameToLayer("Lava");
+
+            aimRotation = chest.transform.rotation * Quaternion.Euler(cameraPitch * 0.5f, 0, 0);
+            chest.transform.rotation = aimRotation;
+
+            // Lift / lower the rifle height based on aim height
+            rifle.transform.localPosition = new Vector3(rifle.transform.localPosition.x, -cameraPitch / 400, rifle.transform.localPosition.z);
+
+            if (Physics.Raycast(ray, out hit, maxDistance: 300f, ground))
+            {
+                aimTarget = hit.point;
+            }
+            else
+            {
+                aimTarget = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));
+            }
+            rifle.transform.LookAt(aimTarget, transform.up);
         }
-        else
-        {
-            aimTarget = playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 150f));
-        }
-        rifle.transform.LookAt(aimTarget, transform.up);
     }
     private void Zoom()
     {

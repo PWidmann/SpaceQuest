@@ -20,11 +20,6 @@ public class EscapeMenu : MonoBehaviour
     private bool isInSettingsMenu = false;
 
 
-    private void Start()
-    {
-        
-    }
-
     private void Update()
     {
         // Get ref for player controller if not initialized
@@ -44,6 +39,8 @@ public class EscapeMenu : MonoBehaviour
 
             if (!escapeMenuActive && !playerController.Death)
             {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
                 escapeMenuActive = true;
                 controlsPanel.SetActive(false);
             }
@@ -53,12 +50,16 @@ public class EscapeMenu : MonoBehaviour
 
                 if (isInSettingsMenu)
                 {
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
                     settingsPanel.SetActive(false);
                     escapeMenuPanel.SetActive(true);
                     isInSettingsMenu = false;
                 }
                 else
                 {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
                     escapeMenuActive = false;
                 }
             }
@@ -71,8 +72,7 @@ public class EscapeMenu : MonoBehaviour
             escapeMenuPanel.SetActive(true);
             Time.timeScale = 0;
             playerController.SetPlayerIsInControl(false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            
             menuBackground.SetActive(true);
         }
 
@@ -81,8 +81,7 @@ public class EscapeMenu : MonoBehaviour
             escapeMenuPanel.SetActive(false);
             Time.timeScale = 1;
             playerController.SetPlayerIsInControl(true);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            
             menuBackground.SetActive(false);
         }
     }
