@@ -13,6 +13,7 @@ public class EscapeMenu : MonoBehaviour
     [SerializeField] private GameObject menuBackground;
     [SerializeField] private GameObject escapeMenuPanel;
     [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject controlsPanel;
 
     private PlayerController playerController;
     private bool escapeMenuActive = false;
@@ -44,9 +45,12 @@ public class EscapeMenu : MonoBehaviour
             if (!escapeMenuActive && !playerController.Death)
             {
                 escapeMenuActive = true;
+                controlsPanel.SetActive(false);
             }
             else
             {
+                controlsPanel.SetActive(false);
+
                 if (isInSettingsMenu)
                 {
                     settingsPanel.SetActive(false);
@@ -91,6 +95,18 @@ public class EscapeMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         escapeMenuActive = false;
         Time.timeScale = 1;
+    }
+
+    public void ControlsButton()
+    {
+        escapeMenuPanel.SetActive(false);
+        controlsPanel.SetActive(true);
+    }
+
+    public void ControlsBackButton()
+    {
+        controlsPanel.SetActive(false);
+        escapeMenuPanel.SetActive(true);
     }
 
     public void SettingsButton()

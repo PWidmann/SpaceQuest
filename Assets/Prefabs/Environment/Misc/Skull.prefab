@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1613109824516089906}
   - component: {fileID: -2433296849548787961}
   - component: {fileID: 8972976751866557833}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: Skull
   m_TagString: PickUp
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 5201529421561412051}
   - component: {fileID: 9187432190536201846}
   - component: {fileID: 6369400145636147900}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: Skull
   m_TagString: Untagged
   m_Icon: {fileID: 0}

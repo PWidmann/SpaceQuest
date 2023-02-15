@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 39389277747851394}
   - component: {fileID: 3973348890485309223}
   - component: {fileID: 1207207186606935021}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 7198731867605872819}
   - component: {fileID: 8434570016298035151}
   - component: {fileID: 6804558085720430287}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: Bone
   m_TagString: PickUp
   m_Icon: {fileID: 0}

@@ -8,13 +8,20 @@ using TMPro;
 
 public class QuestManager: MonoBehaviour
 {
-    private PlanetScriptableObject currentPlanetConfiguration;
+    [SerializeField] private GameObject questGiverNPC;
+    [SerializeField] private GameObject questGiverBeacon;
+    [SerializeField] private Compass compass;
 
+    private PlanetScriptableObject currentPlanetConfiguration;
     private Quest introQuest;
     private Quest confrontationQuest;
-    private Quest surpriseQuest;
-
+    private bool introCompleted = false;
+    private bool confrontationCompleted = false;
+    
     private string[] questGiverNames;
+
+    public Quest IntroQuest { get => introQuest; set => introQuest = value; }
+    public Quest ConfrontationQuest { get => confrontationQuest; set => confrontationQuest = value; }
 
     private void Start()
     {
@@ -22,23 +29,85 @@ public class QuestManager: MonoBehaviour
     }
 
 
-    public void GenerateQuests(PlanetType planetType)
+    public void GenerateQuests()
     {
-        switch (planetType)
+        introQuest = GenerateIntroQuest();
+
+        SpawnQuestGiver();
+
+        //switch (planetType)
+        //{
+        //    case PlanetType.Green:
+        //        break;
+        //    case PlanetType.Desert:
+        //        break;
+        //    case PlanetType.Poison:
+        //        break;
+        //    case PlanetType.Lava:
+        //        break;
+        //    case PlanetType.Ice:
+        //        break;
+        //}
+
+        Debug.Log("Introquest generated: " + IntroQuest.QuestType.ToString());
+        Debug.Log("Objectives needed: " + IntroQuest.QuestGoal);
+        Debug.Log("QuestGiver: " + IntroQuest.QuestGiverName);
+    }
+
+    private void SpawnQuestGiver()
+    {
+        if (IntroQuest.QuestGiverName == "Beacon")
         {
-            case PlanetType.Green:
-                break;
-            case PlanetType.Desert:
-                break;
-            case PlanetType.Poison:
-                break;
-            case PlanetType.Lava:
-                break;
-            case PlanetType.Ice:
-                break;
+            GameObject questGiver = SpawnNPC_RandomPlanetPos(questGiverBeacon, "Beacon");
+            questGiver.transform.parent = GameObject.Find("Planet").transform;
+        }
+        else
+        {
+            GameObject questGiver = SpawnNPC_RandomPlanetPos(questGiverNPC, IntroQuest.QuestGiverName);
+            questGiver.transform.parent = GameObject.Find("Planet").transform;
         }
     }
 
+    private void GenerateGreenQuest()
+    {
+        introQuest = GenerateIntroQuest();
+    }
+
+    private Quest GenerateIntroQuest()
+    {
+        Quest quest;
+        int rnd = UnityEngine.Random.Range(0, 2);
+        if (rnd == 0)
+        {
+            quest = new Quest(QuestType.CollectMaterial);
+        }
+        else
+        {
+            quest = new Quest(QuestType.KillEnemies);
+        }
+
+        quest = QuestIntroSelect(quest);
+        quest.QuestGoal = UnityEngine.Random.Range(5, 11);
+        return quest;
+    }
+
+    private Quest QuestIntroSelect(Quest quest)
+    {
+        Quest withIntro = quest;
+        int rnd = UnityEngine.Random.Range(0, 2);
+        if (rnd == 0)
+        {
+            withIntro.QuestStart = QuestStart.Beacon;
+            withIntro.QuestGiverName = "Beacon";
+        }
+        else
+        {
+            withIntro.QuestStart = QuestStart.NPC;
+            withIntro.QuestGiverName = questGiverNames[UnityEngine.Random.Range(0, questGiverNames.Length - 1)];
+        }
+
+        return withIntro;
+    }
 
     public GameObject SpawnNPC_RandomPlanetPos(GameObject _go, string _name)
     {
@@ -87,45 +156,4 @@ public class QuestManager: MonoBehaviour
         return names;
     }
 
-    private void LoadCollectQuests()
-    {
-        // File path of the external file
-        string filePath = "Assets/GameDataInput/Collect_Quests.txt"; // Delete "Assets/" when shipping
-        // Read the contents of the file as a string
-        string fileContents = File.ReadAllText(filePath);
-        // Split the file contents by line to get the individual lines
-        string[] lines = fileContents.Split('\n');
-        // Create a list to store the quest information
-        List<string[]> quests = new List<string[]>();
-        // Create a new string array to store the quest information
-        string[] quest = new string[2];
-        int questCount = 0;
-
-        // Loop through the lines and store the quest information in the list
-        for (int i = 0; i < lines.Length; i++)
-        {
-            // Check if the line is a quest name or description
-            if (lines[i].StartsWith("[Name]"))
-            {
-                // Store the quest name in the array
-                quest = new string[2];
-                quest[0] = lines[i + 1];
-            }
-
-            // Check if the next line is the quest description
-            if (lines[i].StartsWith("[Description]"))
-            {
-                // Store the quest description in the array
-                quest[1] = lines[i + 1];
-                // Add the quest information to the list
-                quests.Add(quest);
-                questCount++;
-            }  
-        }
-    }
-
-    public void PickUp()
-    { 
-        
-    }
 }

@@ -1,13 +1,10 @@
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cleric : MonoBehaviour
+public class QuestGiver : MonoBehaviour
 {
     private QuestManager questManager;
-
-
     private void Start()
     {
         questManager = GameObject.Find("QuestManager").GetComponent<QuestManager>();

@@ -44,11 +44,13 @@ public class PlanetGenerator : MonoBehaviour
     private GameObject planetObject;
     private Planet planet;
     private SpawnHelper spawnHelper;
+    private Compass compass;
     private SpaceShipIntro spaceshipIntro;
     private FadeScreen fadeScreen;
     private GameGUI playerGUI;
     private float playerSpawnOffset = 0;
     private List<GameObject> spawnedEnemies = new List<GameObject>();
+    private QuestManager questmanager;
 
     #endregion
 
@@ -62,6 +64,7 @@ public class PlanetGenerator : MonoBehaviour
     private void Start()
     {
         spawnHelper = GameObject.Find("QuestManager").GetComponent<SpawnHelper>();
+        questmanager = GameObject.Find("QuestManager").GetComponent<QuestManager>();
         spaceshipIntro = GameObject.Find("SpaceShip").GetComponent<SpaceShipIntro>();
         playerGUI = GameObject.Find("PlayerGUI").GetComponent<GameGUI>();
         fadeScreen.FadeIn();
@@ -80,7 +83,7 @@ public class PlanetGenerator : MonoBehaviour
             GenerateFoliage();
             GeneratePickups();
             SpawnEnemies();
-
+            questmanager.GenerateQuests();
             // Start intro
             spaceshipIntro.StartIntro();
         }
@@ -145,8 +148,10 @@ public class PlanetGenerator : MonoBehaviour
                     Vector3 bodyUp = tree.transform.up;
                     tree.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * tree.transform.rotation;
 
-                    tree.transform.parent = foliage.transform;
+                    
                 }
+
+                tree.transform.parent = foliage.transform;
             }
         }
     }
@@ -191,6 +196,8 @@ public class PlanetGenerator : MonoBehaviour
         // Set current planet view camera inactive
         Camera.main.gameObject.SetActive(false);
         planetGeneratorPanel.SetActive(false);
+
+        GameObject.Find("Compass").GetComponent<Compass>().QuestGiver = GameObject.Find(questmanager.IntroQuest.QuestGiverName);
 
         // Set player GO in all NPCs
         foreach (GameObject enemy in spawnedEnemies)

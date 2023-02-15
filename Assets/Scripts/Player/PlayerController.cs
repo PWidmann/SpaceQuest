@@ -318,22 +318,23 @@ public class PlayerController : MonoBehaviour
         targetingTimer += Time.deltaTime;
         if (targetingTimer >= 0.2f)
         {
-            int targetingLayer = 1 << LayerMask.NameToLayer("PlanetGround");
+            int targetingLayer = 1 << LayerMask.NameToLayer("Interactable");
 
             Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 5, Color.red, 1);
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out cursorTargetHit, 5f, targetingLayer))
             {
+                playerGUI.SetInteractPanel(false);
+                canInteract = false;
+
                 if (cursorTargetHit.transform.gameObject.CompareTag("PickUp"))
                 {
                     playerGUI.SetInteractPanel(true);
                     canInteract = true;
-                    
-                    Debug.Log("Pickup targeted");
                 }
-                else
+                if(cursorTargetHit.transform.gameObject.CompareTag("QuestGiver"))
                 {
-                    playerGUI.SetInteractPanel(false);
-                    canInteract = false;
+                    playerGUI.SetInteractPanel(true);
+                    canInteract = true;
                 }
             }
             else
@@ -347,8 +348,14 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E) && canInteract)
         {
-            cursorTargetHit.transform.GetComponent<Pickup>().PickUp();
-            Debug.Log("Tried to interact");
+            if (cursorTargetHit.transform.gameObject.CompareTag("QuestGiver"))
+            {
+                cursorTargetHit.transform.GetComponent<QuestGiver>().GiveQuest();
+            }
+            if (cursorTargetHit.transform.gameObject.CompareTag("PickUp"))
+            {
+                cursorTargetHit.transform.GetComponent<Pickup>().PickUp();
+            }    
         }
     }
 

@@ -17,6 +17,7 @@ public class SimpleEnemyController : MonoBehaviour
     private Animator animator;
     private Rigidbody rigidBody;
     private SpawnHelper spawnHelper;
+    private QuestManager questManager;
 
     // Waypoints
     private Vector3 spawnPoint;
@@ -45,6 +46,8 @@ public class SimpleEnemyController : MonoBehaviour
     private float distanceToPlayer;
     private float aggroRange = 15f;
 
+    public float AggroRange { get => aggroRange; set => aggroRange = value; }
+
     #endregion
 
     void Start()
@@ -59,6 +62,7 @@ public class SimpleEnemyController : MonoBehaviour
         nextWaypointDirection = Vector3.zero;
         spawnPoint = transform.position + new Vector3(0, 1, 0);
         rigidBody = GetComponent<Rigidbody>();
+        questManager = GameObject.Find("QuestManager").GetComponent<QuestManager>();
         spawnHelper = GameObject.Find("QuestManager").GetComponent<SpawnHelper>();
     }
 
@@ -80,13 +84,13 @@ public class SimpleEnemyController : MonoBehaviour
             distanceToPlayer = Vector3.Distance(playerObject.transform.position, transform.position);
 
             // If player is near enemy, chase
-            if (distanceToPlayer < aggroRange && enemyState != EnemyState.Attack)
+            if (distanceToPlayer < AggroRange && enemyState != EnemyState.Attack)
             {
                 enemyState = EnemyState.Chase;
             }
 
             // Go back to pathing if player is far enough
-            if (enemyState == EnemyState.Chase && distanceToPlayer > aggroRange * 2)
+            if (enemyState == EnemyState.Chase && distanceToPlayer > AggroRange * 2)
             {
                 enemyState = EnemyState.Pathing;
             }
@@ -294,13 +298,23 @@ public class SimpleEnemyController : MonoBehaviour
                 enemyState = EnemyState.Death;
                 animator.SetTrigger("Death");
                 dead = true;
+                QuestManagerCheck();
             }
             else
             {
                 // When hit, enemy chases player
                 enemyState = EnemyState.Chase;
-                aggroRange *= 3;
+                AggroRange *= 3;
             }
+        }
+    }
+
+    private void QuestManagerCheck()
+    {
+        if (questManager.IntroQuest.QuestType == QuestType.KillEnemies && questManager.IntroQuest.Active)
+        {
+            questManager.IntroQuest.CurrentQuestTracking += 1;
+            Debug.Log("quest tracking updated. current count: " + questManager.IntroQuest.CurrentQuestTracking + "/" + questManager.IntroQuest.QuestGoal);
         }
     }
 }
