@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b7e66ebc48dc33d4eb5869fb627c4d4f
+guid: f86026547f444c8438c63f9562b3f7f5
 ModelImporter:
   serializedVersion: 21202
   internalIDToNameTable: []
@@ -7,13 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DarkGreen2
-    second: {fileID: 2100000, guid: 0fdbe73571b405b4998d57ef6c951095, type: 2}
+      name: Mushroom1
+    second: {fileID: 2100000, guid: 78221bafdf65dc541a0ac8a7d2cd5303, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: LightOrange
-    second: {fileID: 2100000, guid: 20e6d906300586e4ab533e25c1a6f572, type: 2}
+      name: Red
+    second: {fileID: 2100000, guid: e43a720d16499264691d7217cfc8a0bb, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -78,13 +78,13 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 9
-    normalImportMode: 1
-    tangentImportMode: 1
-    normalCalculationMode: 1
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
-    normalSmoothingSource: 2
+    normalSmoothingSource: 0
   referencedClips: []
   importAnimation: 1
   humanDescription:

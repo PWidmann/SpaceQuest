@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 
 
-public enum CollectQuestItem { Herb, Mineral, Artifact}
+
 public class QuestManager: MonoBehaviour
 {
     private PlanetScriptableObject currentPlanetConfiguration;
@@ -122,5 +122,10 @@ public class QuestManager: MonoBehaviour
                 questCount++;
             }  
         }
+    }
+
+    public void PickUp()
+    { 
+        
     }
 }

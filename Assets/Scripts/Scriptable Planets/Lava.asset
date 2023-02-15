@@ -108,7 +108,9 @@ MonoBehaviour:
   - {fileID: 212624521413279166, guid: b683f99b9f0be2b4fa51c48b24d0e023, type: 3}
   - {fileID: 919132149155446097, guid: a5e44066b30e98a4fa93ecf756309da8, type: 3}
   - {fileID: 2925875259296625456, guid: 19276171a83a3e64ba002e086f7d3ee7, type: 3}
-  Pickups: []
+  Pickups:
+  - {fileID: 1613109824516089907, guid: 5ee9d924b432ebd4194d257e00324cab, type: 3}
+  - {fileID: 7198731867605872818, guid: fbce8daf3c547504c973774078d26201, type: 3}
   randomEnemy: {fileID: 1755696743191083665, guid: 6843cadd9800c0d4dbd67ceaf3d0186d,
     type: 3}
   boss: {fileID: 0}

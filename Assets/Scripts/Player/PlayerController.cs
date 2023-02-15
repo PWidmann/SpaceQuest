@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -69,6 +70,7 @@ public class PlayerController : MonoBehaviour
     // Floor checking
     private Ray floorcheckRay;
     private RaycastHit floorcheckHit;
+    private float targetingTimer = 0;
     private float lavaTimer = 0;
     private bool death = false;
 
@@ -78,6 +80,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 spawnPoint = Vector3.zero;
     private float respawnTimer = 6f;
     private bool respawnStarted = false;
+    private RaycastHit cursorTargetHit;
+    public bool canInteract = false;
 
     public bool Death { get => death; set => death = value; }
     public Vector3 SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
@@ -95,6 +99,7 @@ public class PlayerController : MonoBehaviour
     {
         CheckForGrounded();
         GetInput();
+        GetCursorTarget();
         AnimationHandling();
         Shooting();
         Zoom();
@@ -134,7 +139,6 @@ public class PlayerController : MonoBehaviour
     public void SetPlayerIsInControl(bool active)
     {
         playerHasControl = active;
-        
     }
 
     public void TriggerDeath()
@@ -297,7 +301,7 @@ public class PlayerController : MonoBehaviour
             // Jumping
             if (Input.GetKeyDown(KeyCode.Space) && grounded)
             {
-                rigidBody.AddForce(transform.up * 400f);
+                rigidBody.AddForce(transform.up * 600f);
                 animator.SetTrigger("jump");
             }
         }
@@ -308,6 +312,46 @@ public class PlayerController : MonoBehaviour
             cameraYaw = 0;
         }
     }
+
+    private void GetCursorTarget()
+    {
+        targetingTimer += Time.deltaTime;
+        if (targetingTimer >= 0.2f)
+        {
+            int targetingLayer = 1 << LayerMask.NameToLayer("PlanetGround");
+
+            Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 5, Color.red, 1);
+            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out cursorTargetHit, 5f, targetingLayer))
+            {
+                if (cursorTargetHit.transform.gameObject.CompareTag("PickUp"))
+                {
+                    playerGUI.SetInteractPanel(true);
+                    canInteract = true;
+                    
+                    Debug.Log("Pickup targeted");
+                }
+                else
+                {
+                    playerGUI.SetInteractPanel(false);
+                    canInteract = false;
+                }
+            }
+            else
+            {
+                playerGUI.SetInteractPanel(false);
+                canInteract = false;
+            }
+            
+            targetingTimer = 0f;
+        }
+
+        if (Input.GetKeyDown(KeyCode.E) && canInteract)
+        {
+            cursorTargetHit.transform.GetComponent<Pickup>().PickUp();
+            Debug.Log("Tried to interact");
+        }
+    }
+
     private void AnimationHandling()
     {
         if (playerHasControl && !death)

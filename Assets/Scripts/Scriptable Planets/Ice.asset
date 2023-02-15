@@ -77,7 +77,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   exposeBaseSurface: 0
   TreePrefabs: []
-  Pickups: []
+  Pickups:
+  - {fileID: 7482346193911690965, guid: 8bf0b8e2e0288d64b96e6be689f56b8e, type: 3}
+  - {fileID: 7269088888282857370, guid: 68a1ee4bbd3a60d49b65c92669bac921, type: 3}
   randomEnemy: {fileID: 5773432353031399537, guid: 1a52a156276e83244b3dafedbeea8708,
     type: 3}
   boss: {fileID: 0}

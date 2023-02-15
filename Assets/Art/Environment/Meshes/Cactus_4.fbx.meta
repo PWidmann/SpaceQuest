@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: DarkGreen2
-    second: {fileID: 2100000, guid: fada45fe3f538ab49a4c038f3e6b482b, type: 2}
+    second: {fileID: 2100000, guid: 0fdbe73571b405b4998d57ef6c951095, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule

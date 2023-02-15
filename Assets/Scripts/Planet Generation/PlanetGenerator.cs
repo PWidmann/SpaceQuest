@@ -78,8 +78,9 @@ public class PlanetGenerator : MonoBehaviour
             planetGeneratorPanel.SetActive(false);
             GenerateNewPlanet();
             GenerateFoliage();
+            GeneratePickups();
             SpawnEnemies();
-            
+
             // Start intro
             spaceshipIntro.StartIntro();
         }
@@ -149,6 +150,35 @@ public class PlanetGenerator : MonoBehaviour
             }
         }
     }
+
+    public void GeneratePickups()
+    {
+        GameObject pickups = new GameObject("Pickups");
+        pickups.transform.parent = planetObject.transform;
+
+        // Spawn Pickups
+        if (currentPlanetConfiguration.Pickups.Length > 0)
+        {
+            for (int i = 0; i < 200; i++)
+            {
+                int rnd = UnityEngine.Random.Range(0, currentPlanetConfiguration.Pickups.Length);
+                GameObject pickUpObject = Instantiate(currentPlanetConfiguration.Pickups[rnd]);
+                Vector3 spawnPoint = spawnHelper.GetRandomSurfaceSpawnPoint();
+                if (spawnPoint != Vector3.zero)
+                {
+                    pickUpObject.transform.position = spawnPoint;
+                    pickUpObject.transform.rotation = pickUpObject.transform.rotation * Quaternion.Euler(0, UnityEngine.Random.Range(0, 350), 0);
+
+                    Vector3 toAttractorDir = (pickUpObject.transform.position - transform.position).normalized;
+                    Vector3 bodyUp = pickUpObject.transform.up;
+                    pickUpObject.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * pickUpObject.transform.rotation;
+
+                    pickUpObject.transform.parent = pickups.transform;
+                }
+            }
+        }
+    }
+
     public void SpawnPlayer()
     {
         GameObject player = Instantiate(playerObject);

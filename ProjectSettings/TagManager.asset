@@ -9,6 +9,8 @@ TagManager:
   - Planet
   - Lava
   - PlayerRig
+  - Foliage
+  - PickUp
   layers:
   - Default
   - TransparentFX
