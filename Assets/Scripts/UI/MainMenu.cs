@@ -31,6 +31,7 @@ public class MainMenu : MonoBehaviour
         startTimer = 0;
         Time.timeScale = 1;
         fadeScreen.FadeIn();
+        SoundManager.instance.PlayMusic(0);
     }
 
     private void Update()

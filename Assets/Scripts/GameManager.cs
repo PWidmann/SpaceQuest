@@ -8,8 +8,8 @@ public static class GameManager
     private static bool isInMenu = false;
     private static float mouseSensitivity = 3f;
 
-    private static float sfxVolume = 0.5f;
-    private static float musicVolume = 0.5f;
+    private static float sfxVolume = 50f;
+    private static float musicVolume = 50f;
 
     private static PlanetType lastPlanet = PlanetType.Poison;
 

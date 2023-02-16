@@ -7,7 +7,7 @@ public class SplashScreen : MonoBehaviour
 {
     #region Members
 
-    [SerializeField] private Image MHPlogoImage;
+    [SerializeField] private Image logoImage;
     [SerializeField] private float fadeSpeed = 0.5f;
     private float opacity = 0f;
     private float startTimer = 0;
@@ -22,7 +22,7 @@ public class SplashScreen : MonoBehaviour
         // Make logo transparent on start
         opacity = 0;
         startTimer = 0;
-        MHPlogoImage.color = new Color(255, 255, 255, opacity);
+        logoImage.color = new Color(255, 255, 255, opacity);
     }
 
     void Update()
@@ -47,7 +47,7 @@ public class SplashScreen : MonoBehaviour
             if (opacity < 1f)
             {
                 opacity += Time.deltaTime * fadeSpeed;
-                MHPlogoImage.color = new Color(255, 255, 255, opacity);
+                logoImage.color = new Color(255, 255, 255, opacity);
             }
             else
             {
@@ -60,7 +60,7 @@ public class SplashScreen : MonoBehaviour
             if (startTimer > 5f)
             {
                 opacity -= Time.deltaTime * fadeSpeed;
-                MHPlogoImage.color = new Color(255, 255, 255, opacity);
+                logoImage.color = new Color(255, 255, 255, opacity);
 
                 if (opacity <= 0)
                 {

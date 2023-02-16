@@ -23,5 +23,7 @@ public class PlanetScriptableObject : ScriptableObject
     [Space(10)]
     public GameObject randomEnemy;
     [Space(10)]
+    public GameObject POI_enemy;
+    [Space(10)]
     public GameObject boss;
 }

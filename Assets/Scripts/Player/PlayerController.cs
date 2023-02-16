@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rigidBody;
     private CharacterController controller;
     private QuestManager questManager;
+    private GameGUI playerGUI;
+    private FadeScreen fadeScreen;
 
     // Movement
     private bool playerHasControl = true;
@@ -35,7 +37,6 @@ public class PlayerController : MonoBehaviour
     private float turnSmoothVelocity;
     private float speedSmoothVelocity;
     private float speedSmoothTime = 0.05f;
-    //private float turnSmoothTime = 0.1f;
     private float runSpeed = 8f; // about 8 intended
     private float crouchSpeed = 2.3f;
     private float mySpeed = 0;
@@ -75,14 +76,15 @@ public class PlayerController : MonoBehaviour
     private float lavaTimer = 0;
     private bool death = false;
 
-    private GameGUI playerGUI;
-    private FadeScreen fadeScreen;
+    
 
     private Vector3 spawnPoint = Vector3.zero;
     private float respawnTimer = 6f;
     private bool respawnStarted = false;
     private RaycastHit cursorTargetHit;
-    public bool canInteract = false;
+    private bool canInteract = false;
+    private int playerHealth = 100;
+
 
     public bool Death { get => death; set => death = value; }
     public Vector3 SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
@@ -106,8 +108,15 @@ public class PlayerController : MonoBehaviour
         Zoom();
 
         CheckForLava();
+        UIupdate();
         Respawn();
     }
+
+    private void UIupdate()
+    {
+        playerGUI.SetPlayerHealthBar(playerHealth);
+    }
+
     private void FixedUpdate()
     {
         if (playerHasControl)
@@ -171,6 +180,8 @@ public class PlayerController : MonoBehaviour
                 lavaTimer = 0;
                 respawnStarted = false;
                 respawnTimer = 6f;
+                playerHealth = 100;
+                playerGUI.SetPlayerHealthBar(playerHealth);
             }
         }
     }
@@ -387,19 +398,11 @@ public class PlayerController : MonoBehaviour
     {
         if (playerHasControl && !death)
         {
-            // Very inefficient, CREATE SOMETING BETTER HERE
-            if (Input.GetMouseButtonDown(0))
-            {
-                GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
-                beam.transform.LookAt(aimTarget);
-                shootTimer = 0;
-            }
+            shootTimer += Time.deltaTime;
 
-            if (Input.GetMouseButton(0))
+            if (shootTimer > 0.7f)
             {
-                shootTimer += Time.deltaTime;
-
-                if (shootTimer > autoShootRate)
+                if (Input.GetMouseButton(0))
                 {
                     GameObject beam = Instantiate(laserBeamPrefab, gunEndPoint.position, Quaternion.identity);
                     beam.transform.LookAt(aimTarget);
@@ -450,5 +453,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void TakeDamage(int value)
+    {
+        if (!death)
+        {
+            playerHealth -= value;
+
+            if (playerHealth <= 0)
+            {
+                death = true;
+                TriggerDeath();
+            }
+        }
+    }
     #endregion
 }

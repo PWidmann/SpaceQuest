@@ -8,7 +8,6 @@ public class QuestGiver : MonoBehaviour
     private PlayerController playerController;
     private void Start()
     {
-        
         questManager = GameObject.Find("QuestManager").GetComponent<QuestManager>();
     }
     public void GiveQuest()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,18 +8,17 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager instance;
 
-    [Range(0, 1)]
-    public float volume = 0.6f;
-    public AudioClip[] audioClips;
-    [Header("Interface Elements")]
-    public Slider soundSlider;
-    public Text soundValueText;
-    public AudioSource audioSourceFX;
-    public AudioSource alarmAudioSourceFX;
-    private float soundPlayTimer = 0.15f;
-    private bool canPlaySound = true;
-
+    [SerializeField] private AudioClip[] musicClips;
+    [SerializeField] private AudioClip[] sfxClips;
     
+    [SerializeField] private AudioSource audioSourceMusic;
+    [SerializeField] private AudioSource audioSourceSFX;
+
+    private float timer = 0;
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
 
     void Start()
     {
@@ -27,58 +27,43 @@ public class SoundManager : MonoBehaviour
             instance = this;
         }
 
-        audioSourceFX.GetComponent<AudioSource>();
-        if (PlayerPrefs.HasKey("SoundVolume"))
-        {
-            soundSlider.value = PlayerPrefs.GetFloat("SoundVolume");
-        }
-
-
+        
     }
 
     private void Update()
     {
+        timer += Time.deltaTime;
 
-        if (soundPlayTimer >= 0)
+        if (timer > 0.5f)
         {
-            soundPlayTimer -= Time.deltaTime;
+            audioSourceSFX.volume = GameManager.SfxVolume / 100;
+            audioSourceMusic.volume = GameManager.MusicVolume / 100;
         }
-        else
-        {
-            soundPlayTimer = 0.15f;
-            canPlaySound = true;
-        }
-
-        audioSourceFX.volume = volume;
     }
 
-
-    public void PlaySound(int index)
+    public void SetVolumeMusic(float value)
     {
-        if (index == 6 || index == 7)
-        {
-            alarmAudioSourceFX.PlayOneShot(audioClips[index]);
-        }
-        else
-        {
-            if (canPlaySound)
-            {
-                audioSourceFX.PlayOneShot(audioClips[index]);
-                canPlaySound = false;
-            }
-        }
-
+        audioSourceMusic.volume = value;
     }
 
-    public void PlayHealing()
+    public void SetVolumeSFX(float value)
     {
-        audioSourceFX.Play();
+        audioSourceSFX.volume = value;
     }
 
-    public void StopHealing()
+    public void PlayMusic(int index)
     {
-        audioSourceFX.Stop();
+        if (audioSourceMusic.clip != null)
+        {
+            audioSourceMusic.Stop();
+        }
+        
+        audioSourceMusic.clip = musicClips[index];
+        audioSourceMusic.Play();
     }
 
-
+    public void PlaySFX(int index)
+    {
+        audioSourceSFX.PlayOneShot(sfxClips[index]);
+    }
 }

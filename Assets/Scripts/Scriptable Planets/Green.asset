@@ -105,4 +105,6 @@ MonoBehaviour:
   - {fileID: 7269088888282857370, guid: 68a1ee4bbd3a60d49b65c92669bac921, type: 3}
   randomEnemy: {fileID: 6631399265552836280, guid: 5afea2e0981c3ca419cc99123c5e7bf0,
     type: 3}
-  boss: {fileID: 0}
+  POI_enemy: {fileID: 6428697277756877826, guid: cc548b3ae7b76194583e5d950a1bbca3,
+    type: 3}
+  boss: {fileID: 5798602025256682941, guid: ccf5769a223121846b453a515b9fe27d, type: 3}

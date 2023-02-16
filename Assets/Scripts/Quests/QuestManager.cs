@@ -35,12 +35,15 @@ public class QuestManager: MonoBehaviour
 
     public void Update()
     {
-        checkTimer += Time.deltaTime;
-        if (checkTimer > 1f)
+        if (introStarted)
         {
-            if (introQuest.CurrentQuestTracking == introQuest.QuestGoal)
+            checkTimer += Time.deltaTime;
+            if (checkTimer > 1f)
             {
-                introCompleted = true;
+                if (introQuest.CurrentQuestTracking == introQuest.QuestGoal)
+                {
+                    introCompleted = true;
+                }
             }
         }
     }

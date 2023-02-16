@@ -68,6 +68,7 @@ public class PlanetGenerator : MonoBehaviour
         spaceshipIntro = GameObject.Find("SpaceShip").GetComponent<SpaceShipIntro>();
         playerGUI = GameObject.Find("PlayerGUI").GetComponent<GameGUI>();
         fadeScreen.FadeIn();
+        SoundManager.instance.PlayMusic(1);
 
         if (DevMode) // Dev mode is for manually generating with individual steps
         {
@@ -204,6 +205,8 @@ public class PlanetGenerator : MonoBehaviour
         {
             enemy.GetComponent<SimpleEnemyController>().ActivateNPC(player);
         }
+
+        playerGUI.SetPlayerHealthActive(true);
     }
 
     #endregion

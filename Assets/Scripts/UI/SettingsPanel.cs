@@ -26,7 +26,6 @@ public class SettingsPanel : MonoBehaviour
     [SerializeField] private TMP_Text musicValueText;
 
     #endregion
-
     public void BackButton()
     {
         parentMenuPanel.SetActive(true);

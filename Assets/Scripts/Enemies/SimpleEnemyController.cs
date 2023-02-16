@@ -84,7 +84,7 @@ public class SimpleEnemyController : MonoBehaviour
             distanceToPlayer = Vector3.Distance(playerObject.transform.position, transform.position);
 
             // If player is near enemy, chase
-            if (distanceToPlayer < AggroRange && enemyState != EnemyState.Attack)
+            if (distanceToPlayer < AggroRange && enemyState != EnemyState.Attack && !playerObject.GetComponent<PlayerController>().Death)
             {
                 enemyState = EnemyState.Chase;
             }
@@ -232,12 +232,18 @@ public class SimpleEnemyController : MonoBehaviour
     {
         attackTimer -= Time.deltaTime;
 
-        if (attackTimer < 0)
+        if (attackTimer < 0 && !playerObject.GetComponent<PlayerController>().Death)
         {
             transform.LookAt(playerObject.transform.position + new Vector3(0, 1, 0));
             animator.SetTrigger("Attack");
+            playerObject.GetComponent<PlayerController>().TakeDamage(10);
             attackTimer = 2f;
-        } 
+        }
+
+        if (playerObject.GetComponent<PlayerController>().Death)
+        {
+            enemyState = EnemyState.BackToSpawn;
+        }
     }
 
     private Vector3 NextPathPoint()

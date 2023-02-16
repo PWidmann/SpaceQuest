@@ -10,6 +10,7 @@ public class GameGUI : MonoBehaviour
     [SerializeField] private GameObject youDiedPanel;
     [SerializeField] private GameObject compass;
     [SerializeField] private GameObject interactPanel;
+    [SerializeField] private GameObject playerHealth;
 
     private void Awake()
     {
@@ -17,6 +18,7 @@ public class GameGUI : MonoBehaviour
         youDiedPanel.SetActive(false);
         compass.SetActive(false);
         interactPanel.SetActive(false);
+        playerHealth.SetActive(false);
     }
 
     public void ShowLavaMeter(float value)
@@ -33,6 +35,16 @@ public class GameGUI : MonoBehaviour
     public void SetDeathPanel(bool active)
     {
         youDiedPanel.SetActive(active);
+    }
+
+    public void SetPlayerHealthActive(bool active)
+    {
+        playerHealth.SetActive(active);
+    }
+
+    public void SetPlayerHealthBar(int value)
+    {
+        playerHealth.GetComponent<Slider>().value = value;
     }
 
     public void SetCompass(bool active)

@@ -615,7 +615,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1611544726804599475}
   - component: {fileID: 1611544726804599474}
-  - component: {fileID: 1611544726804599473}
   - component: {fileID: 5320330896995527390}
   m_Layer: 8
   m_Name: MainCamera
@@ -682,14 +681,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &1611544726804599473
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1611544726804599472}
-  m_Enabled: 1
 --- !u!114 &5320330896995527390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1584,7 +1575,6 @@ MonoBehaviour:
   laserBeamPrefab: {fileID: 669887147069142599, guid: 434206a44f1274842be774dcf52c7f99,
     type: 3}
   flashLightGO: {fileID: 7004809049737083877}
-  hips: {fileID: 4586770280140964273}
 --- !u!136 &3974640686569797724
 CapsuleCollider:
   m_ObjectHideFlags: 0
