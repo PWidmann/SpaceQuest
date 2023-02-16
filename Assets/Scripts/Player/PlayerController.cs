@@ -23,7 +23,6 @@ public class PlayerController : MonoBehaviour
 
     private Animator animator;
     private Rigidbody rigidBody;
-    private CharacterController controller;
     private QuestManager questManager;
     private GameGUI playerGUI;
     private FadeScreen fadeScreen;
@@ -33,19 +32,15 @@ public class PlayerController : MonoBehaviour
     private Vector2 inputDir;
     private Vector3 velocity;
     private bool crouching = false;
-    private float turnSmoothVelocity;
     private float speedSmoothVelocity;
     private float speedSmoothTime = 0.05f;
-    private float runSpeed = 20f; // about 8 intended
+    private float runSpeed = 8f; // about 8 intended
     private float crouchSpeed = 2.3f;
     private float mySpeed = 0;
     private float currentSpeed;
     private float targetSpeed;
     private float animationSpeedPercent;
     private bool grounded = true;
-
-    // Animation
-    private float speedPercent;
 
     // Camera
     private Camera playerCamera;
@@ -54,7 +49,6 @@ public class PlayerController : MonoBehaviour
     private float cameraPitch;
 
     // Body aiming
-    private Vector3 aimRotOffset = new Vector3(2f, 0, 0); // Best compromise of far and near target aiming rotation
     private Quaternion aimRotation;
     private RaycastHit hit;
     private Vector3 aimTarget;

@@ -27,13 +27,9 @@ public class PlanetGenerator : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject playerObject;
     [SerializeField] private GameObject lavaSpherePrefab;
-    [SerializeField] private GameObject targetNavPoint;
 
     [Header("Planet Configurations")]
     [SerializeField] private PlanetScriptableObject[] configurations;
-
-    [Header("NPCs")]
-    [SerializeField] private GameObject demonEnemyPrefab;
 
     private PlanetScriptableObject currentPlanetConfiguration;
     private Texture2D texture;

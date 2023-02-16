@@ -25,7 +25,6 @@ public class QuestManager: MonoBehaviour
     private bool introCompleted = false;
     private bool confrontationCompleted = false;
     private float checkTimer = 0;
-    private string[] questGiverNames;
 
     public Quest IntroQuest { get => introQuest; set => introQuest = value; }
     public Quest ConfrontationQuest { get => confrontationQuest; set => confrontationQuest = value; }
@@ -39,7 +38,6 @@ public class QuestManager: MonoBehaviour
     #region Unity Methods
     private void Start()
     {
-        questGiverNames = ReadAndLoadQuestGiverNames();
         playerGUI = GameObject.Find("PlayerGUI").GetComponent<GameGUI>();
         planetGenerator = GameObject.Find("PlanetGenerator").GetComponent<PlanetGenerator>();
     }
@@ -187,7 +185,7 @@ public class QuestManager: MonoBehaviour
     private Quest SelectQuestGiverName(Quest quest)
     {
         Quest withIntro = quest;
-        withIntro.QuestGiverName = questGiverNames[UnityEngine.Random.Range(0, questGiverNames.Length - 1)];
+        withIntro.QuestGiverName = "Tarkov";
 
         return withIntro;
     }
@@ -290,16 +288,16 @@ public class QuestManager: MonoBehaviour
         // Return the point on the sphere as a Vector3.
         return output;
     }
-    private string[] ReadAndLoadQuestGiverNames()
-    {
-        // Read names from file
-        string filePath = "Assets/GameDataInput/QuestGiverNames.txt";
-        string fileContents = File.ReadAllText(filePath);
-
-        // Split the file contents by line to get the individual names
-        string[] names = fileContents.Split('\n');
-
-        return names;
-    }
+    //private string[] ReadAndLoadQuestGiverNames()
+    //{
+    //    // Read names from file
+    //    string filePath = "Assets/GameDataInput/QuestGiverNames.txt";
+    //    string fileContents = File.ReadAllText(filePath);
+    //
+    //    // Split the file contents by line to get the individual names
+    //    string[] names = fileContents.Split('\n');
+    //
+    //    return names;
+    //}
     #endregion
 }
