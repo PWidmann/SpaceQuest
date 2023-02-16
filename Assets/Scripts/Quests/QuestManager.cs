@@ -1,17 +1,22 @@
+using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
-using System.IO;
-using System.Collections.Generic;
 using UnityEngine.UI;
 
 
 
 public class QuestManager: MonoBehaviour
 {
+    #region Members
     [SerializeField] private GameObject questGiverNPC;
     [SerializeField] private GameObject questTextPanel;
-    [SerializeField] private Text questWindowText;
+    [SerializeField] private Text questWindowTextIntro;
+    [SerializeField] private Text questWindowTextConfrontation;
+    [SerializeField] private Text acceptButtonText;
+    [SerializeField] private Compass compass;
 
+    private GameGUI playerGUI;
+    private PlanetGenerator planetGenerator;
     private PlanetScriptableObject currentPlanetConfiguration;
     private Quest introQuest;
     private Quest confrontationQuest;
@@ -20,17 +25,23 @@ public class QuestManager: MonoBehaviour
     private bool introCompleted = false;
     private bool confrontationCompleted = false;
     private float checkTimer = 0;
-    
     private string[] questGiverNames;
 
     public Quest IntroQuest { get => introQuest; set => introQuest = value; }
     public Quest ConfrontationQuest { get => confrontationQuest; set => confrontationQuest = value; }
     public bool IntroStarted { get => introStarted; set => introStarted = value; }
     public bool ConfrontationStarted { get => confrontationStarted; set => confrontationStarted = value; }
+    public bool IntroCompleted { get => introCompleted; set => introCompleted = value; }
+    public bool ConfrontationCompleted { get => confrontationCompleted; set => confrontationCompleted = value; }
+    public Text AcceptButtonText { get => acceptButtonText; set => acceptButtonText = value; }
+    #endregion
 
+    #region Unity Methods
     private void Start()
     {
         questGiverNames = ReadAndLoadQuestGiverNames();
+        playerGUI = GameObject.Find("PlayerGUI").GetComponent<GameGUI>();
+        planetGenerator = GameObject.Find("PlanetGenerator").GetComponent<PlanetGenerator>();
     }
 
     public void Update()
@@ -40,70 +51,151 @@ public class QuestManager: MonoBehaviour
             checkTimer += Time.deltaTime;
             if (checkTimer > 1f)
             {
-                if (introQuest.CurrentQuestTracking == introQuest.QuestGoal)
+                if (introQuest.Active)
                 {
-                    introCompleted = true;
+                    if (introQuest.CurrentQuestTracking == introQuest.QuestGoal)
+                    {
+                        IntroCompleted = true;
+                    }
+                }
+
+                if (confrontationQuest.Active)
+                {
+                    if (confrontationQuest.CurrentQuestTracking == confrontationQuest.QuestGoal)
+                    {
+                        confrontationCompleted = true;
+                    }
                 }
             }
         }
     }
+    #endregion
 
-
+    #region Public Methods
     public void GenerateQuests()
     {
         introQuest = GenerateIntroQuest();
-
+        confrontationQuest = GenerateConfrontationQuest();
         FillIntroQuestText();
-
         SpawnQuestGiver();
 
-        //switch (planetType)
-        //{
-        //    case PlanetType.Green:
-        //        break;
-        //    case PlanetType.Desert:
-        //        break;
-        //    case PlanetType.Poison:
-        //        break;
-        //    case PlanetType.Lava:
-        //        break;
-        //    case PlanetType.Ice:
-        //        break;
-        //}
-
+        Debug.Log("QuestGiver: " + IntroQuest.QuestGiverName);
         Debug.Log("Introquest generated: " + IntroQuest.QuestType.ToString());
         Debug.Log("Objectives needed: " + IntroQuest.QuestGoal);
-        Debug.Log("QuestGiver: " + IntroQuest.QuestGiverName);
+        Debug.Log("Confrontation quest generated: " + confrontationQuest.QuestType.ToString());
+        
     }
+    public void SetQuestAcceptTextIntro(string text)
+    {
+        questWindowTextIntro.text = text;
+    }
+    public void SetQuestAcceptTextFollowQuest(string text)
+    {
+        questWindowTextConfrontation.text = text;
+    }
+    public void UpdateQuestTracker()
+    {
+        // Intro Quest
+        if (introQuest.Active)
+        {
+            switch (introQuest.QuestType)
+            {
+                case QuestType.CollectMaterial:
+                    playerGUI.SetQuestTrackerText("Materials to collect: " + introQuest.CurrentQuestTracking + "/" + introQuest.QuestGoal);
+                    break;
+                case QuestType.KillEnemies:
+                    playerGUI.SetQuestTrackerText("Kill enemies: " + introQuest.CurrentQuestTracking + "/" + introQuest.QuestGoal);
+                    break;
+            }
 
+            playerGUI.SetQuestTrackerActive(true);
+        }
+
+        // Follow Up Quest
+        if (confrontationQuest.Active)
+        {
+            switch (confrontationQuest.QuestType)
+            {
+                case QuestType.Boss:
+                    playerGUI.SetQuestTrackerText("Kill the boss " + confrontationQuest.CurrentQuestTracking + "/" + confrontationQuest.QuestGoal);
+                    break;
+                case QuestType.Rescue:
+                    playerGUI.SetQuestTrackerText("Rescue a friend");
+                    break;
+                case QuestType.Protect:
+                    playerGUI.SetQuestTrackerText("Protect the shaman!");
+                    break;
+                case QuestType.EnemyCamp:
+                    playerGUI.SetQuestTrackerText("Clear the camp");
+                    break;
+            }
+        }
+
+        if (confrontationCompleted)
+        {
+            playerGUI.SetQuestTrackerActive(false);
+        }
+    }
+    public void SetQuestPanelActive(bool active)
+    {
+        questTextPanel.SetActive(active);
+    }
+    public GameObject SpawnNPC_RandomPlanetPos(GameObject _go, string _name)
+    {
+        GameObject npc = Instantiate(_go);
+        npc.name = _name;
+        npc.transform.position = RandomPlanetSpawnPoint();
+        return npc;
+    }
+    #endregion
+
+    #region Private Methods
+    private Quest GenerateIntroQuest()
+    {
+        Quest quest;
+        int rnd = UnityEngine.Random.Range(0, 2);
+        switch (rnd)
+        {
+            case 0:
+                quest = new Quest(QuestType.CollectMaterial);
+                quest = SelectQuestGiverName(quest);
+                quest.QuestGoal = UnityEngine.Random.Range(5, 11);
+                break;
+            case 1:
+                quest = new Quest(QuestType.KillEnemies);
+                quest = SelectQuestGiverName(quest);
+                quest.QuestGoal = UnityEngine.Random.Range(5, 11);
+                break;
+            default:
+                quest = new Quest(QuestType.CollectMaterial);
+                quest = SelectQuestGiverName(quest);
+                quest.QuestGoal = UnityEngine.Random.Range(5, 11);
+                break;
+        }
+
+        return quest;
+    }
+    private Quest GenerateConfrontationQuest()
+    {
+        int rnd = UnityEngine.Random.Range(0, 4);
+        Quest quest;
+        quest = new Quest(QuestType.Boss);
+        quest.QuestGoal = 1;
+
+        return quest;
+    }
+    private Quest SelectQuestGiverName(Quest quest)
+    {
+        Quest withIntro = quest;
+        withIntro.QuestGiverName = questGiverNames[UnityEngine.Random.Range(0, questGiverNames.Length - 1)];
+
+        return withIntro;
+    }
     private void SpawnQuestGiver()
     {
         GameObject questGiver = SpawnNPC_RandomPlanetPos(questGiverNPC, IntroQuest.QuestGiverName);
         questGiver.transform.parent = GameObject.Find("Planet").transform;
     }
-
-    private Quest GenerateIntroQuest()
-    {
-        Quest quest;
-        int rnd = UnityEngine.Random.Range(0, 2);
-        if (rnd == 0)
-        {
-            quest = new Quest(QuestType.CollectMaterial);
-        }
-        else
-        {
-            quest = new Quest(QuestType.KillEnemies);
-        }
-
-        quest = SelectQuestGiverName(quest);
-        quest.QuestGoal = UnityEngine.Random.Range(5, 11);
-
-        
-
-
-        return quest;
-    }
-
     private void FillIntroQuestText()
     {
         string text = "Hello traveller, my name is " + introQuest.QuestGiverName + ". ";
@@ -117,38 +209,60 @@ public class QuestManager: MonoBehaviour
             text += "I can't do my research work with all those creatures around. Could you please terminate " + introQuest.QuestGoal + " of them for me?";
         }
 
-        questWindowText.text = text;
+        questWindowTextIntro.text = text;
     }
-
-    private Quest SelectQuestGiverName(Quest quest)
-    {
-        Quest withIntro = quest;
-        withIntro.QuestGiverName = questGiverNames[UnityEngine.Random.Range(0, questGiverNames.Length - 1)];
-
-        return withIntro;
-    }
-
-    public GameObject SpawnNPC_RandomPlanetPos(GameObject _go, string _name)
-    {
-        GameObject npc = Instantiate(_go);
-        npc.name = _name;
-        npc.transform.position = RandomPlanetSpawnPoint();
-        return npc;
-    }
-
     public void AcceptQuestButton()
     {
-        if (!introCompleted)
+        if (!introQuest.Active && !introCompleted)
         {
             SetQuestPanelActive(false);
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().SetPlayerIsInControl(true);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             introQuest.Active = true;
-            Debug.Log("Quest is now active");
+            
+            UpdateQuestTracker();
+            introStarted = true;
+            Debug.Log("Intro quest is now active");
+        }
+
+        if (introCompleted && !confrontationStarted)
+        {
+            SetupFollowUpQuest();
+            SetQuestPanelActive(false);
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().SetPlayerIsInControl(true);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            
+            confrontationQuest.Active = true;
+            confrontationQuest.QuestGoal = 1;
+            confrontationQuest.CurrentQuestTracking = 0;
+            
+            UpdateQuestTracker();
+            confrontationStarted = true;
+            Debug.Log("Follow up quest is now active");
+        }
+
+        // If confrontational quest is completed
+        if (confrontationCompleted)
+        {
+            SetQuestPanelActive(false);
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().SetPlayerIsInControl(true);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Debug.Log("Confrontation quest completed");
+            compass.QuestGiverIndicator.GetComponent<RawImage>().enabled = false;
         }
     }
-
+    private void SetupFollowUpQuest()
+    {
+        // Spawn Boss Enemy
+        GameObject bossEnemy = Instantiate(planetGenerator.CurrentPlanetConfiguration.boss);
+        bossEnemy.transform.position = RandomPlanetSpawnPoint();
+        bossEnemy.GetComponent<SimpleEnemyController>().BossEnemy = true;
+        bossEnemy.GetComponent<SimpleEnemyController>().ActivateNPC(GameObject.FindGameObjectWithTag("Player"));
+        compass.FollowUpQuestTarget = bossEnemy;
+    }
     private Vector3 RandomPlanetSpawnPoint()
     {
         // Planet terrain max height + margin
@@ -176,9 +290,9 @@ public class QuestManager: MonoBehaviour
         // Return the point on the sphere as a Vector3.
         return output;
     }
-
     private string[] ReadAndLoadQuestGiverNames()
     {
+        // Read names from file
         string filePath = "Assets/GameDataInput/QuestGiverNames.txt";
         string fileContents = File.ReadAllText(filePath);
 
@@ -187,10 +301,5 @@ public class QuestManager: MonoBehaviour
 
         return names;
     }
-
-    public void SetQuestPanelActive(bool active)
-    {
-        questTextPanel.SetActive(active);
-    }
-
+    #endregion
 }

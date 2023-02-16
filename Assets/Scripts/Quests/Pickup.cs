@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class Pickup : MonoBehaviour
 {
+    #region Members
     public bool questActive = true;
     private QuestManager questManager;
+    #endregion
 
+    #region Unity Methods
     private void Start()
     {
         questManager = GameObject.Find("QuestManager").GetComponent<QuestManager>();
     }
+    #endregion
+
+    #region public Methods
     public void PickUp()
     {
         if (QuestManagerCheck())
@@ -18,18 +24,24 @@ public class Pickup : MonoBehaviour
             Destroy(transform.gameObject);
         }
     }
+    #endregion
 
+    #region Private Methods
     private bool QuestManagerCheck()
     {
         bool updated = false;
 
         if (questManager.IntroQuest.QuestType == QuestType.CollectMaterial && questManager.IntroQuest.Active)
         {
-            questManager.IntroQuest.CurrentQuestTracking += 1;
-            Debug.Log("quest tracking updated. current count: " + questManager.IntroQuest.CurrentQuestTracking + "/" + questManager.IntroQuest.QuestGoal);
-            updated = true;
+            if (questManager.IntroQuest.CurrentQuestTracking < questManager.IntroQuest.QuestGoal)
+            {
+                questManager.IntroQuest.CurrentQuestTracking += 1;
+                questManager.UpdateQuestTracker();
+                updated = true;
+            }
         }
 
         return updated;
     }
+    #endregion
 }

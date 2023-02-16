@@ -34,7 +34,6 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region Unity Methods
-
     private void Start()
     {
         // Initialize
@@ -74,11 +73,9 @@ public class CameraController : MonoBehaviour
             SetZoomValue();  
         }
     }
-
     #endregion
 
     #region Methods
-
     /// <summary>
     /// Sets camera rotation mode around planet active (right click hold to rotate).
     /// </summary>
@@ -86,7 +83,6 @@ public class CameraController : MonoBehaviour
     {
         canRotate = active;
     }
-
     private void CreateTargetRotation()
     {
         if (mouseButtonPressed)
@@ -101,7 +97,6 @@ public class CameraController : MonoBehaviour
         currentRotation = Vector3.SmoothDamp(currentRotation, targetRotation, ref rotationSmoothVelocity, rotationSmoothTime);
         transform.eulerAngles = currentRotation;
     }
-
     private void SetZoomValue()
     {
         var d = Input.GetAxis("Mouse ScrollWheel");
@@ -120,6 +115,5 @@ public class CameraController : MonoBehaviour
         transform.position = target - transform.forward * currentCameraZoom;
         currentCameraZoom = Mathf.Lerp(currentCameraZoom, targetCameraZoom, cameraSmoothing);
     }
-
     #endregion
 }

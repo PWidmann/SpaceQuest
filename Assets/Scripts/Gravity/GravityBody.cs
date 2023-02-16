@@ -2,12 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This script is meant to be placed on entities which are affected by gravity
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class GravityBody : MonoBehaviour
 {
+    #region Members
     GravityAttractor planet;
     Rigidbody rigidBody;
+    #endregion
 
+    #region UnityMethods
     private void Awake()
     {
         planet = GameObject.FindGameObjectWithTag("Planet").GetComponent<GravityAttractor>();
@@ -23,4 +29,5 @@ public class GravityBody : MonoBehaviour
             planet.Attract(transform);
         }
     }
+    #endregion
 }

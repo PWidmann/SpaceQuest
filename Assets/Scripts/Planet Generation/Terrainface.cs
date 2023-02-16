@@ -5,7 +5,6 @@ using UnityEngine;
 public class Terrainface
 {
     #region Members
-
     private ShapeGenerator shapeGenerator;
     private AnimationCurve animCurve;
     private Mesh mesh;
@@ -26,11 +25,9 @@ public class Terrainface
     public float MinHeightValue { get => minHeightValue; }
     public float MaxHeightValue { get => maxHeightValue; }
     public Mesh Mesh { get => mesh; }
-
     #endregion
 
     #region Constructor
-
     public Terrainface(ShapeGenerator _shapeGenerator, Mesh _mesh, int _resolution, Vector3 _localUp, AnimationCurve _animCurve)
     {
         shapeGenerator = _shapeGenerator;
@@ -43,11 +40,9 @@ public class Terrainface
         axisB = Vector3.Cross(localUp, axisA);
         minHeightValue = 400f; // Planet is usually around radius 200-260
     }
-
     #endregion
 
-    #region Methods
-
+    #region Public Methods
     public void GenerateMeshData()
     {
         vertices = new Vector3[(resolution + 1) * (resolution + 1)];
@@ -90,7 +85,6 @@ public class Terrainface
             }
         }
     }
-
     public void ApplyMesh()
     {
         Mesh.Clear();
@@ -99,7 +93,6 @@ public class Terrainface
         Mesh.uv = uv;
         Mesh.RecalculateNormals();
     }
-
     public void FlatShading()
     {
         // Duplicate vertices for each triangle to prevent smooth edges
@@ -116,7 +109,6 @@ public class Terrainface
         vertices = flatShadedVertices;
         uv = flatShadedUvs;
     }
-
     public static Vector3 PointOnCubeToPointOnSphere(Vector3 p)
     {
         // Fancy black magic I stole online to produce better spread vertices even on edges
@@ -130,7 +122,9 @@ public class Terrainface
 
         return new Vector3(x, y, z);
     }
+    #endregion
 
+    #region Private Methods
     private void SetTerrainMinMax(int _i)
     {
         // Set min and max terrain height value reference
@@ -143,6 +137,5 @@ public class Terrainface
             maxHeightValue = Vector3.Distance(Vector3.zero, vertices[_i]);
         }
     }
-
     #endregion
 }

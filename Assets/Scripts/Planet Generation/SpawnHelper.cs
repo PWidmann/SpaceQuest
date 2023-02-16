@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class SpawnHelper: MonoBehaviour
 {
+    #region Public Methods
     public Vector3 GetRandomPositionAroundPlanet()
     {
         // Generate a random direction around the planet
@@ -22,7 +23,6 @@ public class SpawnHelper: MonoBehaviour
     {
         RaycastHit hit;
         Vector3 raycastDirection = (Vector3.zero - position).normalized;
-
 
         if (Physics.Raycast(position, raycastDirection, out hit, Mathf.Infinity))
         {
@@ -47,5 +47,5 @@ public class SpawnHelper: MonoBehaviour
         Vector3 raycastHitPosition = RaycastToPlanetSurface(randomPosition);
         return raycastHitPosition;
     }
-
+    #endregion
 }

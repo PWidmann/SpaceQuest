@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class LaserBeam : MonoBehaviour
 {
+    #region Members
     private float speed = 60f;
     private float maxLifeTime = 3f;
+    #endregion
 
+    #region Unity Methods
     void FixedUpdate()
     {
         maxLifeTime -= Time.fixedDeltaTime;
@@ -18,7 +21,6 @@ public class LaserBeam : MonoBehaviour
 
         transform.Translate(0, 0, speed * Time.fixedDeltaTime);
     }
-
     private void OnTriggerEnter(Collider other)
     {
         // If the bullet hits a monster
@@ -29,4 +31,5 @@ public class LaserBeam : MonoBehaviour
 
         Destroy(gameObject);
     }
+    #endregion
 }

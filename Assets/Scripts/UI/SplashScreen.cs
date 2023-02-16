@@ -6,17 +6,14 @@ using System;
 public class SplashScreen : MonoBehaviour
 {
     #region Members
-
     [SerializeField] private Image logoImage;
     [SerializeField] private float fadeSpeed = 0.5f;
     private float opacity = 0f;
     private float startTimer = 0;
     private bool fadeIn = false;
-
     #endregion
 
     #region Unity Methods
-
     void Start()
     {
         // Make logo transparent on start
@@ -29,11 +26,9 @@ public class SplashScreen : MonoBehaviour
     {
         FadeInOut();
     }
-
     #endregion
 
     #region Methods
-
     private void FadeInOut()
     {
         startTimer += Time.deltaTime;
@@ -69,6 +64,5 @@ public class SplashScreen : MonoBehaviour
             }
         }
     }
-
     #endregion
 }

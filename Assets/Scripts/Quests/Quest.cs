@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public enum QuestType { CollectMaterial, CollectLava, KillEnemies, Boss, EnemyCamp, Rescue, Protect}
 
 public class Quest : MonoBehaviour
 {
+    #region Members
     private QuestType questType;
     private bool active = false;
     private string questName;
@@ -16,14 +16,6 @@ public class Quest : MonoBehaviour
     private GameObject questobjective;
     private int currentQuestTracking;
     private int questGoal;
-
-    public Quest(QuestType quest)
-    {
-        questType = quest;
-        reward = 100;
-        currentQuestTracking = 0;
-    }
-
     public string QuestName { get => questName; set => questName = value; }
     public string Description { get => description; set => description = value; }
     public int Reward { get => reward; set => reward = value; }
@@ -33,4 +25,14 @@ public class Quest : MonoBehaviour
     public int CurrentQuestTracking { get => currentQuestTracking; set => currentQuestTracking = value; }
     public int QuestGoal { get => questGoal; set => questGoal = value; }
     public bool Active { get => active; set => active = value; }
+    #endregion
+
+    #region Constructor
+    public Quest(QuestType quest)
+    {
+        questType = quest;
+        reward = 100;
+        currentQuestTracking = 0;
+    }
+    #endregion
 }

@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class SettingsPanel : MonoBehaviour
 {
     #region Members
-
     [Header("UI References")]
     [SerializeField] public GameObject settingsPanel;
     [SerializeField] public GameObject parentMenuPanel;
@@ -24,14 +23,14 @@ public class SettingsPanel : MonoBehaviour
     [SerializeField] private TMP_Text mouseSensitivityValueText;
     [SerializeField] private TMP_Text sfxValueText;
     [SerializeField] private TMP_Text musicValueText;
-
     #endregion
+
+    #region Public Methods
     public void BackButton()
     {
         parentMenuPanel.SetActive(true);
         settingsPanel.SetActive(false);
     }
-
     public void ApplyButton()
     {
         // Screen settings
@@ -53,27 +52,24 @@ public class SettingsPanel : MonoBehaviour
 
         applyButton.interactable = false;
     }
-
     public void ActivateApplyButton()
     {
         applyButton.interactable = true;
     }
-
     public void MouseSensitivitySlider()
     {
         GameManager.MouseSensitivity = mouseSensitivitySlider.value;
         mouseSensitivityValueText.text = GameManager.MouseSensitivity.ToString();
     }
-
     public void SfxSlider()
     {
         GameManager.SfxVolume = effectsVolumeSlider.value;
         sfxValueText.text = (GameManager.SfxVolume) + " %";
     }
-
     public void MusicSlider()
     {
         GameManager.MusicVolume = musicVolumeSlider.value;
         musicValueText.text = (int)(GameManager.MusicVolume) + " %";
     }
+    #endregion
 }

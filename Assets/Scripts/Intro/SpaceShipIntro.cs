@@ -7,14 +7,9 @@ using UnityEngine;
 /// <summary>
 /// This class handles the intro animations of the spaceship and gives a transition into the player game start
 /// </summary>
-public struct WayPointPosition
-{
-    public Vector3 position;
-    public Vector3 rotation;
-}
-
 public class SpaceShipIntro : MonoBehaviour
 {
+    #region Members
     [SerializeField] private GameObject[] wayPoints;
     [SerializeField] private Transform touchpoint1;
     [SerializeField] private Transform touchpoint2;
@@ -31,22 +26,18 @@ public class SpaceShipIntro : MonoBehaviour
     private bool hasFadeScreen = false;
     private float zSpawnOffsetPos;
     private float xSpawnOffsetPos;
+    #endregion
 
+    #region Unity Methods
     void Start()
     {
         GameObject camGO = GameObject.Find("Camera");
         camGO.GetComponent<CameraController>().SetCameraRotationActive(false);
-
         planetGenerator = GameObject.Find("PlanetGenerator").GetComponent<PlanetGenerator>();
         zSpawnOffsetPos = -20f;
         xSpawnOffsetPos = 0;
     }
 
-    public void StartIntro()
-    {
-        StartAnimation();
-    }
-    
     void Update()
     {
         CheckForFadeScreen();
@@ -91,7 +82,14 @@ public class SpaceShipIntro : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Public Methods
+    public void StartIntro()
+    {
+        StartAnimation();
+    }
+    
     public void StartAnimation()
     {
         transform.position = wayPoints[0].transform.position;
@@ -102,6 +100,17 @@ public class SpaceShipIntro : MonoBehaviour
         introActive = true;
     }
 
+    public void LandSpaceShip()
+    {
+        GameObject spaceShip = GameObject.Find("SpaceShip");
+        spaceShip.transform.position = SearchLandPosition();
+        Vector3 toAttractorDir = (transform.position - Vector3.zero).normalized;
+        Vector3 bodyUp = transform.up;
+        transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * transform.rotation;
+    }
+    #endregion
+
+    #region Private Methods
     private void CheckForFadeScreen()
     {
         if (!hasFadeScreen)
@@ -115,16 +124,6 @@ public class SpaceShipIntro : MonoBehaviour
 
             }
         }
-    }
-
-    public void LandSpaceShip()
-    {
-        GameObject spaceShip = GameObject.Find("SpaceShip");
-        spaceShip.transform.position = SearchLandPosition();
-
-        Vector3 toAttractorDir = (transform.position - Vector3.zero).normalized;
-        Vector3 bodyUp = transform.up;
-        transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * transform.rotation;
     }
 
     private Vector3 SearchLandPosition()
@@ -169,4 +168,5 @@ public class SpaceShipIntro : MonoBehaviour
 
         return outputPoint;
     }
+    #endregion
 }

@@ -7,14 +7,26 @@ using UnityEngine.UI;
 
 public class Compass : MonoBehaviour
 {
+    #region Members
     [SerializeField] private RawImage spaceShipIndicator;
     [SerializeField] private RawImage questGiverIndicator;
-    private Transform player;
+    [SerializeField] private RawImage followUpQuestIndicator;
     [SerializeField] private Transform spaceShip;
-
+    private Transform player;
     private GameObject questGiver;
+    private GameObject followUpQuestTarget;
+    private QuestManager questManager;
 
     public GameObject QuestGiver { get => questGiver; set => questGiver = value; }
+    public GameObject FollowUpQuestTarget { get => followUpQuestTarget; set => followUpQuestTarget = value; }
+    public RawImage QuestGiverIndicator { get => questGiverIndicator; set => questGiverIndicator = value; }
+    #endregion
+
+    #region Unity Methods
+    private void Start()
+    {
+        questManager = GameObject.Find("QuestManager").GetComponent<QuestManager>();
+    }
 
     void Update()
     {
@@ -26,32 +38,50 @@ public class Compass : MonoBehaviour
         {
             CalculateSpaceShip();
             CalculateQuestGiver();
+            CalculateFollowQuestTarget();
         }
     }
+    #endregion
 
+    #region Public Methods
+    public float AngleDifferenceLimitedToYAxis(Transform player, Transform spaceship)
+    {
+        Vector3 playerForward = player.forward;
+        Vector3 directionToSpaceship = (spaceship.position - player.position).normalized;
+
+        // Project the directionToSpaceship onto the plane that is perpendicular to the player's Y-axis
+        Vector3 projectedDirection = Vector3.ProjectOnPlane(directionToSpaceship, player.up);
+
+        // Calculate the angle between the player's forward direction and the projected direction
+        float angle = Vector3.SignedAngle(playerForward, projectedDirection, player.up);
+
+        return angle;
+    }
+    #endregion
+
+    #region Private Methods
     private void CalculateQuestGiver()
     {
         if (questGiver != null)
         {
             float angle = AngleDifferenceLimitedToYAxis(player.transform, questGiver.transform);
-            questGiverIndicator.rectTransform.localPosition = new Vector3(angle * 5f, 0, 0);
+            QuestGiverIndicator.rectTransform.localPosition = new Vector3(angle * 5f, 0, 0);
 
             // Set on or off when not visible in compass
             if (angle * 5 > -179 && angle * 5 < 179)
             {
-                questGiverIndicator.GetComponent<RawImage>().enabled = true;
+                QuestGiverIndicator.GetComponent<RawImage>().enabled = true;
             }
             else
             {
-                questGiverIndicator.GetComponent<RawImage>().enabled = false;
+                QuestGiverIndicator.GetComponent<RawImage>().enabled = false;
             }
         }
         else
         {
-            questGiverIndicator.GetComponent<RawImage>().enabled = false;
+            QuestGiverIndicator.GetComponent<RawImage>().enabled = false;
         }
     }
-
     private void CalculateSpaceShip()
     {
         float angle = AngleDifferenceLimitedToYAxis(player.transform, spaceShip);
@@ -67,18 +97,34 @@ public class Compass : MonoBehaviour
             spaceShipIndicator.GetComponent<RawImage>().enabled = false;
         }
     }
-
-    public float AngleDifferenceLimitedToYAxis(Transform player, Transform spaceship)
+    private void CalculateFollowQuestTarget()
     {
-        Vector3 playerForward = player.forward;
-        Vector3 directionToSpaceship = (spaceship.position - player.position).normalized;
+        if (followUpQuestTarget)
+        {
+            float angle = AngleDifferenceLimitedToYAxis(player.transform, followUpQuestTarget.transform);
+            followUpQuestIndicator.rectTransform.localPosition = new Vector3(angle * 5f, 0, 0);
 
-        // Project the directionToSpaceship onto the plane that is perpendicular to the player's Y-axis
-        Vector3 projectedDirection = Vector3.ProjectOnPlane(directionToSpaceship, player.up);
-
-        // Calculate the angle between the player's forward direction and the projected direction
-        float angle = Vector3.SignedAngle(playerForward, projectedDirection, player.up);
-
-        return angle;
+            if (questManager.ConfrontationQuest.Active)
+            {
+                // Set on or off when not visible in compass
+                if (angle * 5 > -179 && angle * 5 < 179)
+                {
+                    followUpQuestIndicator.GetComponent<RawImage>().enabled = true;
+                }
+                else
+                {
+                    followUpQuestIndicator.GetComponent<RawImage>().enabled = false;
+                }
+            }
+            else
+            {
+                
+            }
+        }
+        else
+        {
+            followUpQuestIndicator.GetComponent<RawImage>().enabled = false;
+        }
     }
+    #endregion
 }

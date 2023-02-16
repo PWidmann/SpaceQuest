@@ -26,19 +26,19 @@ public class SimpleEnemyController : MonoBehaviour
     private int wayPointCounter = 0;
     private float idleTimer = 0;
     private float deathTimer = 3f;
-    
 
     // Movement
     private float runSpeed = 4;
     private float currentSpeed = 0;
     private float pathTimer = 0;
-    private float turnSpeed = 300f;
+    private float turnSpeed = 400f;
     
     // Basics
     private float currentHealth = 100f;
     private EnemyState enemyState;
     private bool active = false;
     private bool dead = false;
+    private bool bossEnemy = false;
 
     // Behaviour
     private float detectionTimer = 0.5f;
@@ -47,23 +47,14 @@ public class SimpleEnemyController : MonoBehaviour
     private float aggroRange = 15f;
 
     public float AggroRange { get => aggroRange; set => aggroRange = value; }
+    public bool BossEnemy { get => bossEnemy; set => bossEnemy = value; }
 
     #endregion
 
+    #region Unity Methods
     void Start()
     {
         Initialization();
-    }
-
-    private void Initialization()
-    {
-        animator = GetComponent<Animator>();
-        enemyState = EnemyState.Idle;
-        nextWaypointDirection = Vector3.zero;
-        spawnPoint = transform.position + new Vector3(0, 1, 0);
-        rigidBody = GetComponent<Rigidbody>();
-        questManager = GameObject.Find("QuestManager").GetComponent<QuestManager>();
-        spawnHelper = GameObject.Find("QuestManager").GetComponent<SpawnHelper>();
     }
 
     void Update()
@@ -73,6 +64,54 @@ public class SimpleEnemyController : MonoBehaviour
             PlayerDetection();
             StateSwitch();
         }
+    }
+    #endregion
+
+    #region Public Methods
+    public void ActivateNPC(GameObject player)
+    {
+        playerObject = player;
+        spawnPoint = transform.position;
+        currentHealth = 100f;
+
+        active = true;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (!dead)
+        {
+            animator.SetTrigger("Hit");
+            currentHealth -= damage;
+            if (currentHealth <= 0)
+            {
+                enemyState = EnemyState.Death;
+                animator.SetTrigger("Death");
+                dead = true;
+                QuestManagerCheck();
+                questManager.UpdateQuestTracker();
+            }
+            else
+            {
+                // When hit, enemy chases player
+                transform.LookAt(playerObject.transform);
+                enemyState = EnemyState.Chase;
+                AggroRange *= 3;
+            }
+        }
+    }
+    #endregion
+
+    #region Private Methods
+    private void Initialization()
+    {
+        animator = GetComponent<Animator>();
+        enemyState = EnemyState.Idle;
+        nextWaypointDirection = Vector3.zero;
+        spawnPoint = transform.position + new Vector3(0, 1, 0);
+        rigidBody = GetComponent<Rigidbody>();
+        questManager = GameObject.Find("QuestManager").GetComponent<QuestManager>();
+        spawnHelper = GameObject.Find("QuestManager").GetComponent<SpawnHelper>();
     }
 
     private void PlayerDetection()
@@ -137,7 +176,6 @@ public class SimpleEnemyController : MonoBehaviour
             currentSpeed = runSpeed * 1.5f;
             Vector3 targetDirection = (spawnPoint - transform.position).normalized;
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
-
             rigidBody.MovePosition(rigidBody.position + targetDirection * currentSpeed * Time.deltaTime);
 
             if (Vector3.Distance(transform.position, spawnPoint) < 1f)
@@ -203,7 +241,7 @@ public class SimpleEnemyController : MonoBehaviour
         {
             animator.SetBool("Running", true);
             currentSpeed = runSpeed;
-            Vector3 targetDirection = ((playerObject.transform.position + new Vector3(0, 1f, 0)) - transform.position).normalized;
+            Vector3 targetDirection = ((playerObject.transform.position + playerObject.transform.up) - transform.position).normalized;
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(targetDirection), Time.deltaTime * turnSpeed);
             currentSpeed = runSpeed;
 
@@ -249,10 +287,9 @@ public class SimpleEnemyController : MonoBehaviour
     private Vector3 NextPathPoint()
     {
         Vector3 output = Vector3.zero;
-
         output = transform.position;
-
         int rnd = UnityEngine.Random.Range(0, 4);
+
         switch (rnd)
         {
             case 0:
@@ -284,43 +321,17 @@ public class SimpleEnemyController : MonoBehaviour
         return output;
     }
 
-    public void ActivateNPC(GameObject player)
-    {
-        playerObject = player;
-        spawnPoint = transform.position;
-        currentHealth = 100f;
-        
-        active = true;
-    }
-
-    public void TakeDamage(float damage)
-    {
-        if (!dead)
-        {
-            animator.SetTrigger("Hit");
-            currentHealth -= damage;
-            if (currentHealth <= 0)
-            {
-                enemyState = EnemyState.Death;
-                animator.SetTrigger("Death");
-                dead = true;
-                QuestManagerCheck();
-            }
-            else
-            {
-                // When hit, enemy chases player
-                enemyState = EnemyState.Chase;
-                AggroRange *= 3;
-            }
-        }
-    }
-
     private void QuestManagerCheck()
     {
         if (questManager.IntroQuest.QuestType == QuestType.KillEnemies && questManager.IntroQuest.Active)
         {
             questManager.IntroQuest.CurrentQuestTracking += 1;
-            Debug.Log("quest tracking updated. current count: " + questManager.IntroQuest.CurrentQuestTracking + "/" + questManager.IntroQuest.QuestGoal);
+        }
+
+        if (bossEnemy && questManager.ConfrontationQuest.QuestType == QuestType.Boss)
+        {
+            questManager.ConfrontationQuest.CurrentQuestTracking = 1;
         }
     }
+    #endregion
 }

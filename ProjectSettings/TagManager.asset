@@ -12,6 +12,8 @@ TagManager:
   - Foliage
   - PickUp
   - QuestGiver
+  - SpaceShip
+  - Compass
   layers:
   - Default
   - TransparentFX

@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class RigidNoiseFilter : INoiseFilter
 {
+    #region Members
     NoiseSettings.RigidNoiseSettings settings;
     Noise noise = new Noise();
+    #endregion
 
+    #region Constructor
     public RigidNoiseFilter(NoiseSettings.RigidNoiseSettings settings)
     {
         this.settings = settings;
     }
+    #endregion
 
+    #region Public Method
     public float Evaluate(Vector3 point)
     {
         float noiseValue = 0;
@@ -34,4 +39,5 @@ public class RigidNoiseFilter : INoiseFilter
         noiseValue = Mathf.Max(0, noiseValue - settings.minValue);
         return noiseValue * settings.strength;
     }
+    #endregion
 }

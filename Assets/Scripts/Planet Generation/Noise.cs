@@ -325,6 +325,5 @@ public class Noise
 
         return buffer;
     }
-
 }
 

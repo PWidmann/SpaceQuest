@@ -15,7 +15,6 @@ public class FadeScreen : MonoBehaviour
     #endregion
 
     #region Unity Methods
-
     private void Awake()
     {
         fadeImage.enabled = true;
@@ -25,7 +24,6 @@ public class FadeScreen : MonoBehaviour
         // Keep fade canvas alive #fadescreensmatter
         DontDestroyOnLoad(gameObject);
     }
-
     void Update()
     {
         if (fadeImage != null && fadeStarted)
@@ -41,7 +39,6 @@ public class FadeScreen : MonoBehaviour
             }
         }
     }
-
     #endregion
 
     #region Methods

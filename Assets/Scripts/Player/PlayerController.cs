@@ -12,7 +12,6 @@ using UnityEngine.UIElements;
 public class PlayerController : MonoBehaviour
 {
     #region Members
-
     [Header("Misc")]
     [SerializeField] private GameObject cameraArm;
     [SerializeField] private GameObject rifle;
@@ -37,7 +36,7 @@ public class PlayerController : MonoBehaviour
     private float turnSmoothVelocity;
     private float speedSmoothVelocity;
     private float speedSmoothTime = 0.05f;
-    private float runSpeed = 8f; // about 8 intended
+    private float runSpeed = 20f; // about 8 intended
     private float crouchSpeed = 2.3f;
     private float mySpeed = 0;
     private float currentSpeed;
@@ -61,7 +60,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 aimTarget;
 
     // Shooting
-    private float autoShootRate = 1.0f;
     private float shootTimer = 0f;
     private bool flashLight = false;
     private float standardFOV = 60f;
@@ -76,8 +74,7 @@ public class PlayerController : MonoBehaviour
     private float lavaTimer = 0;
     private bool death = false;
 
-    
-
+    // Spawning
     private Vector3 spawnPoint = Vector3.zero;
     private float respawnTimer = 6f;
     private bool respawnStarted = false;
@@ -85,19 +82,15 @@ public class PlayerController : MonoBehaviour
     private bool canInteract = false;
     private int playerHealth = 100;
 
-
     public bool Death { get => death; set => death = value; }
     public Vector3 SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
-
     #endregion
 
     #region UnityMethods
-
     private void Start()
     {        
         InitializePlayerController(); 
     }
-
     private void Update()
     {
         CheckForGrounded();
@@ -106,17 +99,10 @@ public class PlayerController : MonoBehaviour
         AnimationHandling();
         Shooting();
         Zoom();
-
         CheckForLava();
         UIupdate();
         Respawn();
     }
-
-    private void UIupdate()
-    {
-        playerGUI.SetPlayerHealthBar(playerHealth);
-    }
-
     private void FixedUpdate()
     {
         if (playerHasControl)
@@ -127,7 +113,6 @@ public class PlayerController : MonoBehaviour
             rigidBody.MovePosition(rigidBody.position + moveDirection * currentSpeed * Time.fixedDeltaTime); 
         }
     }
-
     private void LateUpdate()
     {
         if (playerHasControl && !death)
@@ -141,16 +126,13 @@ public class PlayerController : MonoBehaviour
             CreateAimPoint();
         }  
     }
-
     #endregion
 
-    #region Methods
-
+    #region Public Methods
     public void SetPlayerIsInControl(bool active)
     {
         playerHasControl = active;
     }
-
     public void TriggerDeath()
     {
         playerHasControl = false;
@@ -161,7 +143,6 @@ public class PlayerController : MonoBehaviour
         fadeScreen.FadeOut();
         respawnStarted = true;
     }
-
     public void Respawn()
     {
         if (respawnStarted)
@@ -185,7 +166,22 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    public void TakeDamage(int value)
+    {
+        if (!death)
+        {
+            playerHealth -= value;
 
+            if (playerHealth <= 0)
+            {
+                death = true;
+                TriggerDeath();
+            }
+        }
+    }
+    #endregion
+
+    #region Private Methods
     private void CheckForLava()
     {
         if (playerHasControl)
@@ -235,7 +231,6 @@ public class PlayerController : MonoBehaviour
                 playerGUI.HideLavaMeter();
         }
     }
-
     private void InitializePlayerController()
     {
         animator = GetComponent<Animator>();
@@ -270,7 +265,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Reset player if under the map
-        if (Vector3.Distance(transform.position, Vector3.zero) < 200f)
+        if (Vector3.Distance(transform.position, Vector3.zero) < 190f)
         {
             transform.position = transform.position + (transform.up * 50f);
         }
@@ -325,9 +320,13 @@ public class PlayerController : MonoBehaviour
             cameraYaw = 0;
         }
     }
-
+    private void UIupdate()
+    {
+        playerGUI.SetPlayerHealthBar(playerHealth);
+    }
     private void GetCursorTarget()
     {
+        // Sets the UI Element "Press E"
         targetingTimer += Time.deltaTime;
         if (targetingTimer >= 0.2f)
         {
@@ -345,6 +344,11 @@ public class PlayerController : MonoBehaviour
                     canInteract = true;
                 }
                 if(cursorTargetHit.transform.gameObject.CompareTag("QuestGiver"))
+                {
+                    playerGUI.SetInteractPanel(true);
+                    canInteract = true;
+                }
+                if (cursorTargetHit.transform.gameObject.CompareTag("SpaceShip") && questManager.ConfrontationCompleted)
                 {
                     playerGUI.SetInteractPanel(true);
                     canInteract = true;
@@ -368,10 +372,13 @@ public class PlayerController : MonoBehaviour
             if (cursorTargetHit.transform.gameObject.CompareTag("PickUp"))
             {
                 cursorTargetHit.transform.GetComponent<Pickup>().PickUp();
-            }    
+            }
+            if (cursorTargetHit.transform.gameObject.CompareTag("SpaceShip"))
+            {
+                cursorTargetHit.transform.GetComponent<SpaceShipOutro>().StartOutro();
+            }
         }
     }
-
     private void AnimationHandling()
     {
         if (playerHasControl && !death)
@@ -450,20 +457,6 @@ public class PlayerController : MonoBehaviour
 
             float cameraFOV = Mathf.SmoothDamp(playerCamera.fieldOfView, targetFOV, ref currentFOV, 0.2f);
             playerCamera.fieldOfView = cameraFOV;
-        }
-    }
-
-    public void TakeDamage(int value)
-    {
-        if (!death)
-        {
-            playerHealth -= value;
-
-            if (playerHealth <= 0)
-            {
-                death = true;
-                TriggerDeath();
-            }
         }
     }
     #endregion

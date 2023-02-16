@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class NoiseSettings
 {
+    #region Members
     public enum FilterType { Simple, Rigid };
     public FilterType filterType;
-
     public SimpleNoiseSettings simpleNoiseSettings;
     public RigidNoiseSettings rigidNoiseSettings;
     public bool useFirstLayerAsMask = false;
     public bool exposePlanetGround = true;
+    #endregion
 
+    #region Constructors
     public NoiseSettings()
     {
         simpleNoiseSettings = new SimpleNoiseSettings();
@@ -34,12 +36,11 @@ public class NoiseSettings
         public float minValue = 0.7f;
         // minvalue 0.3 = no water, 0,7 water
     }
+    #endregion
 
     [System.Serializable]
     public class RigidNoiseSettings : SimpleNoiseSettings
     {
         public float weightMultiplier = 0.8f;
     }
-
-
 }

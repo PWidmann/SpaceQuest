@@ -11,11 +11,9 @@ public enum PlanetWeather { Clear, Cloudy, Storm, Foggy }
 public class Planet
 {
     #region Members
-
     private GameObject[] faceMeshes;
     private float minHeightValue = 300;
     private float maxHeightValue = 0;
-
     private PlanetType planetType;
     private Material planetMaterial;
     private int planetFaceResolution = 256;
@@ -29,23 +27,18 @@ public class Planet
     public float MinHeightValue { get => minHeightValue; }
     public float MaxHeightValue { get => maxHeightValue; }
     public GameObject[] FaceMeshes { get => faceMeshes; set => faceMeshes = value; }
-
-
     #endregion
 
-    #region constructor
-
+    #region Constructor
     public Planet(AnimationCurve _animationCurve, bool _exposeBaseSurface)
     {
         exposeBaseSurface = _exposeBaseSurface;
         terrainHeightAnimCurve = _animationCurve;
         GeneratePlanet();
     }
-
     #endregion
 
-    #region Methods
-
+    #region Public Methods
     public void GeneratePlanet()
     {
         Initialize();
@@ -53,14 +46,14 @@ public class Planet
         GenerateAndApplyMeshData();
         SetMinMaxHeight();
     }
+    #endregion
 
+    #region Private Methods
     private void Initialize()
     {
         shapeSettings = new ShapeSettings();
         SetRandomShapeSettings();
-        
         shapeGenerator = new ShapeGenerator(shapeSettings);
-        
         meshFilters = new MeshFilter[6];
         terrainFaces = new Terrainface[6];
         FaceMeshes = new GameObject[6];
@@ -142,7 +135,6 @@ public class Planet
         float rnd2 = UnityEngine.Random.Range(0f, 50f);
         shapeSettings.noiseSettingsL2.rigidNoiseSettings.centre = new Vector3(rnd2, rnd2, rnd2);
     }
-
     #endregion
 }
 

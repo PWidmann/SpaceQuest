@@ -12,8 +12,7 @@ using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 public class PlanetGenerator : MonoBehaviour
 {
-    #region member
-
+    #region Members
     [Header("General Settings")]
     [SerializeField] private bool DevMode;
     [SerializeField] private bool combinePlanetFaces;
@@ -29,8 +28,6 @@ public class PlanetGenerator : MonoBehaviour
     [SerializeField] private GameObject playerObject;
     [SerializeField] private GameObject lavaSpherePrefab;
     [SerializeField] private GameObject targetNavPoint;
-    [SerializeField] private GameObject clericPrefab;
-    [SerializeField] private GameObject creaturePrefab;
 
     [Header("Planet Configurations")]
     [SerializeField] private PlanetScriptableObject[] configurations;
@@ -52,10 +49,10 @@ public class PlanetGenerator : MonoBehaviour
     private List<GameObject> spawnedEnemies = new List<GameObject>();
     private QuestManager questmanager;
 
+    public PlanetScriptableObject CurrentPlanetConfiguration { get => currentPlanetConfiguration; set => currentPlanetConfiguration = value; }
     #endregion
 
     #region Unity Methods
-
     private void Awake()
     {
         CheckForFadeScreen();
@@ -89,39 +86,17 @@ public class PlanetGenerator : MonoBehaviour
             spaceshipIntro.StartIntro();
         }
     }
-
-    private void SpawnEnemies()
-    {
-        spawnedEnemies.Clear();
-        GameObject enemiesParent = new GameObject("Enemies");
-        enemiesParent.transform.SetParent(planetObject.transform);
-
-        for (int i = 0; i < 100; i++)
-        {
-            GameObject enemy = Instantiate(currentPlanetConfiguration.randomEnemy);
-            enemy.transform.position = spawnHelper.GetRandomSurfaceSpawnPoint();
-            Vector3 toAttractorDir = (enemy.transform.position - Vector3.zero).normalized;
-            Vector3 bodyUp = enemy.transform.up;
-            enemy.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * enemy.transform.rotation;
-            enemy.transform.SetParent(enemiesParent.transform);
-            spawnedEnemies.Add(enemy);
-        }
-
-        Debug.Log("common enemies spawned");
-    }
-
     #endregion
-
+    
     #region Public Methods
-
     public void GenerateNewPlanet()
     {
         // Get random planet configuration from scriptable objects and initialize planet texture
-        currentPlanetConfiguration = configurations[UnityEngine.Random.Range(0, configurations.Length)];
+        CurrentPlanetConfiguration = configurations[UnityEngine.Random.Range(0, configurations.Length)];
         texture = new Texture2D(textureResolution, 1);
         
         // Prevent the same type of planet after another
-        CheckForGeneratedPlanetType(currentPlanetConfiguration.PlanetType);
+        CheckForGeneratedPlanetType(CurrentPlanetConfiguration.PlanetType);
 
         DeleteOldPlanet();
         CreatePlanetObject();
@@ -133,12 +108,12 @@ public class PlanetGenerator : MonoBehaviour
         foliage.transform.parent = planetObject.transform;
 
         // Spawn Trees
-        if (currentPlanetConfiguration.TreePrefabs.Length > 0)
+        if (CurrentPlanetConfiguration.TreePrefabs.Length > 0)
         {
             for (int i = 0; i < 300; i++)
             {
-                int rnd = UnityEngine.Random.Range(0, currentPlanetConfiguration.TreePrefabs.Length);
-                GameObject tree = Instantiate(currentPlanetConfiguration.TreePrefabs[rnd]);
+                int rnd = UnityEngine.Random.Range(0, CurrentPlanetConfiguration.TreePrefabs.Length);
+                GameObject tree = Instantiate(CurrentPlanetConfiguration.TreePrefabs[rnd]);
                 Vector3 spawnPoint = spawnHelper.GetRandomSurfaceSpawnPoint();
                 if (spawnPoint != Vector3.zero)
                 {
@@ -148,27 +123,24 @@ public class PlanetGenerator : MonoBehaviour
                     Vector3 toAttractorDir = (tree.transform.position - transform.position).normalized;
                     Vector3 bodyUp = tree.transform.up;
                     tree.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * tree.transform.rotation;
-
-                    
                 }
 
                 tree.transform.parent = foliage.transform;
             }
         }
     }
-
     public void GeneratePickups()
     {
         GameObject pickups = new GameObject("Pickups");
         pickups.transform.parent = planetObject.transform;
 
         // Spawn Pickups
-        if (currentPlanetConfiguration.Pickups.Length > 0)
+        if (CurrentPlanetConfiguration.Pickups.Length > 0)
         {
             for (int i = 0; i < 200; i++)
             {
-                int rnd = UnityEngine.Random.Range(0, currentPlanetConfiguration.Pickups.Length);
-                GameObject pickUpObject = Instantiate(currentPlanetConfiguration.Pickups[rnd]);
+                int rnd = UnityEngine.Random.Range(0, CurrentPlanetConfiguration.Pickups.Length);
+                GameObject pickUpObject = Instantiate(CurrentPlanetConfiguration.Pickups[rnd]);
                 Vector3 spawnPoint = spawnHelper.GetRandomSurfaceSpawnPoint();
                 if (spawnPoint != Vector3.zero)
                 {
@@ -184,7 +156,6 @@ public class PlanetGenerator : MonoBehaviour
             }
         }
     }
-
     public void SpawnPlayer()
     {
         GameObject player = Instantiate(playerObject);
@@ -208,11 +179,28 @@ public class PlanetGenerator : MonoBehaviour
 
         playerGUI.SetPlayerHealthActive(true);
     }
-
     #endregion
 
     #region private Methods
+    private void SpawnEnemies()
+    {
+        spawnedEnemies.Clear();
+        GameObject enemiesParent = new GameObject("Enemies");
+        enemiesParent.transform.SetParent(planetObject.transform);
 
+        for (int i = 0; i < 100; i++)
+        {
+            GameObject enemy = Instantiate(CurrentPlanetConfiguration.randomEnemy);
+            enemy.transform.position = spawnHelper.GetRandomSurfaceSpawnPoint();
+            Vector3 toAttractorDir = (enemy.transform.position - Vector3.zero).normalized;
+            Vector3 bodyUp = enemy.transform.up;
+            enemy.transform.rotation = Quaternion.FromToRotation(bodyUp, toAttractorDir) * enemy.transform.rotation;
+            enemy.transform.SetParent(enemiesParent.transform);
+            spawnedEnemies.Add(enemy);
+        }
+
+        Debug.Log("common enemies spawned");
+    }
     private void CheckForGeneratedPlanetType(PlanetType currentPlanetType)
     {
         List<int> availableConfigurations = new List<int>();
@@ -224,11 +212,11 @@ public class PlanetGenerator : MonoBehaviour
         while (availableConfigurations.Count > 0)
         {
             int randomIndex = UnityEngine.Random.Range(0, availableConfigurations.Count);
-            currentPlanetConfiguration = configurations[availableConfigurations[randomIndex]];
+            CurrentPlanetConfiguration = configurations[availableConfigurations[randomIndex]];
 
-            if (currentPlanetConfiguration.PlanetType != GameManager.LastPlanet)
+            if (CurrentPlanetConfiguration.PlanetType != GameManager.LastPlanet)
             {
-                GameManager.LastPlanet = currentPlanetConfiguration.PlanetType;
+                GameManager.LastPlanet = CurrentPlanetConfiguration.PlanetType;
                 break;
             }
             availableConfigurations.RemoveAt(randomIndex);
@@ -254,13 +242,11 @@ public class PlanetGenerator : MonoBehaviour
             }
         }
 
-        
-
         return outputPoint;
     }
     private void CreatePlanetObject()
     {
-        planet = new Planet(currentPlanetConfiguration.TerrainHeightCurve, currentPlanetConfiguration.exposeBaseSurface);
+        planet = new Planet(CurrentPlanetConfiguration.TerrainHeightCurve, CurrentPlanetConfiguration.exposeBaseSurface);
 
         // Create planet GameObject
         planetObject = null;
@@ -282,7 +268,7 @@ public class PlanetGenerator : MonoBehaviour
         }
 
         // If lava planet, instantiate a lava sphere
-        if (currentPlanetConfiguration.PlanetType == PlanetType.Lava)
+        if (CurrentPlanetConfiguration.PlanetType == PlanetType.Lava)
         {
             GameObject lavaSphere = Instantiate(lavaSpherePrefab, Vector3.zero, Quaternion.identity);
             lavaSphere.transform.SetParent(planetObject.transform);
@@ -299,7 +285,7 @@ public class PlanetGenerator : MonoBehaviour
         Color[] colors = new Color[textureResolution];
         for (int i = 0; i < textureResolution; i++)
         {
-            colors[i] = currentPlanetConfiguration.TerrainHeightColor.Evaluate(i / (textureResolution - 1f));
+            colors[i] = CurrentPlanetConfiguration.TerrainHeightColor.Evaluate(i / (textureResolution - 1f));
         }
         texture.SetPixels(colors);
         texture.Apply();
@@ -352,6 +338,5 @@ public class PlanetGenerator : MonoBehaviour
             fadeScreen.name = "FadeCanvas";
         }
     }
-
     #endregion
 }

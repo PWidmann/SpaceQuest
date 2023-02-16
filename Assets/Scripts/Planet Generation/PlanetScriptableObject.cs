@@ -4,11 +4,10 @@ using UnityEngine;
 using Unity.VisualScripting;
 using UnityEngine.UIElements;
 
-
-
 [CreateAssetMenu(fileName = "New Planet", menuName = "Planet Creaton/PlanetConfiguration")]
 public class PlanetScriptableObject : ScriptableObject
 {
+    #region Members
     public PlanetType PlanetType;
     public Gradient TerrainHeightColor;
     public AnimationCurve TerrainHeightCurve;
@@ -26,4 +25,5 @@ public class PlanetScriptableObject : ScriptableObject
     public GameObject POI_enemy;
     [Space(10)]
     public GameObject boss;
+    #endregion
 }
