@@ -1,5 +1,5 @@
 # SpaceQuest
-Major Bachelor Project Work In Progress
+Major Bachelor Project
 
 SpaceQuest is a Sci-Fi adventure game with procedurally generated planets and world-based procedural quests for the player. 
 The goal of this project is to explore systems for procedurally generated quests and how to make them interesting. The planets are created entirely from code based on scriptable objects.
